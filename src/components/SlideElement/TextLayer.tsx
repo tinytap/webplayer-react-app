@@ -1,11 +1,13 @@
+// React and react-konva library imports
 import React, { useEffect, useRef, useState } from 'react'
 import { Rect, Text } from 'react-konva'
 import { Html } from 'react-konva-utils'
-import html2canvas from 'html2canvas'
-import { propsAreEqual } from '../../utils'
-import { PLAYER_HEIGHT, PLAYER_WIDTH, STATIC_BASE } from '../../utils/constants'
-import { StickerLayer } from './StickerLayer'
+import html2canvas from 'html2canvas' // library to capture screenshots and generate canvas
+import { propsAreEqual } from '../../utils' // utility function to compare properties
+import { PLAYER_HEIGHT, PLAYER_WIDTH, STATIC_BASE } from '../../utils/constants' // Constants from utility
+import { StickerLayer } from './StickerLayer' // Component to render a sticker layer
 
+// Type definition for LayerProps
 interface LayerProps {
   layer: any
   slideBase: string
@@ -13,11 +15,13 @@ interface LayerProps {
   slideIndex: number
 }
 
+// Function to create screenshot for text layers
 function createTextScreenshot(layer: any) {
   let textDiv: HTMLElement
+
+  // Returns a promise which creates an HTML element, adds styles and properties to it, and then captures a screenshot
   return new Promise((resolve, reject) => {
     try {
-      //console.log('createTextScreenshot')
       textDiv = document.createElement('div')
       textDiv.classList.add('layer-text', 'tt-stage-text')
       textDiv.innerHTML = layer.info
@@ -39,19 +43,17 @@ function createTextScreenshot(layer: any) {
   })
 }
 
+// Component to render a text layer
 export const TextLayerComponent = ({ layer = {}, slideBase, layerIndex, slideIndex }: LayerProps) => {
-  //const fixedSticker = useRef({ ...layer })
   const cachedBase = localStorage.getItem(layer.info)
   const [fixedSticker, setFixedSticker] = useState({ ...layer, image: cachedBase ? cachedBase : null }) as any
   const hasImage = useRef(false)
 
-  //const layerSize = decomposeMatrix(layer.transform.join(','))
-
+  // Effect hook to generate screenshot if not available in cache
   useEffect(() => {
     if (!hasImage.current) {
       if (!fixedSticker.image) {
         createTextScreenshot(layer).then((canvas) => {
-          console.log('NO CACHE')
           hasImage.current = true
           const image = canvas.toDataURL()
 
@@ -62,27 +64,22 @@ export const TextLayerComponent = ({ layer = {}, slideBase, layerIndex, slideInd
             width: layer.width,
             height: layer.height,
           })
-          console.log(
-            {
-              ...fixedSticker,
-              image,
-              width: layer.width,
-              height: layer.height,
-            },
-            'USEEFFECT',
-          )
         })
       }
     }
   }, [layer])
 
+  // Returns null if no valid sticker layer information
   if (!fixedSticker || !fixedSticker.type) {
     return null
   }
+
+  // Renders the sticker layer if an image exists
   if (fixedSticker && fixedSticker.image) {
     return <StickerLayer layerIndex={layerIndex} layer={fixedSticker} slideBase={slideBase} slideIndex={slideIndex} />
   }
 
+  // Renders the HTML layer if no image exists
   return (
     <Html
       divProps={{
@@ -91,8 +88,6 @@ export const TextLayerComponent = ({ layer = {}, slideBase, layerIndex, slideInd
           height: layer.height + 'px',
           lineHeight: '1.2',
           position: 'absolute',
-          //left: PLAYER_WIDTH / 2 + fixedSticker.transform[4] + 'px',
-          //top: PLAYER_HEIGHT / 2 + fixedSticker.transform[5] + 'px',
         },
       }}
     >
@@ -101,5 +96,7 @@ export const TextLayerComponent = ({ layer = {}, slideBase, layerIndex, slideInd
   )
 }
 
-export const TextLayer = TextLayerComponent //React.memo(TextLayerComponent, propsAreEqual)
+// Exports the TextLayerComponent
+// Note: It's not wrapped in React.memo to prevent unnecessary re-renders as the component depends only on the props
+export const TextLayer = TextLayerComponent
 
