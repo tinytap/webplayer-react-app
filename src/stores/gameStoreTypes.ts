@@ -47,7 +47,20 @@ export interface Album {
 
   categories_urls: Category[]
 }
+
+export interface ActivityState {
+  started: boolean
+  paused: boolean
+  finished: boolean
+  score: number
+  maxScore: number
+  userScore: number
+  userMaxScore: number
+  userScorePercentage: number
+}
 export interface GameStore {
+  loading: boolean
+  transitionLoading: boolean
   gameReady: boolean
   base_url: string
   music: string | undefined
@@ -55,6 +68,7 @@ export interface GameStore {
   shuffleType: any
   isFirstSlide: boolean
   isLastSlide: boolean
+  activities: ActivityState[]
   selectedSlide: Slide | undefined
   selectedSlideIndex: number | undefined
   lastSelectedSlide: Slide | undefined
@@ -62,6 +76,7 @@ export interface GameStore {
   slides: Slide[] | undefined
   album: Album | undefined
   author: Author | undefined
+  setTransitionLoading: (s: boolean) => void
   retrieveGameStructure: () => void
   setSlides: (slides: Slide[]) => void
   selectSlide: (slide: Slide) => void

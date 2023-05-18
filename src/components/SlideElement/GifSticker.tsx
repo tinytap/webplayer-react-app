@@ -25,7 +25,7 @@ export const GIF = ({ src, imageSize, index }: { src: string; imageSize: any; in
       }
     })
     // Clean up function to stop the GIF animation when the component unmounts
-    return () => anim.stop()
+    return () => anim?.stop()
   }, [src, canvas])
 
   // Render the GIF as a Konva Image

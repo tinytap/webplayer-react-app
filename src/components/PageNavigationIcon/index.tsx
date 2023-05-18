@@ -25,8 +25,7 @@ export function PageNavigationIcon({ type, shown }: PageNavigationIconProps) {
         selectPrevSlide()
         break
     }
-    console.log(type + ' slide clicked')
-  }, [])
+  }, [type, selectNextSlide, selectPrevSlide])
 
   return (
     <Transition in={shown} out={!shown} timeout={100} nodeRef={nodeRef} unmountOnExit={false}>

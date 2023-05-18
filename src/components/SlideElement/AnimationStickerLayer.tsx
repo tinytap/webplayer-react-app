@@ -35,9 +35,6 @@ export const AnimationStickerLayerComponent = ({ layer = {}, slideBase, layerInd
   }, [layer.image])
 
   // Conditional rendering if imageSize.w is defined, logs the image size and renders the GIF component
-  if (imageSize && imageSize.w) {
-    console.log('StickerLayout imageSize && imageSize.w', imageSize && imageSize.w)
-  }
   return imageSize && imageSize.w ? <GIF src={imageSource} imageSize={imageSize} index={layerIndex} /> : null
 }
 

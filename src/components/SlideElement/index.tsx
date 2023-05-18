@@ -1,5 +1,5 @@
-import React, { useRef } from 'react'
-import { Stage, Layer, Star } from 'react-konva'
+import React, { useCallback, useRef } from 'react'
+import { Stage, Layer, Star, Group } from 'react-konva'
 import { Transition } from 'react-transition-group'
 import { useGameStore } from '../../stores/gameStore'
 
@@ -42,7 +42,6 @@ const LAYER_COMPONENTS: Record<string, React.ComponentType<LayerProps>> = {
 }
 
 const SlideLayer = ({ layer, layerIndex, slideBase, slideIndex }: LayerProps) => {
-  console.log('Got this slide', layer.type)
   const LayerComponent =
     LAYER_COMPONENTS[layer.type] ||
     (() => (
@@ -69,23 +68,65 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
   if (!slide) return <LoaderSpinner />
 
   const base_url = useGameStore((state) => state.base_url)
+  const setTransitionLoading = useGameStore((state) => state.setTransitionLoading)
+
   const selectedSlideIndex = useGameStore((state) => state.selectedSlideIndex)
 
   const slide_base = `${base_url}${slide.filePath.replace('/thumb.jpg/', '/')}`
   const nodeRef = useRef(null)
   const animate = slide.settings.kTransitionNoneKey === 3 ? 'fade' : 'slide'
   const selected = slideIndex === selectedSlideIndex
-  console.log('Got this slide?', slide.layers)
+  const handleSlideEnter = useCallback(() => {
+    console.log('onEnter shot')
+    setTransitionLoading(true)
+  }, [])
+
+  const handleSlideEntered = useCallback(() => {
+    console.log('onEntered shot')
+    const animationTimer = setTimeout(() => {
+      setTransitionLoading(false)
+      clearTimeout(animationTimer)
+    }, 1000)
+  }, [])
   return (
-    <Transition in={shown || selected} timeout={10} nodeRef={nodeRef} unmountOnExit={false}>
+    <Transition
+      in={shown || selected}
+      timeout={0}
+      nodeRef={nodeRef}
+      unmountOnExit={false}
+      onEnter={handleSlideEnter}
+      onEntered={handleSlideEntered}
+    >
       {(state: string) => (
         <SlideContainer selected={selected} animate={animate} top={top} ref={nodeRef} state={state}>
           <Stage width={PLAYER_WIDTH} height={PLAYER_HEIGHT}>
-            {slide.layers?.map((layer: Layer, index: number) => (
-              <Layer key={layer.pk + '_' + index}>
-                <SlideLayer slideBase={slide_base} layer={layer} layerIndex={index} slideIndex={slideIndex} />
-              </Layer>
-            ))}
+            <Layer>
+              {slide.layers?.map((layer: Layer, index: number) =>
+                layer.type === 'bg' ? (
+                  <SlideLayer
+                    key={layer.pk + '_' + index}
+                    slideBase={slide_base}
+                    layer={layer}
+                    layerIndex={index}
+                    slideIndex={slideIndex}
+                  />
+                ) : null,
+              )}
+            </Layer>
+
+            <Layer>
+              {slide.layers?.map((layer: Layer, index: number) =>
+                layer.type === 'bg' ? null : (
+                  <SlideLayer
+                    key={layer.pk + '_' + index}
+                    slideBase={slide_base}
+                    layer={layer}
+                    layerIndex={index}
+                    slideIndex={slideIndex}
+                  />
+                ),
+              )}
+            </Layer>
           </Stage>
         </SlideContainer>
       )}

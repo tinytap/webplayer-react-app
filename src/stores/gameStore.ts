@@ -23,9 +23,22 @@ const devMiddlewaresPersist = (f: any) =>
     }),
   ) as any
 
+const defaultActivityState = {
+  started: false,
+  paused: false,
+  finished: false,
+  score: 0,
+  maxScore: 100,
+  userScore: 0,
+  userMaxScore: 100,
+  userScorePercentage: 0,
+}
 export const useGameStore = create<GameStore>()(
   devMiddlewaresPersist((set: any, get: any) => ({
+    loading: false,
+    transitionLoading: false,
     gameReady: false,
+    activities: [],
     selectedSlide: undefined,
     selectedSlideIndex: undefined,
     lastSelectedSlideIndex: 0,
@@ -35,10 +48,14 @@ export const useGameStore = create<GameStore>()(
     author: undefined,
     isLastSlide: false,
     isFirstSlide: false,
+    setTransitionLoading: (state: boolean) => {
+      set({ transitionLoading: state })
+    },
     retrieveGameStructure: async () => {
       const currentSlides = get().slides
       if (currentSlides && currentSlides.length) {
         set({
+          activities: currentSlides.map(() => defaultActivityState),
           slides: currentSlides,
           selectedSlideIndex: 0,
           lastSelectedSlideIndex: 0,
@@ -162,7 +179,6 @@ export const useGameStore = create<GameStore>()(
         const isLastSlide = state.slides && slideIndex === state.slides.length - 1
         const isFirstSlide = slideIndex === 0
         return {
-          
           lastSelectedSlideIndex: state.selectedSlideIndex,
           lastSelectedSlide: state.selectedSlide,
           selectedSlideIndex: slideIndex,
@@ -171,8 +187,11 @@ export const useGameStore = create<GameStore>()(
           isFirstSlide,
         }
       }),
-    selectNextSlide: () =>
+    selectNextSlide: () => {
       set((state: GameStore) => {
+        if (state.transitionLoading) {
+          return { ...state }
+        }
         const currentSlideIndex = state.selectedSlideIndex || 0
         const slides = state.slides || []
         let nextSlide = 0
@@ -193,7 +212,8 @@ export const useGameStore = create<GameStore>()(
           isLastSlide,
           isFirstSlide,
         }
-      }),
+      })
+    },
     selectPrevSlide: () =>
       set((state: GameStore) => {
         const currentSlideIndex = state.selectedSlideIndex
@@ -208,7 +228,7 @@ export const useGameStore = create<GameStore>()(
           lastSelectedSlideIndex: state.selectedSlideIndex,
           lastSelectedSlide: state.selectedSlide,
           selectedSlide: state.slides ? state.slides[prevSlide] : undefined,
-          selectedSlideIndex: prevSlide, ////',
+          selectedSlideIndex: prevSlide,
           isLastSlide,
           isFirstSlide,
         }
