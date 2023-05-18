@@ -63,7 +63,7 @@ export function SideMenu({}: SideMenuProps) {
               selected={selectedSlide?.pk === slide.pk}
               onSelect={() => {
                 if (selectSlideIndex) {
-                  selectSlideIndex(index)
+                  selectSlideIndex(index, true)
                 }
               }}
             />

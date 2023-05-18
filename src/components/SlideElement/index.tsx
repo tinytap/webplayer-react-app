@@ -1,5 +1,5 @@
-import React, { useCallback, useRef } from 'react'
-import { Stage, Layer, Star, Group } from 'react-konva'
+import React, { useCallback, useEffect, useRef } from 'react'
+import { Stage, Layer, Star } from 'react-konva'
 import { Transition } from 'react-transition-group'
 import { useGameStore } from '../../stores/gameStore'
 
@@ -9,9 +9,11 @@ import { PLAYER_HEIGHT, PLAYER_WIDTH } from '../../utils/constants'
 import { LoaderSpinner } from '../Loader/styles'
 import { BackgroundLayer } from './BackgroundLayer'
 import { StickerLayer } from './StickerLayer'
-import { SlideContainer } from './styles'
+import { DebugContainer, SlideContainer } from './styles'
 import { TextLayer } from './TextLayer'
 import { AnimationStickerLayer } from './AnimationStickerLayer'
+import { useActivitiesStore } from '../../stores/activitiesStore'
+//import { ActivityLayer } from '../ActivityLayer'
 
 interface Layer {
   type: string
@@ -77,17 +79,26 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
   const animate = slide.settings.kTransitionNoneKey === 3 ? 'fade' : 'slide'
   const selected = slideIndex === selectedSlideIndex
   const handleSlideEnter = useCallback(() => {
-    console.log('onEnter shot')
     setTransitionLoading(true)
   }, [])
 
   const handleSlideEntered = useCallback(() => {
-    console.log('onEntered shot')
     const animationTimer = setTimeout(() => {
       setTransitionLoading(false)
       clearTimeout(animationTimer)
     }, 1000)
   }, [])
+
+  const getSlide = useActivitiesStore((state) => state.getSlide)
+  const getSlideActivities = useActivitiesStore((state) => state.getSlideActivities)
+  const slideActivity = getSlide(slideIndex)
+  const slideActivities = getSlideActivities(slideIndex)
+
+  useEffect(() => {
+    if (!slideActivity) return
+    console.log('slideActivity.started', slideActivity?.started)
+  }, [slideActivity?.started])
+
   return (
     <Transition
       in={shown || selected}
@@ -99,7 +110,17 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
     >
       {(state: string) => (
         <SlideContainer selected={selected} animate={animate} top={top} ref={nodeRef} state={state}>
+          <DebugContainer>
+            <p>
+              Started - {slideActivity?.started ? 'true' : 'false'}
+              <br />
+              Paused - {slideActivity?.paused ? 'true' : 'false'}
+              <br />
+              Activities - {slideActivity?.activities ? slideActivity?.activities.length : 'NULL'}
+            </p>
+          </DebugContainer>
           <Stage width={PLAYER_WIDTH} height={PLAYER_HEIGHT}>
+            {'' /** Background / Foreground layered together */}
             <Layer>
               {slide.layers?.map((layer: Layer, index: number) =>
                 layer.type === 'bg' ? (
@@ -113,7 +134,7 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
                 ) : null,
               )}
             </Layer>
-
+            {'' /** Stickers layered together */}
             <Layer>
               {slide.layers?.map((layer: Layer, index: number) =>
                 layer.type === 'bg' ? null : (
@@ -127,6 +148,22 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
                 ),
               )}
             </Layer>
+            {'' /** Activities layered together */}
+            {
+              '' /**
+            <Layer>
+              {slideActivities?.map((activity, index: number) => (
+                <ActivityLayer
+                  key={activity.pk + '_' + index}
+                  slideBase={slide_base}
+                  activity={activity}
+                  activityIndex={index}
+                  slideIndex={slideIndex}
+                />
+              ))}
+            </Layer>
+             */
+            }
           </Stage>
         </SlideContainer>
       )}

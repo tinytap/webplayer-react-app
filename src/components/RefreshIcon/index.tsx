@@ -4,10 +4,13 @@
 import { ActionButton } from '../ActionButton'
 import { RefreshIconContainer } from './styles'
 import SvgIcon from '../SvgIcon'
+import { useGameStore } from '../../stores/gameStore'
 interface RefreshIconProps {}
 export function RefreshIcon({}: RefreshIconProps) {
+  const refreshSelectedSlide = useGameStore((state) => state.refreshSelectedSlide)
   const handleRefreshIconClick = () => {
-    window.location.reload()
+    refreshSelectedSlide()
+    //window.location.reload()
   }
 
   return (

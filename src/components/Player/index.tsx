@@ -10,6 +10,7 @@ import { LoaderScreen } from '../Loader'
 import { SideMenu } from '../SideMenu'
 import { SlidesContainer } from '../SlidesContainer'
 import { PlayerContainer } from './styles'
+import { GameOverlay } from '../GameOverlay'
 
 interface PlayerProps {}
 export function Player({}: PlayerProps) {

@@ -2,6 +2,8 @@ import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import { getGameId, getStructureFilePath } from '../utils'
 import { calculatePlayerScale } from '../utils/tt-utils'
+import { useGameStore } from './gameStore'
+import { useActivitiesStore } from './activitiesStore'
 
 interface PlayerState {
   isLoading: boolean
@@ -39,17 +41,38 @@ export const usePlayerStore = create<PlayerState>()(
     menuOpen: false,
 
     setMenuOpenState: (openState: boolean) =>
-      set(() => ({
-        menuOpen: openState,
-      })),
+      set((state: PlayerState) => {
+        const selectedSlide = useGameStore.getState().selectedSlideIndex || 0
+
+        const startActivity = useActivitiesStore.getState().startActivity
+        const pauseActivity = useActivitiesStore.getState().pauseActivity
+
+        if (openState) {
+          pauseActivity(selectedSlide)
+        } else {
+          startActivity(selectedSlide)
+        }
+        return {
+          menuOpen: openState,
+        }
+      }),
+
     updatePlayerScale: () =>
       set(() => ({
         scale: calculatePlayerScale(),
       })),
     setGameStarted: (gameStartState: boolean) =>
-      set(() => ({
-        gameStarted: gameStartState,
-      })),
+      set((state: PlayerState) => {
+        const selectedSlide = useGameStore.getState().selectedSlideIndex || 0
+        const startActivity = useActivitiesStore.getState().startActivity
+        const pauseActivity = useActivitiesStore.getState().pauseActivity
+        if (gameStartState) {
+          startActivity(selectedSlide)
+        } else {
+          pauseActivity(selectedSlide)
+        }
+        return { gameStarted: gameStartState }
+      }),
     setBackgroundMusicPlayState: (playingState: boolean) =>
       set(() => ({
         backgroundMusicPlaying: playingState,

@@ -53,3 +53,21 @@ entering: { opacity: 1 },
   exited:  { opacity: 0 },
 */
 
+export const DebugContainer = styled.div`
+  position: absolute;
+  z-index: 99999999;
+  top: 0;
+  left: 0;
+  color: white;
+  fontsize: 16px;
+  margin: 50px 10px 0 10px;
+  padding: 20px;
+  background: red;
+  border-radius: 10px;
+  width: 200px;
+  p {
+    margin: 0;
+    font-weight: bold;
+  }
+`
+

@@ -1,3 +1,5 @@
+import { Activity } from './activitiesStoreTypes'
+
 export interface Slide {
   activities: any
   engineType: 'S' | 'R' | 'A' | 'V' | 'P' | 'Q' | 'T'
@@ -48,16 +50,6 @@ export interface Album {
   categories_urls: Category[]
 }
 
-export interface ActivityState {
-  started: boolean
-  paused: boolean
-  finished: boolean
-  score: number
-  maxScore: number
-  userScore: number
-  userMaxScore: number
-  userScorePercentage: number
-}
 export interface GameStore {
   loading: boolean
   transitionLoading: boolean
@@ -68,7 +60,6 @@ export interface GameStore {
   shuffleType: any
   isFirstSlide: boolean
   isLastSlide: boolean
-  activities: ActivityState[]
   selectedSlide: Slide | undefined
   selectedSlideIndex: number | undefined
   lastSelectedSlide: Slide | undefined
@@ -83,5 +74,7 @@ export interface GameStore {
   selectSlideIndex: (index: number) => void
   selectPrevSlide: () => void
   selectNextSlide: () => void
+
+  refreshSelectedSlide: () => void
 }
 

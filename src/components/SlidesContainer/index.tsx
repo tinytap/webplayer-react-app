@@ -7,6 +7,7 @@ import { propsAreEqual } from '../../utils'
 import { LeftBottomMenuIcons, LeftTopMenuIcons, RightBottomMenuIcons, RightTopMenuIcons } from '../MenuIcons'
 import { SlideElement } from '../SlideElement'
 import { AllSlidesContainer, SlidesContainerElement } from './styles'
+import { GameOverlay } from '../GameOverlay'
 
 interface SlideThumbnailProps {
   //slides: Slide[] | undefined
@@ -53,6 +54,7 @@ export function SlidesContainerComponent({}: SlideThumbnailProps) {
         <LeftBottomMenuIcons />
         <LeftTopMenuIcons />
       </>
+      <GameOverlay />
     </SlidesContainerElement>
   )
 }
