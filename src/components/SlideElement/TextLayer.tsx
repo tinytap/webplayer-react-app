@@ -46,7 +46,10 @@ function createTextScreenshot(layer: any) {
 // Component to render a text layer
 export const TextLayerComponent = ({ layer = {}, slideBase, layerIndex, slideIndex }: LayerProps) => {
   const cachedBase = localStorage.getItem(layer.info)
-  const [fixedSticker, setFixedSticker] = useState({ ...layer, image: cachedBase ? cachedBase : null }) as any
+  const [fixedSticker, setFixedSticker] = useState({
+    ...layer,
+    image: cachedBase ? cachedBase : null,
+  }) as any
   const hasImage = useRef(false)
 
   // Effect hook to generate screenshot if not available in cache
@@ -61,6 +64,7 @@ export const TextLayerComponent = ({ layer = {}, slideBase, layerIndex, slideInd
           setFixedSticker({
             ...fixedSticker,
             image,
+
             width: layer.width,
             height: layer.height,
           })

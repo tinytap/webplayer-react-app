@@ -71,7 +71,7 @@ export interface GameStore {
   retrieveGameStructure: () => void
   setSlides: (slides: Slide[]) => void
   selectSlide: (slide: Slide) => void
-  selectSlideIndex: (index: number) => void
+  selectSlideIndex: (index: number, paused?: boolean) => void
   selectPrevSlide: () => void
   selectNextSlide: () => void
 

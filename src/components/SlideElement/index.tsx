@@ -13,6 +13,7 @@ import { DebugContainer, SlideContainer } from './styles'
 import { TextLayer } from './TextLayer'
 import { AnimationStickerLayer } from './AnimationStickerLayer'
 import { useActivitiesStore } from '../../stores/activitiesStore'
+import { ActivityLayer } from '../ActivityLayer'
 
 // Types for the Layer and SlideProps objects
 interface Layer {
@@ -70,7 +71,7 @@ const SlideLayer = ({ layer, layerIndex, slideBase, slideIndex }: LayerProps) =>
 }
 
 // The SlideElementComponent represents a single slide and manages rendering of its layers and transitions
-export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, playable }: SlideProps) => {
+export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, playable = true }: SlideProps) => {
   // Show loading spinner if slide is not available
   if (!slide) return <LoaderSpinner />
 
@@ -91,15 +92,15 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
       clearTimeout(animationTimer)
     }, 1000)
   }, [])
+
   // Get function to retrieve a slide by its index from the activities store
-  const getSlide = useActivitiesStore((state) => state.getSlide)
+  const getSlideActivityState = useActivitiesStore((state) => state.getSlideActivityState)
 
   // Get function to retrieve slide activities by their index from the activities store
   const getSlideActivities = useActivitiesStore((state) => state.getSlideActivities)
 
   // Retrieve slide activity for the current slide
-  const slideActivity = getSlide(slideIndex)
-
+  const slideActivity = getSlideActivityState(slideIndex)
   // Retrieve all activities for the current slide
   const slideActivities = getSlideActivities(slideIndex)
 
@@ -123,6 +124,8 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
         <SlideContainer selected={selected} animate={animate} top={top} ref={nodeRef} state={state}>
           <DebugContainer>
             <p>
+              Playable - {playable ? 'true' : 'false'}
+              <br />
               Started - {slideActivity?.started ? 'true' : 'false'}
               <br />
               Paused - {slideActivity?.paused ? 'true' : 'false'}
@@ -146,6 +149,7 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
               )}
             </Layer>
             {/** Stickers layered together */}
+
             <Layer>
               {slide.layers?.map((layer: Layer, index: number) =>
                 layer.type === 'bg' ? null : (
@@ -160,19 +164,19 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
               )}
             </Layer>
             {/** Activities layered together */}
-            {/** Commented out block of code for activity layering
-            <Layer>
-              {slideActivities?.map((activity, index: number) => (
-                <ActivityLayer
-                  key={activity.pk + '_' + index}
-                  slideBase={slide_base}
-                  activity={activity}
-                  activityIndex={index}
-                  slideIndex={slideIndex}
-                />
-              ))}
-            </Layer>
-             */}
+            {playable ? (
+              <Layer>
+                {slideActivities?.map((activity, index: number) => (
+                  <ActivityLayer
+                    key={activity.pk + '_' + index}
+                    slideBase={slide_base}
+                    activity={activity}
+                    activityIndex={index}
+                    slideIndex={slideIndex}
+                  />
+                ))}
+              </Layer>
+            ) : null}
           </Stage>
         </SlideContainer>
       )}

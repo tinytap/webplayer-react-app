@@ -61,15 +61,19 @@ export const usePlayerStore = create<PlayerState>()(
       set(() => ({
         scale: calculatePlayerScale(),
       })),
+
     setGameStarted: (gameStartState: boolean) =>
       set((state: PlayerState) => {
-        const selectedSlide = useGameStore.getState().selectedSlideIndex || 0
+        const selectedSlideIndex = useGameStore.getState().selectedSlideIndex || 0
         const startActivity = useActivitiesStore.getState().startActivity
         const pauseActivity = useActivitiesStore.getState().pauseActivity
+
         if (gameStartState) {
-          startActivity(selectedSlide)
+          console.log('gameStarted', selectedSlideIndex)
+          startActivity(selectedSlideIndex)
         } else {
-          pauseActivity(selectedSlide)
+          console.log('slidePaused', selectedSlideIndex)
+          pauseActivity(selectedSlideIndex)
         }
         return { gameStarted: gameStartState }
       }),
