@@ -16,7 +16,7 @@ export const useActivitiesStore = create<ActivitiesState>()((set: any, get: any)
   },
   setActivities: (_activities) => set(() => ({ activities: _activities })),
   startActivity: (index) =>
-    set((state) => {
+    set((state: ActivitiesState) => {
       const _activities = [...state.activities]
       _activities[index] = { ..._activities[index], started: true, paused: false }
       return {
@@ -24,7 +24,7 @@ export const useActivitiesStore = create<ActivitiesState>()((set: any, get: any)
       }
     }),
   pauseActivity: (index) =>
-    set((state) => {
+    set((state: ActivitiesState) => {
       const _activities = [...state.activities]
       _activities[index] = { ..._activities[index], paused: true }
       return {
@@ -32,7 +32,7 @@ export const useActivitiesStore = create<ActivitiesState>()((set: any, get: any)
       }
     }),
   completeActivity: (index) =>
-    set((state) => {
+    set((state: ActivitiesState) => {
       const _activities = [...state.activities]
       _activities[index] = { ..._activities[index], completed: true }
       return {
