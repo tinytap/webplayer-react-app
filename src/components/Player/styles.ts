@@ -7,9 +7,10 @@ export const PlayerContainer = styled.div<PlayerContainerProps>`
   overflow: hidden;
   width: 1024px;
   height: 768px;
-  position: relative;
+  position: absolute;
+  left: 50%;
   z-index: 0;
-  transform-origin: top left;
-  transform: scale(${({ scale }) => (scale ? scale : 1)});
+  transform-origin: center top;
+  transform: translateX(-50%) scale(${({ scale }) => (scale ? scale : 1)});
 `
 
