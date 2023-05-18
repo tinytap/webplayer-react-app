@@ -11,7 +11,7 @@ export interface ActivityState {
 }
 export interface ActivitiesState {
   activities: ActivityState[] | []
-  getSlide: (index: number) => ActivityState | undefined
+  getSlideActivityState: (index: number) => ActivityState | undefined
   getSlideActivities: (index: number) => Activity[] | undefined
   setActivities: (activities: ActivityState[]) => void
   startActivity: (index: number) => void

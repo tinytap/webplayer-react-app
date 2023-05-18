@@ -9,6 +9,7 @@ import { useImage } from '../../hooks/useImage'
 // Defining types for the Sticker and ImageSize objects
 interface Sticker {
   filename?: string
+  image?: string
 }
 
 interface ImageSize {
@@ -32,8 +33,12 @@ interface LayerProps {
 // StickerLayerComponent is a functional component that represents a layer in the slide system
 const StickerLayerComponent: React.FC<LayerProps> = ({ layer, slideBase, layerIndex, slideIndex }) => {
   // Creating the full image URL for the layer
-  if (!layer?.filename) return null
-  const fixedImage = fixSlideImageUrl(slideIndex, slideBase + 'layers/', layer.filename)
+  if (!layer?.filename && !layer.image) return null
+
+  const fixedImage =
+    layer.image && layer.image.includes('data:image/png')
+      ? layer.image
+      : fixSlideImageUrl(slideIndex, slideBase + 'layers/', layer.filename || '')
 
   // Using hooks to manage image source and size
   const [imageSource, setImageSource] = useState(fixedImage)
@@ -58,6 +63,18 @@ const StickerLayerComponent: React.FC<LayerProps> = ({ layer, slideBase, layerIn
       setImageUrl(newFileName)
     }
   }, [layer.filename, slideBase])
+
+  useEffect(() => {
+    if ((layer?.image || layer?.filename) && image && layer.image !== image?.src) {
+      const newFileName =
+        layer.image && layer.image.includes('data:image/png')
+          ? layer.image
+          : fixSlideImageUrl(slideIndex, slideBase + 'layers/', layer.filename || '')
+
+      setImageSource(newFileName)
+      setImageUrl(newFileName)
+    }
+  }, [layer.image, slideBase])
 
   // Render a Konva Rect with image applied if imageSize is defined
   return imageSize?.w && imageSize?.h && imageSize?.position && imageSize?.scale ? (

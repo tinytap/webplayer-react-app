@@ -183,7 +183,7 @@ export const useGameStore = create<GameStore>()(
       }
     },
     setSlides: (slides: Slide[]) => set((/*state*/) => ({ slides: slides })),
-    selectSlideIndex: (slideIndex: number, paused: boolean) =>
+    selectSlideIndex: (slideIndex: number, paused: boolean = false) =>
       set((state: GameStore) => {
         const isLastSlide = state.slides && slideIndex === state.slides.length - 1
         const isFirstSlide = slideIndex === 0
