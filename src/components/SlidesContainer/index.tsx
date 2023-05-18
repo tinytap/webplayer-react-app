@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRef } from 'react'
 import { useGameStore } from '../../stores/gameStore'
 import { Slide } from '../../stores/gameStoreTypes'
@@ -19,6 +19,9 @@ export function SlidesContainerComponent({}: SlideThumbnailProps) {
   const lastSelectedSlide = useGameStore((state) => state.lastSelectedSlide)
   const menuOpen = usePlayerStore((state) => state.menuOpen)
   const staticSlides = useRef([...(slides as any)])
+  useEffect(() => {
+    staticSlides.current = [...(slides as any)]
+  }, [slides])
 
   return (
     <SlidesContainerElement menuOpened={menuOpen}>
@@ -31,16 +34,18 @@ export function SlidesContainerComponent({}: SlideThumbnailProps) {
           index={lastSelectedSlideIndex || 0}
         />
 
-        {staticSlides.current?.map((slide, index) => (
-          <SlideElement
-            playable={true}
-            index={index}
-            shown={index === selectedSlideIndex}
-            key={slide.pk}
-            slide={slide}
-            top={false}
-          />
-        ))}
+        {slides
+          ? slides.map((slide, index) => (
+              <SlideElement
+                playable={true}
+                index={index}
+                shown={index === selectedSlideIndex}
+                key={slide.pk}
+                slide={slide}
+                top={false}
+              />
+            ))
+          : null}
       </AllSlidesContainer>
       <>
         <RightTopMenuIcons />

@@ -42,6 +42,7 @@ const LAYER_COMPONENTS: Record<string, React.ComponentType<LayerProps>> = {
 }
 
 const SlideLayer = ({ layer, layerIndex, slideBase, slideIndex }: LayerProps) => {
+  console.log('Got this slide', layer.type)
   const LayerComponent =
     LAYER_COMPONENTS[layer.type] ||
     (() => (
@@ -72,9 +73,9 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
 
   const slide_base = `${base_url}${slide.filePath.replace('/thumb.jpg/', '/')}`
   const nodeRef = useRef(null)
-  const animate = 'slide'
+  const animate = slide.settings.kTransitionNoneKey === 3 ? 'fade' : 'slide'
   const selected = slideIndex === selectedSlideIndex
-
+  console.log('Got this slide?', slide.layers)
   return (
     <Transition in={shown || selected} timeout={10} nodeRef={nodeRef} unmountOnExit={false}>
       {(state: string) => (
