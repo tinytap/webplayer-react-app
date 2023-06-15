@@ -2,7 +2,8 @@ export {}
 
 declare global {
   interface Window {
-    gifler: any
+    gifler: any,
+    gameId: number
   }
 }
 
