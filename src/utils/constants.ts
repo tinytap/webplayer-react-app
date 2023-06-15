@@ -1,31 +1,31 @@
 import { getServerBase, getStaticServerBase, getStaticSoundPath } from './service-utils'
 
 export const playerColors = {
-    cyan: '#61c2e9',
-    lightCyan: '#81ceed',
-    white: '#fff',
+  cyan: '#61c2e9',
+  lightCyan: '#81ceed',
+  white: '#fff',
 }
 
 export const textColors = {
-    cyan: '#28c0ff',
-    white: '#fff',
+  cyan: '#28c0ff',
+  white: '#fff',
 }
-const SLIDE_ENGINE = 'S' //slide
-const READING_ENGINE = 'R' //reading
-const SOUNDBOARD_ENGINE = 'A' //soundboard
-const VIDEO_ENGINE = 'V' //video
-const PUZZLE_ENGINE = 'P' //puzzle
-const QUESTIONS_ENGINE = 'Q' //puzzle
-const TEXTINPUT_ENGINE = 'T' //text input
+export type SLIDE_ENGINE = 'S' //slide
+export type READING_ENGINE = 'R' //reading
+export type SOUNDBOARD_ENGINE = 'A' //soundboard
+export type VIDEO_ENGINE = 'V' //video
+export type PUZZLE_ENGINE = 'P' //puzzle
+export type QUESTIONS_ENGINE = 'Q' //puzzle
+export type TEXTINPUT_ENGINE = 'T' //text input
 
 export const engineTypes = {
-    S: 'slide',
-    R: 'reading',
-    A: 'soundboard',
-    V: 'video',
-    P: 'puzzle',
-    Q: 'questions',
-    T: 'text input',
+  S: 'slide',
+  R: 'reading',
+  A: 'soundboard',
+  V: 'video',
+  P: 'puzzle',
+  Q: 'questions',
+  T: 'text input',
 }
 
 export const SERVER_BASE = getServerBase()

@@ -162,7 +162,7 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
               <Layer>
                 {slideActivityState?.activities?.map((activity, index: number) => (
                   <ActivityLayer
-                    engine={slide.engineType}
+                    engine={slideActivityState.engineType}
                     key={activity.pk + '_' + index}
                     slideBase={slide_base}
                     activity={activity}

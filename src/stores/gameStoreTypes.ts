@@ -1,8 +1,24 @@
+import {
+  PUZZLE_ENGINE,
+  QUESTIONS_ENGINE,
+  READING_ENGINE,
+  SLIDE_ENGINE,
+  SOUNDBOARD_ENGINE,
+  TEXTINPUT_ENGINE,
+  VIDEO_ENGINE,
+} from '../utils/constants'
 import { Activity } from './activitiesStoreTypes'
 
 export interface Slide {
   activities: any
-  engineType: 'S' | 'R' | 'A' | 'V' | 'P' | 'Q' | 'T'
+  engineType:
+    | SLIDE_ENGINE
+    | READING_ENGINE
+    | SOUNDBOARD_ENGINE
+    | VIDEO_ENGINE
+    | PUZZLE_ENGINE
+    | QUESTIONS_ENGINE
+    | TEXTINPUT_ENGINE
   filePath: string
   filePathImage: string
   filePathImageThumb: string

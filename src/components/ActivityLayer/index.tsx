@@ -30,8 +30,8 @@ export function ActivityLayer({
   console.log(
     `slide ${slideIndex} | activity: ${activityIndex} | ${activityState?.started ? 'started' : 'not started'} | ${
       activityState?.paused ? 'paused' : 'not paused'
-    }`,
-    `${getEngineString(engine)}`,
+    } ${getEngineString(engine)}`,
+    activity,
   )
 
   return <Star numPoints={5} innerRadius={5} outerRadius={10} x={300} y={300} />

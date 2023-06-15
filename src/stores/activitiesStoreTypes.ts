@@ -7,6 +7,7 @@ export interface ActivityState {
   userScore: number
   userMaxScore: number
   userScorePercentage: number
+  engineType: 'S' | 'R' | 'A' | 'V' | 'P' | 'Q' | 'T'
   activities?: Activity[]
 }
 export interface ActivitiesState {
