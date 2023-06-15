@@ -33,6 +33,7 @@ const defaultActivityState = {
   userScore: 0,
   userMaxScore: 100,
   userScorePercentage: 0,
+  engineType: 'S',
 }
 
 export const useGameStore = create<GameStore>()(
