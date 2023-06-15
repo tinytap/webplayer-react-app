@@ -3,10 +3,9 @@ import { ActivitiesState } from './activitiesStoreTypes'
 
 export const useActivitiesStore = create<ActivitiesState>()((set: any, get: any) => ({
   activities: [],
-  getSlideActivities: (index) => {
+  getAllActivities: () => {
     const _activities = get().activities
     if (!_activities || _activities.length < 1) return
-    //const slideActivities = _activities[index].activities
     return _activities
   },
   getSlideActivityState: (index) => {

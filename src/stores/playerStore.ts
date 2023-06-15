@@ -69,10 +69,10 @@ export const usePlayerStore = create<PlayerState>()(
         const pauseActivity = useActivitiesStore.getState().pauseActivity
 
         if (gameStartState) {
-          console.log('gameStarted', selectedSlideIndex)
+          console.log('gameStarted | selectedSlide:', selectedSlideIndex)
           startActivity(selectedSlideIndex)
         } else {
-          console.log('slidePaused', selectedSlideIndex)
+          console.log('slidePaused | selectedSlide:', selectedSlideIndex)
           pauseActivity(selectedSlideIndex)
         }
         return { gameStarted: gameStartState }

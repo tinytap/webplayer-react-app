@@ -96,19 +96,13 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
   // Get function to retrieve a slide by its index from the activities store
   const getSlideActivityState = useActivitiesStore((state) => state.getSlideActivityState)
 
-  // Get function to retrieve slide activities by their index from the activities store
-  const getSlideActivities = useActivitiesStore((state) => state.getSlideActivities)
-
   // Retrieve slide activity for the current slide
-  const slideActivity = getSlideActivityState(slideIndex)
-  // Retrieve all activities for the current slide
-  const slideActivities = getSlideActivities(slideIndex)
+  const slideActivityState = getSlideActivityState(slideIndex)
 
   // Log the slideActivity's 'started' status when it changes
   useEffect(() => {
-    if (!slideActivity) return
-    console.log('slideActivity.started', slideActivity?.started)
-  }, [slideActivity?.started])
+    if (!slideActivityState) return
+  }, [slideActivityState?.started])
 
   // Transition wrapper to manage animations when switching between slides
   return (
@@ -126,11 +120,11 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
             <p>
               Playable - {playable ? 'true' : 'false'}
               <br />
-              Started - {slideActivity?.started ? 'true' : 'false'}
+              Started - {slideActivityState?.started ? 'true' : 'false'}
               <br />
-              Paused - {slideActivity?.paused ? 'true' : 'false'}
+              Paused - {slideActivityState?.paused ? 'true' : 'false'}
               <br />
-              Activities - {slideActivity?.activities ? slideActivity?.activities.length : 'NULL'}
+              Activities - {slideActivityState?.activities ? slideActivityState?.activities.length : 'NULL'}
             </p>
           </DebugContainer>
           <Stage width={PLAYER_WIDTH} height={PLAYER_HEIGHT}>
@@ -166,11 +160,13 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
             {/** Activities layered together */}
             {playable ? (
               <Layer>
-                {slideActivities?.map((activity, index: number) => (
+                {slideActivityState?.activities?.map((activity, index: number) => (
                   <ActivityLayer
+                    engine={slide.engineType}
                     key={activity.pk + '_' + index}
                     slideBase={slide_base}
                     activity={activity}
+                    activityState={(({ activities, ...o }) => o)(slideActivityState)}
                     activityIndex={index}
                     slideIndex={slideIndex}
                   />

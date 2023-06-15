@@ -1,17 +1,39 @@
 import { Star } from 'react-konva'
-import { Activity } from '../../stores/activitiesStoreTypes'
+import { Activity, ActivityState } from '../../stores/activitiesStoreTypes'
 import { useActivitiesStore } from '../../stores/activitiesStore'
+import { getEngineString } from '../../utils/tt-utils'
 
 interface ActivityLayerProps {
   slideBase: string
-  activity: Activity
   activityIndex: number
   slideIndex: number
+  engine: 'S' | 'R' | 'A' | 'V' | 'P' | 'Q' | 'T'
+  /*| 'slide'
+    | 'reading'
+    | 'soundboard'
+    | 'video'
+    | 'puzzle'
+    | 'questions'
+    | 'text input'*/
+  activity: Activity
+  activityState: ActivityState
 }
-export function ActivityLayer({ slideIndex }: ActivityLayerProps) {
-  const slideActivity = useActivitiesStore((state) => state.getSlideActivityState(slideIndex || 0))
+export function ActivityLayer({
+  slideBase,
+  slideIndex,
+  activityIndex,
+  activity,
+  activityState,
+  engine,
+}: ActivityLayerProps) {
+  //console.log(activitiesState, 'activitiesState')
+  console.log(
+    `slide ${slideIndex} | activity: ${activityIndex} | ${activityState?.started ? 'started' : 'not started'} | ${
+      activityState?.paused ? 'paused' : 'not paused'
+    }`,
+    `${getEngineString(engine)}`,
+  )
 
-  console.log(slideActivity?.started, 'slideActivity - ' + slideIndex)
   return <Star numPoints={5} innerRadius={5} outerRadius={10} x={300} y={300} />
 }
 

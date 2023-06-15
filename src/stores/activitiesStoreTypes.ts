@@ -7,12 +7,12 @@ export interface ActivityState {
   userScore: number
   userMaxScore: number
   userScorePercentage: number
-  activities: Activity[]
+  activities?: Activity[]
 }
 export interface ActivitiesState {
   activities: ActivityState[] | []
   getSlideActivityState: (index: number) => ActivityState | undefined
-  getSlideActivities: (index: number) => Activity[] | undefined
+  getAllActivities: () => Activity[] | undefined
   setActivities: (activities: ActivityState[]) => void
   startActivity: (index: number) => void
   pauseActivity: (index: number) => void
@@ -39,7 +39,6 @@ export interface PathItem {
   cp2x?: number
   cp2y?: number
 }
-
 export interface Activity {
   recordingDuration: number
   filePathIntroRecording: string
