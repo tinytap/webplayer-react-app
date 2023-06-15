@@ -7,7 +7,9 @@
         "dev": "vite",
         "build": "tsc && vite build",
         "preview": "vite preview",
-        "format": "prettier --write src//**/*.{ts,tsx,css} --config ./.prettierrc"
+        "format": "prettier --write src//**/*.{ts,tsx,css} --config ./.prettierrc",
+        "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
+        "lint:fix": "eslint --fix 'src/**/*.{jsx,ts,tsx}'"
     },
     "dependencies": {
         "gifler": "^0.1.0",
@@ -31,6 +33,8 @@
         "@types/react-transition-group": "^4.4.5",
         "@types/styled-components": "^5.1.26",
         "@vitejs/plugin-react-swc": "^3.0.0",
+        "eslint": "^8.42.0",
+        "eslint-config-react-app": "^7.0.1",
         "prettier": "^2.8.8",
         "typescript": "^4.9.3",
         "vite": "^4.1.0",
