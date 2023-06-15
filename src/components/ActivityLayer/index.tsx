@@ -29,7 +29,7 @@ export function ActivityLayer({
   //console.log(activitiesState, 'activitiesState')
   console.log(
     `slide ${slideIndex} | activity: ${activityIndex} | ${activityState?.started ? 'started' : 'not started'} | ${
-      activityState?.paused ? 'paused' : 'not paused'
+      activityState?.paused ? 'paused' : 'playing'
     } ${getEngineString(engine)}`,
     activity,
   )
