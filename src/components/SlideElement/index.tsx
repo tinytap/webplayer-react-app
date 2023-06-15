@@ -100,15 +100,15 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
   const getSlideActivities = useActivitiesStore((state) => state.getSlideActivities)
 
   // Retrieve slide activity for the current slide
-  const slideActivityState = getSlideActivityState(slideIndex)
+  const slideActivity = getSlideActivityState(slideIndex)
   // Retrieve all activities for the current slide
   const slideActivities = getSlideActivities(slideIndex)
 
-  // Log the slideActivityState's 'started' status when it changes
+  // Log the slideActivity's 'started' status when it changes
   useEffect(() => {
-    if (!slideActivityState) return
-    console.log('slideActivityState.started', slideActivityState?.started)
-  }, [slideActivityState?.started])
+    if (!slideActivity) return
+    console.log('slideActivity.started', slideActivity?.started)
+  }, [slideActivity?.started])
 
   // Transition wrapper to manage animations when switching between slides
   return (
@@ -126,11 +126,11 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
             <p>
               Playable - {playable ? 'true' : 'false'}
               <br />
-              Started - {slideActivityState?.started ? 'true' : 'false'}
+              Started - {slideActivity?.started ? 'true' : 'false'}
               <br />
-              Paused - {slideActivityState?.paused ? 'true' : 'false'}
+              Paused - {slideActivity?.paused ? 'true' : 'false'}
               <br />
-              Activities - {slideActivityState?.activities ? slideActivityState?.activities.length : 'NULL'}
+              Activities - {slideActivity?.activities ? slideActivity?.activities.length : 'NULL'}
             </p>
           </DebugContainer>
           <Stage width={PLAYER_WIDTH} height={PLAYER_HEIGHT}>
