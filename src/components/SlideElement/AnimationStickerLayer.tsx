@@ -27,12 +27,12 @@ export const AnimationStickerLayerComponent = ({ layer = {}, slideBase, layerInd
   useEffect(() => {
     const nFileName = fixSlideImageUrl(slideIndex, slideBase + 'layers/', layer.filename)
     if (layer.filename && nFileName !== imageSource) setImageSource(nFileName)
-  }, [layer.filename])
+  }, [layer.filename, slideIndex, slideBase, imageSource])
 
   // Update the image source when the layer image changes
   useEffect(() => {
     if (layer.image && layer.image !== imageSource) setImageSource(layer.image)
-  }, [layer.image])
+  }, [layer.image, imageSource])
 
   // Conditional rendering if imageSize.w is defined, logs the image size and renders the GIF component
   return imageSize && imageSize.w ? <GIF src={imageSource} imageSize={imageSize} index={layerIndex} /> : null

@@ -19,8 +19,7 @@ import {
   GameAuthorAvatarLink,
 } from './styles'
 
-interface SideMenuProps {}
-export function SideMenuHeader({}: SideMenuProps) {
+export function SideMenuHeader() {
   const author = useGameStore((state) => state.author)
   return author && author.id ? (
     <SideMenuHeaderContainer>
@@ -43,7 +42,7 @@ export function SideMenuHeader({}: SideMenuProps) {
     </SideMenuHeaderContainer>
   ) : null
 }
-export function SideMenu({}: SideMenuProps) {
+export function SideMenu() {
   const slides = useGameStore((state) => state.slides)
   const selectedSlide = useGameStore((state) => state.selectedSlide)
   const selectSlideIndex = useGameStore((state) => state.selectSlideIndex)

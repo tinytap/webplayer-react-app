@@ -2,8 +2,8 @@ import { ActionButton } from '../ActionButton'
 import { SideMenuIconContainer } from './styles'
 import SvgIcon from '../SvgIcon'
 import { usePlayerStore } from '../../stores/playerStore'
-interface SideMenuIconProps {}
-export function SideMenuIcon({}: SideMenuIconProps) {
+
+export function SideMenuIcon() {
   const menuOpen = usePlayerStore((state) => state.menuOpen)
   const setMenuOpenState = usePlayerStore((state) => state.setMenuOpenState)
   const handleSideMenuIconClick = () => {

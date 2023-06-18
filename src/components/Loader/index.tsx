@@ -5,10 +5,8 @@ import SpinnerLoader from '../../assets/spinner.gif'
 import { useEffect, useRef } from 'react'
 import { usePlayerStore } from '../../stores/playerStore'
 import { useGameStore } from '../../stores/gameStore'
-interface LoaderScreenProps {
-  //shown: boolean
-}
-export function LoaderScreen({}: LoaderScreenProps) {
+
+export function LoaderScreen() {
   const gameReady = useGameStore((state) => state.gameReady)
   const loadingGame = usePlayerStore((state) => state.isLoading)
   const setIsLoading = usePlayerStore((state) => state.setIsLoading)
@@ -18,7 +16,7 @@ export function LoaderScreen({}: LoaderScreenProps) {
     if (!!gameReady && !!loadingGame) {
       setIsLoading(false)
     }
-  }, [gameReady])
+  }, [gameReady, setIsLoading, loadingGame])
 
   return (
     <Transition in={loadingGame} timeout={1000} nodeRef={nodeRef} unmountOnExit={true}>

@@ -1,16 +1,11 @@
 import { Transition } from 'react-transition-group'
 
 import { OverlayContainer } from './styles'
-import SpinnerLoader from '../../assets/spinner.gif'
 import { useRef } from 'react'
-import { usePlayerStore } from '../../stores/playerStore'
 import { useGameStore } from '../../stores/gameStore'
-import { Album } from '../../stores/gameStoreTypes'
-import { PlayButton } from '../PlayButton'
 import { useActivitiesStore } from '../../stores/activitiesStore'
-interface GameOverlayProps {}
-export function GameOverlay({}: GameOverlayProps) {
-  const gameStarted = usePlayerStore((state) => state.gameStarted)
+
+export function GameOverlay() {
   const selectedSlideIndex = useGameStore((state) => state.selectedSlideIndex)
   const activities = useActivitiesStore((state) => state.activities)
   const selectedActivity = activities[selectedSlideIndex || 0]

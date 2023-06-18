@@ -3,15 +3,14 @@ import { FullscreenIconContainer } from './styles'
 import SvgIcon from '../SvgIcon'
 import { useCallback, useEffect, useState } from 'react'
 
-interface FullscreenIconProps {}
-export function FullscreenIcon({}: FullscreenIconProps) {
+export function FullscreenIcon() {
   const [isFullScreen, setFullScreen] = useState(false)
   const handleFullscreenIconClick = useCallback(async () => {
     if (!isFullScreen) {
       try {
         document.body.requestFullscreen().then(async () => {
           try {
-            await screen.orientation.lock('landscape')
+            await window.screen.orientation.lock('landscape')
           } catch (e) {
             console.log(e)
           }

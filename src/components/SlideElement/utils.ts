@@ -21,7 +21,7 @@ export const getScaledImageCoordinates = (
   scale: number,
 ) => {
   const ratioCalculations = getRatioCalculations(containerWidth, containerHeight, width, height)
-  const offsets = getOffsets(ratioCalculations.newWidth, ratioCalculations.newHeight, scale)
+  const offsets = getOffsets(ratioCalculations.width, ratioCalculations.height, scale)
   return { ...ratioCalculations, offset: offsets }
 }
 

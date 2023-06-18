@@ -1,5 +1,5 @@
 // Required libraries and components
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { useCallback, useRef } from 'react'
 import { Stage, Layer, Star } from 'react-konva'
 import { Transition } from 'react-transition-group'
 import { useGameStore } from '../../stores/gameStore'
@@ -16,7 +16,7 @@ import { useActivitiesStore } from '../../stores/activitiesStore'
 import { ActivityLayer } from '../ActivityLayer'
 
 // Types for the Layer and SlideProps objects
-interface Layer {
+interface LayerInterface {
   type: string
   filename?: string
   pk: string
@@ -32,7 +32,7 @@ interface SlideProps {
 
 // Props type for the Layer component
 interface LayerProps {
-  layer: Layer
+  layer: LayerInterface
   layerIndex: number
   slideIndex: number
   slideBase: string
@@ -72,26 +72,23 @@ const SlideLayer = ({ layer, layerIndex, slideBase, slideIndex }: LayerProps) =>
 
 // The SlideElementComponent represents a single slide and manages rendering of its layers and transitions
 export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, playable = true }: SlideProps) => {
-  // Show loading spinner if slide is not available
-  if (!slide) return <LoaderSpinner />
-
   // Retrieve required states and actions from the game store and activities store
   const base_url = useGameStore((state) => state.base_url)
   const setTransitionLoading = useGameStore((state) => state.setTransitionLoading)
   const selectedSlideIndex = useGameStore((state) => state.selectedSlideIndex)
-  const slide_base = `${base_url}${slide.filePath.replace('/thumb.jpg/', '/')}`
+  const slide_base = `${base_url}${slide?.filePath.replace('/thumb.jpg/', '/')}`
   const nodeRef = useRef(null)
-  const animate = slide.settings.kTransitionNoneKey === 3 ? 'fade' : 'slide'
+  const animate = slide?.settings.kTransitionNoneKey === 3 ? 'fade' : 'slide'
   const selected = slideIndex === selectedSlideIndex
   const handleSlideEnter = useCallback(() => {
     setTransitionLoading(true)
-  }, [])
+  }, [setTransitionLoading])
   const handleSlideEntered = useCallback(() => {
     const animationTimer = setTimeout(() => {
       setTransitionLoading(false)
       clearTimeout(animationTimer)
     }, 1000)
-  }, [])
+  }, [setTransitionLoading])
 
   // Get function to retrieve a slide by its index from the activities store
   const getSlideActivityState = useActivitiesStore((state) => state.getSlideActivityState)
@@ -99,10 +96,8 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
   // Retrieve slide activity for the current slide
   const slideActivityState = getSlideActivityState(slideIndex)
 
-  // Log the slideActivity's 'started' status when it changes
-  useEffect(() => {
-    if (!slideActivityState) return
-  }, [slideActivityState?.started])
+  // Show loading spinner if slide is not available
+  if (!slide) return <LoaderSpinner />
 
   // Transition wrapper to manage animations when switching between slides
   return (
@@ -130,7 +125,7 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
           <Stage width={PLAYER_WIDTH} height={PLAYER_HEIGHT}>
             {/** Background / Foreground layered together */}
             <Layer>
-              {slide.layers?.map((layer: Layer, index: number) =>
+              {slide.layers?.map((layer: LayerInterface, index: number) =>
                 layer.type === 'bg' ? (
                   <SlideLayer
                     key={layer.pk + '_' + index}
@@ -145,7 +140,7 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
             {/** Stickers layered together */}
 
             <Layer>
-              {slide.layers?.map((layer: Layer, index: number) =>
+              {slide.layers?.map((layer: LayerInterface, index: number) =>
                 layer.type === 'bg' ? null : (
                   <SlideLayer
                     key={layer.pk + '_' + index}

@@ -24,14 +24,14 @@ export const SlideContainer = styled.div<SlideContainerProps>`
         );
         transition: transform 1s ease-in-out;
         `
-        break
+
       case 'fade':
         return `
         opacity: ${state === 'entered' ? '1' : state === 'entering' ? '0' : state === 'exiting' ? '1' : '0'};
         transform: translateX(0);
         transition: opacity 1s ease-in-out;
         `
-        break
+
       default:
         return `
         width:${state === 'entered' ? '100%' : state === 'entering' ? '10px' : state === 'exiting' ? '100%' : '0px'};
