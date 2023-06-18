@@ -2,11 +2,11 @@ import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import { getGameId, getStructureFilePath } from '../utils'
 import { GameStore, Slide } from './gameStoreTypes'
-import { usePlayerStore } from './playerStore'
 import { useActivitiesStore } from './activitiesStore'
+import { ActivityState } from './activitiesStoreTypes'
 
 const STORAGE_NAME = 'localGameStore' + getGameId()
-const devMiddlewares = (f: any) => devtools(f) as any
+// const devMiddlewares = (f: any) => devtools(f) as any
 const devMiddlewaresPersist = (f: any) =>
   devtools(
     persist(f, {
@@ -24,10 +24,10 @@ const devMiddlewaresPersist = (f: any) =>
     }),
   ) as any
 
-const defaultActivityState = {
+const defaultActivityState: ActivityState = {
   started: false,
   paused: true,
-  finished: false,
+  completed: false,
   score: 0,
   maxScore: 100,
   userScore: 0,

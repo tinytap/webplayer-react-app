@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { getGameId, getStructureFilePath } from '../utils'
 import { calculatePlayerScale } from '../utils/tt-utils'
 import { useGameStore } from './gameStore'
 import { useActivitiesStore } from './activitiesStore'
@@ -25,9 +24,7 @@ const devMiddlewares = (f: any) =>
     persist(f, {
       name: STORAGE_NAME,
       getStorage: () => sessionStorage, // Use the browser's session storage
-      partialize: ({}: /*isLoading*/ PlayerState) => ({
-        //isLoading,
-      }),
+      partialize: ({}: PlayerState) => ({}), // eslint-disable-line
     }),
   ) as any
 

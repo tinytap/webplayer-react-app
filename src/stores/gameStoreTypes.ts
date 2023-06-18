@@ -7,7 +7,6 @@ import {
   TEXTINPUT_ENGINE,
   VIDEO_ENGINE,
 } from '../utils/constants'
-import { Activity } from './activitiesStoreTypes'
 
 export interface Slide {
   activities: any
