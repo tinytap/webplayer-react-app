@@ -1,6 +1,3 @@
-//import MusicOnIcon from '../../assets/icons/music-on.svg'
-//import MusicOffIcon from '../../assets/icons/music-off.svg'
-
 import { ActionButton } from '../ActionButton'
 import { PageNavigationContainer, PageNavigationIconContainer } from './styles'
 import SvgIcon from '../SvgIcon'

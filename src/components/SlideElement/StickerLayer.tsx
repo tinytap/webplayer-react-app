@@ -35,7 +35,7 @@ const StickerLayerComponent: React.FC<LayerProps> = ({ layer, slideBase, layerIn
   const fixedImage =
     layer.image && layer.image.includes('data:image/png')
       ? layer.image
-      : fixSlideImageUrl(slideIndex, slideBase + 'layers/', layer.filename || '')
+      : fixSlideImageUrl(slideIndex, slideBase + 'layers/', layer?.filename || '')
 
   // Using hooks to manage image source and size
   const [imageSource, setImageSource] = useState(fixedImage)

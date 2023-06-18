@@ -11,7 +11,7 @@ export function FullscreenIcon({}: FullscreenIconProps) {
       try {
         document.body.requestFullscreen().then(async () => {
           try {
-            await screen.orientation.lock('landscape')
+            await window.screen.orientation.lock('landscape')
           } catch (e) {
             console.log(e)
           }

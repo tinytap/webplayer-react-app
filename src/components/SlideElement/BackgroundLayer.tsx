@@ -28,15 +28,13 @@ interface LayerProps {
 
 // BackgroundLayerComponent is a functional component that represents a background layer in the slide system
 const BackgroundLayerComponent: React.FC<LayerProps> = ({ layer, slideBase, layerIndex, slideIndex }) => {
-  // Creating the full image URL for the layer
-  if (!layer?.filename) return null
-  const fixedImage = fixSlideImageUrl(slideIndex, slideBase + 'layers/', layer.filename)
+  const fixedImage = fixSlideImageUrl(slideIndex, slideBase + 'layers/', layer?.filename || '')
 
   // Using hooks to manage image source and size
   const [imageSource, setImageSource] = useState(fixedImage)
   const playerScale = usePlayerStore((state) => state.scale)
   const [imageSize, setImageSize] = useState<ImageSize>({})
-  const [image, imageStatus, setImageUrl] = useImage(imageSource)
+  const [image, _, setImageUrl] = useImage(imageSource) // eslint-disable-line
 
   // useEffect to handle image resizing when the layer or image changes
   useEffect(() => {
@@ -45,16 +43,22 @@ const BackgroundLayerComponent: React.FC<LayerProps> = ({ layer, slideBase, laye
       const size = createStickerSize({ ...layer })
       setImageSize({ ...size, ...scaled })
     }
-  }, [layer, image, slideBase])
+  }, [layer, image, playerScale])
 
   // useEffect to handle changes in layer filename
   useEffect(() => {
-    if (layer.filename && image && layer.filename !== image?.src) {
-      const newFileName = fixSlideImageUrl(slideIndex, slideBase + 'layers/', layer.filename)
-      setImageSource(newFileName)
-      setImageUrl(newFileName)
-    }
-  }, [layer.filename, slideBase])
+    setImageUrl((oldImage: HTMLImageElement | undefined) => {
+      if (layer?.filename && layer?.filename !== oldImage?.src) {
+        const newFileName = fixSlideImageUrl(slideIndex, slideBase + 'layers/', layer.filename)
+        setImageSource(newFileName)
+        return newFileName
+      }
+      return oldImage
+    })
+  }, [layer.filename, slideBase, slideIndex, setImageUrl])
+
+  // Creating the full image URL for the layer
+  if (!layer?.filename) return null
 
   // Render a Konva Rect with image applied if imageSize is defined
   return imageSize?.w ? (
