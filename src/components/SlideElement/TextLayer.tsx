@@ -1,10 +1,7 @@
 // React and react-konva library imports
-import React, { useEffect, useRef, useState } from 'react'
-import { Rect, Text } from 'react-konva'
+import { useEffect, useRef, useState } from 'react'
 import { Html } from 'react-konva-utils'
 import html2canvas from 'html2canvas' // library to capture screenshots and generate canvas
-import { propsAreEqual } from '../../utils' // utility function to compare properties
-import { PLAYER_HEIGHT, PLAYER_WIDTH, STATIC_BASE } from '../../utils/constants' // Constants from utility
 import { StickerLayer } from './StickerLayer' // Component to render a sticker layer
 
 // Type definition for LayerProps
@@ -71,7 +68,7 @@ export const TextLayerComponent = ({ layer = {}, slideBase, layerIndex, slideInd
         })
       }
     }
-  }, [layer])
+  }, [layer, fixedSticker])
 
   // Returns null if no valid sticker layer information
   if (!fixedSticker || !fixedSticker.type) {

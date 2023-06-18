@@ -32,9 +32,6 @@ interface LayerProps {
 
 // StickerLayerComponent is a functional component that represents a layer in the slide system
 const StickerLayerComponent: React.FC<LayerProps> = ({ layer, slideBase, layerIndex, slideIndex }) => {
-  // Creating the full image URL for the layer
-  if (!layer?.filename && !layer.image) return null
-
   const fixedImage =
     layer.image && layer.image.includes('data:image/png')
       ? layer.image
@@ -44,7 +41,7 @@ const StickerLayerComponent: React.FC<LayerProps> = ({ layer, slideBase, layerIn
   const [imageSource, setImageSource] = useState(fixedImage)
   const playerScale = usePlayerStore((state) => state.scale)
   const [imageSize, setImageSize] = useState<ImageSize>({})
-  const [image, imageStatus, setImageUrl] = useImage(imageSource)
+  const [image, _, setImageUrl] = useImage(imageSource) // eslint-disable-line
 
   // useEffect to handle image resizing when the layer or image changes
   useEffect(() => {
@@ -53,28 +50,39 @@ const StickerLayerComponent: React.FC<LayerProps> = ({ layer, slideBase, layerIn
       const size = createStickerSize({ ...layer })
       setImageSize({ ...size, ...scaled })
     }
-  }, [layer, image, slideBase])
+  }, [layer, image, slideBase, playerScale])
 
   // useEffect to handle changes in layer filename
   useEffect(() => {
-    if (layer?.filename && image && layer.filename !== image?.src) {
-      const newFileName = fixSlideImageUrl(slideIndex, slideBase + 'layers/', layer.filename)
-      setImageSource(newFileName)
-      setImageUrl(newFileName)
-    }
-  }, [layer.filename, slideBase])
+    setImageUrl((oldImage: HTMLImageElement | undefined) => {
+      if (layer?.filename && layer.filename !== oldImage?.src) {
+        const newFileName = fixSlideImageUrl(slideIndex, slideBase + 'layers/', layer.filename)
+        setImageSource(newFileName)
+        return newFileName
+      }
+
+      return oldImage
+    })
+  }, [layer.filename, slideBase, setImageUrl, slideIndex])
 
   useEffect(() => {
-    if ((layer?.image || layer?.filename) && image && layer.image !== image?.src) {
-      const newFileName =
-        layer.image && layer.image.includes('data:image/png')
-          ? layer.image
-          : fixSlideImageUrl(slideIndex, slideBase + 'layers/', layer.filename || '')
+    setImageUrl((oldImage: HTMLImageElement | undefined) => {
+      if ((layer?.image || layer?.filename) && layer.image !== oldImage?.src) {
+        const newFileName =
+          layer.image && layer.image.includes('data:image/png')
+            ? layer.image
+            : fixSlideImageUrl(slideIndex, slideBase + 'layers/', layer.filename || '')
 
-      setImageSource(newFileName)
-      setImageUrl(newFileName)
-    }
-  }, [layer.image, slideBase])
+        setImageSource(newFileName)
+        return newFileName
+      }
+
+      return oldImage
+    })
+  }, [layer.image, slideBase, layer.filename, setImageUrl, slideIndex, image])
+
+  // Creating the full image URL for the layer
+  if (!layer?.filename && !layer.image) return null
 
   // Render a Konva Rect with image applied if imageSize is defined
   return imageSize?.w && imageSize?.h && imageSize?.position && imageSize?.scale ? (

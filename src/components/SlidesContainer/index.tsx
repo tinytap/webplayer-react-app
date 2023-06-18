@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useRef } from 'react'
 import { useGameStore } from '../../stores/gameStore'
-import { Slide } from '../../stores/gameStoreTypes'
 import { usePlayerStore } from '../../stores/playerStore'
 import { propsAreEqual } from '../../utils'
 import { LeftBottomMenuIcons, LeftTopMenuIcons, RightBottomMenuIcons, RightTopMenuIcons } from '../MenuIcons'
@@ -9,15 +8,10 @@ import { SlideElement } from '../SlideElement'
 import { AllSlidesContainer, SlidesContainerElement } from './styles'
 import { GameOverlay } from '../GameOverlay'
 
-interface SlideThumbnailProps {
-  //slides: Slide[] | undefined
-}
-export function SlidesContainerComponent({}: SlideThumbnailProps) {
+export function SlidesContainerComponent() {
   const slides = useGameStore((state) => state.slides)
-  const selectedSlide = useGameStore((state) => state.selectedSlide)
   const selectedSlideIndex = useGameStore((state) => state.selectedSlideIndex)
   const lastSelectedSlideIndex = useGameStore((state) => state.lastSelectedSlideIndex)
-  const lastSelectedSlide = useGameStore((state) => state.lastSelectedSlide)
   const menuOpen = usePlayerStore((state) => state.menuOpen)
   const staticSlides = useRef([...(slides as any)])
   useEffect(() => {

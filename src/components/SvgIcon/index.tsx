@@ -8,7 +8,7 @@ interface IProps {
 
 function SvgIcon(props: IProps) {
   const { iconName, wrapperStyle, svgProp } = props
-  const { loading, SvgIcon } = useDynamicSvgImport(iconName)
+  const { SvgIcon } = useDynamicSvgImport(iconName)
 
   return (
     <>
