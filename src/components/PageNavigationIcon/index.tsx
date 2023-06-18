@@ -2,7 +2,7 @@ import { ActionButton } from '../ActionButton'
 import { PageNavigationContainer, PageNavigationIconContainer } from './styles'
 import SvgIcon from '../SvgIcon'
 import { useGameStore } from '../../stores/gameStore'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import { Transition } from 'react-transition-group'
 interface PageNavigationIconProps {
   type: 'next' | 'prev'

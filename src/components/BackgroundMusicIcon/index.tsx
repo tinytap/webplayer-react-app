@@ -7,10 +7,8 @@ import { useEffect } from 'react'
 import { usePlayerStore } from '../../stores/playerStore'
 import { STATIC_SOUNDS_BASE, BG_MUSIC_VOLUME } from '../../utils/constants'
 
-interface BackgroundMusicIconProps {}
-export function BackgroundMusicIcon({}: BackgroundMusicIconProps) {
+export function BackgroundMusicIcon() {
     const backgroundMusicFile = useGameStore((state) => state.music)
-    const base_url = useGameStore((state) => state.base_url)
     const gameStarted = usePlayerStore((state) => state.gameStarted)
     const backgroundMusicPlaying = usePlayerStore((state) => state.backgroundMusicPlaying)
     const backgroundMusicMuted = usePlayerStore((state) => state.backgroundMusicMuted)
@@ -46,7 +44,7 @@ export function BackgroundMusicIcon({}: BackgroundMusicIconProps) {
             if (!sound || !sound.stop) return
             sound.stop()
         }
-    }, [gameStarted])
+    }, [gameStarted, backgroundMusicPath, backgroundMusicPlaying, playBackgroundMusic, sound])
 
     return (
         <ActionButton animation={'scale'} onClick={handleMusicIconClick}>

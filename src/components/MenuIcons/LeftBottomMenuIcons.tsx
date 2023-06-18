@@ -1,10 +1,8 @@
 import { useGameStore } from '../../stores/gameStore'
 import { PageNavigationIcon } from '../PageNavigationIcon'
 import { LeftBottomMenuIconsContainer } from './styles'
-interface LeftBottomMenuIconsProps {
-  //children: ReactElement
-}
-export function LeftBottomMenuIcons({}: LeftBottomMenuIconsProps) {
+
+export function LeftBottomMenuIcons() {
   const isFirstSlide = useGameStore((state) => state.isFirstSlide)
   return (
     <LeftBottomMenuIconsContainer className={'left-bottom-menu'}>

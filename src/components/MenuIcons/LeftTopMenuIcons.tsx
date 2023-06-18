@@ -1,10 +1,7 @@
-import { PageNavigationIcon } from '../PageNavigationIcon'
 import { SideMenuIcon } from '../SideMenuIcon'
 import { LeftTopMenuIconsContainer } from './styles'
-interface LeftTopMenuIconsProps {
-    //children: ReactElement
-}
-export function LeftTopMenuIcons({}: LeftTopMenuIconsProps) {
+
+export function LeftTopMenuIcons() {
     return (
         <LeftTopMenuIconsContainer className={'left-top-menu'}>
             <SideMenuIcon />

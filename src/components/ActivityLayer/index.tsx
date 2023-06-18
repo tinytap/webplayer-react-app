@@ -1,6 +1,5 @@
 import { Star } from 'react-konva'
 import { Activity, ActivityState } from '../../stores/activitiesStoreTypes'
-import { useActivitiesStore } from '../../stores/activitiesStore'
 import { getEngineString } from '../../utils/tt-utils'
 
 interface ActivityLayerProps {

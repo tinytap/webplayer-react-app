@@ -1,14 +1,13 @@
 import { Transition } from 'react-transition-group'
 
 import { CoverContainer, CoverImage } from './styles'
-import SpinnerLoader from '../../assets/spinner.gif'
 import { useRef } from 'react'
 import { usePlayerStore } from '../../stores/playerStore'
 import { useGameStore } from '../../stores/gameStore'
 import { Album } from '../../stores/gameStoreTypes'
 import { PlayButton } from '../PlayButton'
-interface GameCoverProps {}
-export function GameCover({}: GameCoverProps) {
+
+export function GameCover() {
   const gameStarted = usePlayerStore((state) => state.gameStarted)
   const startGame = usePlayerStore((state) => state.setGameStarted)
 
