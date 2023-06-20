@@ -43,6 +43,10 @@ export function ReadingActivity({
     }
 
     play()
+
+    return () => {
+        stop()
+    }
   }, [activityState, play, transitionLoading, stop])
 
   return <Rect x={0} y={0} width={PLAYER_WIDTH} height={PLAYER_HEIGHT} onClick={onClick} />

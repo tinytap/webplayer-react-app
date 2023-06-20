@@ -9,6 +9,8 @@ import { useImage } from '../../hooks/useImage'
 // Defining types for the layer and ImageSize objects
 interface layer {
   filename?: string
+  height?: number
+  width?: number
 }
 
 interface ImageSize {
@@ -40,7 +42,7 @@ const BackgroundLayerComponent: React.FC<LayerProps> = ({ layer, slideBase, laye
   useEffect(() => {
     if (layer && image?.width && image.height) {
       const scaled = getScaledImageCoordinates(PLAYER_WIDTH, PLAYER_HEIGHT, image.width, image.height, playerScale)
-      const size = createStickerSize({ ...layer })
+      const size = createStickerSize({ ...layer, height: layer.height ?? PLAYER_HEIGHT, width: layer.width ?? PLAYER_WIDTH })
       setImageSize({ ...size, ...scaled })
     }
   }, [layer, image, playerScale])

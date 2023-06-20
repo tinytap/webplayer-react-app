@@ -2,6 +2,7 @@ import { Star } from 'react-konva'
 import { Activity, ActivityState } from '../../stores/activitiesStoreTypes'
 import { useGameStore } from '../../stores/gameStore'
 import { ReadingActivity } from './ReadingActivity'
+import { VideoActivity } from './VideoActivity'
 
 interface ActivityLayerProps {
   baseUrl: string
@@ -42,6 +43,8 @@ export function ActivityLayer({ baseUrl, activity, activityState, engine }: Acti
           moveToNextSlide={moveToNextSlide}
         />
       )
+    case 'V':
+      return <VideoActivity activitySettings={activity.settings} />
     case 'S':
       return <></>
 

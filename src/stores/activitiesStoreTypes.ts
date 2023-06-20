@@ -56,6 +56,7 @@ export interface ActivitySettings {
   soundFunModeV2?: number
   advance?: boolean
   linkToPage?: number
+  videoURL?: string
 }
 
 export interface ActivityData {
