@@ -90,11 +90,8 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
     }, 1000)
   }, [setTransitionLoading])
 
-  // Get function to retrieve a slide by its index from the activities store
-  const getSlideActivityState = useActivitiesStore((state) => state.getSlideActivityState)
-
   // Retrieve slide activity for the current slide
-  const slideActivityState = getSlideActivityState(slideIndex)
+  const slideActivityState = useActivitiesStore((state) => state.getSlideActivityState(slideIndex))
 
   // Show loading spinner if slide is not available
   if (!slide) return <LoaderSpinner />
@@ -153,17 +150,15 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
               )}
             </Layer>
             {/** Activities layered together */}
-            {playable ? (
+            {playable && selected ? (
               <Layer>
                 {slideActivityState?.activities?.map((activity, index: number) => (
                   <ActivityLayer
                     engine={slideActivityState.engineType}
                     key={activity.pk + '_' + index}
-                    slideBase={slide_base}
+                    baseUrl={base_url}
                     activity={activity}
-                    activityState={(({ activities, ...o }) => o)(slideActivityState)}
-                    activityIndex={index}
-                    slideIndex={slideIndex}
+                    activityState={slideActivityState}
                   />
                 ))}
               </Layer>
