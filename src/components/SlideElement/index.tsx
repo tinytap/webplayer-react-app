@@ -1,5 +1,5 @@
 // Required libraries and components
-import React, { useCallback, useRef } from 'react'
+import React, { useCallback, useMemo, useRef } from 'react'
 import { Stage, Layer, Star } from 'react-konva'
 import { Transition } from 'react-transition-group'
 import { useGameStore } from '../../stores/gameStore'
@@ -9,7 +9,7 @@ import { PLAYER_HEIGHT, PLAYER_WIDTH } from '../../utils/constants'
 import { LoaderSpinner } from '../Loader/styles'
 import { BackgroundLayer } from './BackgroundLayer'
 import { StickerLayer } from './StickerLayer'
-import { DebugContainer, SlideContainer } from './styles'
+import { AbsoluteContainer, DebugContainer, SlideContainer } from './styles'
 import { TextLayer } from './TextLayer'
 import { AnimationStickerLayer } from './AnimationStickerLayer'
 import { useActivitiesStore } from '../../stores/activitiesStore'
@@ -93,6 +93,22 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
   // Retrieve slide activity for the current slide
   const slideActivityState = useActivitiesStore((state) => state.getSlideActivityState(slideIndex))
 
+  const ActivityElement = useMemo(() => {
+    if (!playable || !selected) {
+      return <></>
+    }
+
+    return slideActivityState?.activities?.map((activity, index: number) => (
+      <ActivityLayer
+        engine={slideActivityState.engineType}
+        key={activity.pk + '_' + index}
+        baseUrl={base_url}
+        activity={activity}
+        activityState={{...slideActivityState, activities: undefined}}
+      />
+    ))
+  }, [playable, selected, slideActivityState, base_url])
+
   // Show loading spinner if slide is not available
   if (!slide) return <LoaderSpinner />
 
@@ -150,20 +166,9 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
               )}
             </Layer>
             {/** Activities layered together */}
-            {playable && selected ? (
-              <Layer>
-                {slideActivityState?.activities?.map((activity, index: number) => (
-                  <ActivityLayer
-                    engine={slideActivityState.engineType}
-                    key={activity.pk + '_' + index}
-                    baseUrl={base_url}
-                    activity={activity}
-                    activityState={slideActivityState}
-                  />
-                ))}
-              </Layer>
-            ) : null}
+            {slideActivityState?.engineType !== 'V' && <Layer>{ActivityElement}</Layer>}
           </Stage>
+          {slideActivityState?.engineType === 'V' && <AbsoluteContainer>{ActivityElement}</AbsoluteContainer>}
         </SlideContainer>
       )}
     </Transition>

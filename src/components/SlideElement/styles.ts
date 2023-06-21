@@ -71,3 +71,9 @@ export const DebugContainer = styled.div`
   }
 `
 
+export const AbsoluteContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+`
+
