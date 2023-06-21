@@ -15,7 +15,6 @@ export function BackgroundMusicIcon() {
         ? STATIC_SOUNDS_BASE + backgroundMusicFile
         : backgroundMusicFile
       : ''
-
     return backgroundMusic
   })
   const gameStarted = usePlayerStore((state) => state.gameStarted)
@@ -55,7 +54,7 @@ export function BackgroundMusicIcon() {
     }
   }, [backgroundMusicPath, sound, backgroundMusicMuted])
 
-  return (
+  return backgroundMusicPath ? (
     <ActionButton animation={'scale'} onClick={handleMusicIconClick}>
       <BackgroundMusicIconContainer>
         <SvgIcon
@@ -64,6 +63,8 @@ export function BackgroundMusicIcon() {
         />
       </BackgroundMusicIconContainer>
     </ActionButton>
+  ) : (
+    <></>
   )
 }
 
