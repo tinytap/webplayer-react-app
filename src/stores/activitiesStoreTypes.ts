@@ -57,6 +57,7 @@ export interface ActivitySettings {
   advance?: boolean
   linkToPage?: number
   videoURL?: string
+  transform: [number, number, number, number, number, number]
 }
 
 export interface ActivityData {

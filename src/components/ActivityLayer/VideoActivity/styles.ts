@@ -1,9 +1,30 @@
-import styled from 'styled-components'
-import { PLAYER_HEIGHT } from '../../../utils/constants'
+import styled, { css } from 'styled-components'
 
-export const IFRAME_MARGIN_TOP_PERCENTAGE = 1 / 8
+export const VideoContainer = styled.div<{
+  iframeStyle?: {
+    width: number
+    height: number
+    top: number
+    left: number
+    transform: string
+  }
+}>`
+  & iframe {
+    ${({ iframeStyle }) =>
+      iframeStyle &&
+      css`
+        position: absolute;
+        width: ${iframeStyle.width}px;
+        height: ${iframeStyle.height}px;
+        top: ${iframeStyle.top}px;
+        left: ${iframeStyle.left}px;
+        transform: ${iframeStyle.transform};
+      `}
+  }
 
-export const VideoContainer = styled.div`
-  margin-top: calc(${PLAYER_HEIGHT}px * ${IFRAME_MARGIN_TOP_PERCENTAGE});
+  & video {
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
 `
 
