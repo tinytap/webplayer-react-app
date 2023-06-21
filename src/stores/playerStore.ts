@@ -14,6 +14,7 @@ interface PlayerState {
   setMenuOpenState: (openState: boolean) => void
   setBackgroundMusicPlayState: (playingState: boolean) => void
   setBackgroundMusicMute: (muteState: boolean) => void
+  tempMuteBackgroundMusic: () => () => void
   setGameStarted: (gameStartState: boolean) => void
   setIsLoading: (loadingState: boolean) => void
   updatePlayerScale: () => void
@@ -82,6 +83,18 @@ export const usePlayerStore = create<PlayerState>()(
       set(() => ({
         backgroundMusicMuted: muteState,
       })),
+    tempMuteBackgroundMusic: () => {
+      const oldValue = get().backgroundMusicMuted
+      set(() => ({
+        backgroundMusicMuted: true,
+      }))
+
+      return () => {
+        set(() => ({
+          backgroundMusicMuted: oldValue,
+        }))
+      }
+    },
     setIsLoading: (loadingState: boolean) =>
       set(() => ({
         isLoading: loadingState,

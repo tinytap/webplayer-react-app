@@ -56,3 +56,17 @@ export function decomposeMatrix(transform: string) {
   return attrs
 }
 
+export const slideHaveInteractiveLayer = (layers: any[], ignoreInteractiveLoopTypeIndex: number | undefined = undefined) => {
+  return (layers || []).some((l) => isLayerInteractive(l, ignoreInteractiveLoopTypeIndex))
+}
+
+const isLayerInteractive = (layer: any, ignoreInteractiveLoopTypeIndex: number | undefined) => {
+  return [
+    layer.InteractiveLoopType,
+    layer.InteractiveShowType,
+    layer.interactiveToggleShow,
+    layer.interactiveLayerSound,
+  ].some(function (interativity) {
+    return Boolean(interativity) && Boolean(interativity !== ignoreInteractiveLoopTypeIndex)
+  })
+}

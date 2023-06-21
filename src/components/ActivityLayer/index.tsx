@@ -1,11 +1,11 @@
 import { Star } from 'react-konva'
 import { Activity, ActivityState } from '../../stores/activitiesStoreTypes'
-import { getEngineString } from '../../utils/tt-utils'
+import { useGameStore } from '../../stores/gameStore'
+import { ReadingActivity } from './ReadingActivity'
+import { VideoActivity } from './VideoActivity'
 
 interface ActivityLayerProps {
-  slideBase: string
-  activityIndex: number
-  slideIndex: number
+  baseUrl: string
   engine: 'S' | 'R' | 'A' | 'V' | 'P' | 'Q' | 'T'
   /*| 'slide'
     | 'reading'
@@ -17,22 +17,39 @@ interface ActivityLayerProps {
   activity: Activity
   activityState: ActivityState
 }
-export function ActivityLayer({
-  slideBase,
-  slideIndex,
-  activityIndex,
-  activity,
-  activityState,
-  engine,
-}: ActivityLayerProps) {
-  //console.log(activitiesState, 'activitiesState')
-  console.log(
-    `slide ${slideIndex} | activity: ${activityIndex} | ${activityState?.started ? 'started' : 'not started'} | ${
-      activityState?.paused ? 'paused' : 'playing'
-    } ${getEngineString(engine)}`,
-    activity,
-  )
 
-  return <Star numPoints={5} innerRadius={5} outerRadius={10} x={300} y={300} />
+export function ActivityLayer({ baseUrl, activity, activityState, engine }: ActivityLayerProps) {
+  const transitionLoading = useGameStore((state) => state.transitionLoading)
+  const soundUrl = baseUrl + activity.filePathIntroRecording
+  const selectNextSlide = useGameStore((state) => state.selectNextSlide)
+  const selectSlideIndex = useGameStore((state) => state.selectSlideIndex)
+
+  const moveToNextSlide = (index: number | undefined) => {
+    if (index !== undefined) {
+      selectSlideIndex(index)
+    } else {
+      selectNextSlide()
+    }
+  }
+
+  switch (engine) {
+    case 'R':
+      return (
+        <ReadingActivity
+          soundUrl={soundUrl}
+          activityState={activityState}
+          transitionLoading={transitionLoading}
+          activitySettings={activity.settings}
+          moveToNextSlide={moveToNextSlide}
+        />
+      )
+    case 'V':
+      return <VideoActivity activitySettings={activity.settings} moveToNextSlide={moveToNextSlide} baseUrl={baseUrl} />
+    case 'S':
+      return <></>
+
+    default:
+      return <Star numPoints={10} innerRadius={50} outerRadius={100} x={300} y={300} fill="red" />
+  }
 }
 

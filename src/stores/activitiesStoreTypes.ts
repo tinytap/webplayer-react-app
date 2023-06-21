@@ -9,6 +9,7 @@ export interface ActivityState {
   userScorePercentage: number
   engineType: 'S' | 'R' | 'A' | 'V' | 'P' | 'Q' | 'T'
   activities?: Activity[]
+  doesSlideHaveClickableLayer: boolean
 }
 export interface ActivitiesState {
   activities: ActivityState[] | []
@@ -43,14 +44,20 @@ export interface PathItem {
 export interface Activity {
   recordingDuration: number
   filePathIntroRecording: string
-  settings: {
-    soundFlatMode: boolean
-    ShapePuzzleThemeV2: number
-    showShapeV2: boolean
-    soundFunModeV2: number
-  }
+  settings: ActivitySettings
   shapes: Shape[]
   pk: number
+}
+
+export interface ActivitySettings {
+  soundFlatMode?: boolean
+  ShapePuzzleThemeV2?: number
+  showShapeV2?: boolean
+  soundFunModeV2?: number
+  advance?: boolean
+  linkToPage?: number
+  videoURL?: string
+  transform: [number, number, number, number, number, number]
 }
 
 export interface ActivityData {
