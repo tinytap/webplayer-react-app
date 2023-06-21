@@ -13,11 +13,11 @@ const LOCAL_VIDEO_HEIGHT = 360
 
 interface VideoActivityProps {
   activitySettings: ActivitySettings
-  selectNextSlide: () => void
+  moveToNextSlide: (index: number | undefined) => void
   baseUrl: string
 }
 
-export function VideoActivity({ activitySettings, selectNextSlide, baseUrl }: VideoActivityProps) {
+export function VideoActivity({ activitySettings, moveToNextSlide, baseUrl }: VideoActivityProps) {
   const tempMuteBackgroundMusic = usePlayerStore((state) => state.tempMuteBackgroundMusic)
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export function VideoActivity({ activitySettings, selectNextSlide, baseUrl }: Vi
         playing
         allowFullScreen
         stopOnUnmount
-        onEnded={selectNextSlide}
+        onEnded={() => moveToNextSlide(activitySettings.linkToPage)}
         width={PLAYER_WIDTH}
         height={PLAYER_HEIGHT}
         url={videoPath}
