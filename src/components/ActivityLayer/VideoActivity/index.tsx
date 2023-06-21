@@ -4,6 +4,8 @@ import { Html } from 'react-konva-utils'
 import { IFRAME_MARGIN_TOP_PERCENTAGE, VideoContainer } from './styles'
 import { youtubeParser } from '../../../utils'
 import ReactPlayer from 'react-player'
+import { usePlayerStore } from '../../../stores/playerStore'
+import { useEffect } from 'react'
 
 interface VideoActivityProps {
   activitySettings: ActivitySettings
@@ -11,6 +13,16 @@ interface VideoActivityProps {
 }
 
 export function VideoActivity({ activitySettings, selectNextSlide }: VideoActivityProps) {
+  const tempMuteBackgroundMusic = usePlayerStore((state) => state.tempMuteBackgroundMusic)
+
+  useEffect(() => {
+    const returnMusicToOldValue = tempMuteBackgroundMusic()
+
+    return () => {
+      return returnMusicToOldValue()
+    }
+  }, [tempMuteBackgroundMusic])
+
   if (!activitySettings.videoURL) {
     return <></>
   }
