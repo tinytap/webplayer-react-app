@@ -6,8 +6,10 @@ import { usePlayerStore } from '../../../stores/playerStore'
 import { useEffect } from 'react'
 import { PLAYER_HEIGHT, PLAYER_WIDTH } from '../../../utils/constants'
 
-const IFRAME_VIDEO_WIDTH = 527
-const IFRAME_VIDEO_HEIGHT = 297
+const YOUTUBE_VIDEO_WIDTH = 527
+const YOUTUBE_VIDEO_HEIGHT = 297
+const LOCAL_VIDEO_WIDTH = 480
+const LOCAL_VIDEO_HEIGHT = 360
 
 interface VideoActivityProps {
   activitySettings: ActivitySettings
@@ -36,15 +38,16 @@ export function VideoActivity({ activitySettings, selectNextSlide, baseUrl }: Vi
     ? getLocalVideo(baseUrl, activitySettings.videoURL)
     : `https://www.youtube.com/embed/${getYoutubeVideoId(activitySettings.videoURL)}`
 
-  const iframeStyle = isLocalVideo
-    ? undefined
-    : {
-        width: IFRAME_VIDEO_WIDTH,
-        height: IFRAME_VIDEO_HEIGHT,
-        top: (PLAYER_HEIGHT - IFRAME_VIDEO_HEIGHT) / 2,
-        left: (PLAYER_WIDTH - IFRAME_VIDEO_WIDTH) / 2,
-        transform: `matrix(${activitySettings.transform[0]},${activitySettings.transform[1]},${activitySettings.transform[2]},${activitySettings.transform[3]},${activitySettings.transform[4]},${activitySettings.transform[5]})`,
-      }
+  const videoWidth = isLocalVideo ? LOCAL_VIDEO_WIDTH : YOUTUBE_VIDEO_WIDTH
+  const videoHeight = isLocalVideo ? LOCAL_VIDEO_HEIGHT : YOUTUBE_VIDEO_HEIGHT
+
+  const iframeStyle = {
+    width: videoWidth,
+    height: videoHeight,
+    top: (PLAYER_HEIGHT - videoHeight) / 2,
+    left: (PLAYER_WIDTH - videoWidth) / 2,
+    transform: `matrix(${activitySettings.transform[0]},${activitySettings.transform[1]},${activitySettings.transform[2]},${activitySettings.transform[3]},${activitySettings.transform[4]},${activitySettings.transform[5]})`,
+  }
 
   return (
     <VideoContainer iframeStyle={iframeStyle}>

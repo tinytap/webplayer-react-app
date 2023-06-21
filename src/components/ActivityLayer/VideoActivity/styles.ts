@@ -9,22 +9,18 @@ export const VideoContainer = styled.div<{
     transform: string
   }
 }>`
-  & iframe {
+  & iframe,
+  video {
     ${({ iframeStyle }) =>
       iframeStyle &&
       css`
         position: absolute;
-        width: ${iframeStyle.width}px;
-        height: ${iframeStyle.height}px;
+        width: ${iframeStyle.width}px !important;
+        height: ${iframeStyle.height}px !important;
         top: ${iframeStyle.top}px;
         left: ${iframeStyle.left}px;
         transform: ${iframeStyle.transform};
       `}
-  }
-
-  & video {
-    padding: 0 20px;
-    box-sizing: border-box;
   }
 `
 
