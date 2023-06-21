@@ -44,7 +44,7 @@ export function ActivityLayer({ baseUrl, activity, activityState, engine }: Acti
         />
       )
     case 'V':
-      return <VideoActivity activitySettings={activity.settings} />
+      return <VideoActivity activitySettings={activity.settings} selectNextSlide={selectNextSlide} />
     case 'S':
       return <></>
 
