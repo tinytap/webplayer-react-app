@@ -2,6 +2,7 @@ import { Star } from 'react-konva'
 import { Activity, ActivityState } from '../../stores/activitiesStoreTypes'
 import { useGameStore } from '../../stores/gameStore'
 import { ReadingActivity } from './ReadingActivity'
+import { SoundboardActivity } from './SoundboardActivity'
 import { VideoActivity } from './VideoActivity'
 
 interface ActivityLayerProps {
@@ -44,9 +45,21 @@ export function ActivityLayer({ baseUrl, activity, activityState, engine }: Acti
         />
       )
     case 'V':
+      // this activity should not be inside Stage (from react-konva)
       return <VideoActivity activitySettings={activity.settings} moveToNextSlide={moveToNextSlide} baseUrl={baseUrl} />
     case 'S':
       return <></>
+    case 'A':
+      return (
+        <SoundboardActivity
+          moveToNextSlide={moveToNextSlide}
+          soundUrl={soundUrl}
+          isActivityActive={!activityState.paused && !!activityState.started}
+          transitionLoading={transitionLoading}
+          activity={activity}
+          baseUrl={baseUrl}
+        />
+      )
 
     default:
       return <Star numPoints={10} innerRadius={50} outerRadius={100} x={300} y={300} fill="red" />

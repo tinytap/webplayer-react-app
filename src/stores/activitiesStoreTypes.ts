@@ -25,6 +25,7 @@ export interface Shape {
   filePathThumb: string
   settings: {
     originTransform: [number, number, number, number, number, number]
+    linkToPage?: number
   }
   filePathRecording2: string
   filePathRecording1: string

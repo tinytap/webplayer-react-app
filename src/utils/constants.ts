@@ -4,6 +4,7 @@ export const playerColors = {
   cyan: '#61c2e9',
   lightCyan: '#81ceed',
   white: '#fff',
+  rightAnswerGrean: '#79c843',
 }
 
 export const textColors = {
