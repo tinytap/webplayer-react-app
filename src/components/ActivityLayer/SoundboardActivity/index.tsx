@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Shape as KonvaShape } from 'react-konva'
+import { Rect, Shape as KonvaShape } from 'react-konva'
 import useSound from 'use-sound'
 import { Activity, Shape } from '../../../stores/activitiesStoreTypes'
 import { drawPoint, eraseInnerShape } from '../../../utils'
-import { playerColors } from '../../../utils/constants'
+import { playerColors, PLAYER_HEIGHT, PLAYER_WIDTH } from '../../../utils/constants'
 
 interface ClickedShapes {
   [shapePk: number]: { didClickShape: boolean; linkToPage?: number }
@@ -45,6 +45,11 @@ export function SoundboardActivity({
 
       return oldValue
     })
+  }
+
+  const onNoShapeClick = () => {
+    console.log('onNoShapeClick')
+    //TODO: shake screen and add sound if speed mode
   }
 
   useEffect(() => {
@@ -107,9 +112,9 @@ export function SoundboardActivity({
     return <></>
   }
 
-  // TODO: add wrong answers
   return (
     <>
+      <Rect x={0} y={0} width={PLAYER_WIDTH} height={PLAYER_HEIGHT} onClick={onNoShapeClick} />
       {activity.shapes.map((shape, i) => {
         return <ShapeCanvas shape={shape} baseUrl={baseUrl} key={`shape_${shape.pk}_${i}`} onShowShape={onShowShape} />
       })}
@@ -164,6 +169,8 @@ const ShapeCanvas = ({
       onClick={onClick}
       lineCap="round"
       lineJoin="round"
+      stroke="transparent"
+      strokeWidth={10}
       sceneFunc={(ctx, canvas) => {
         ctx.rect(0, 0, canvas.getAttr('width'), canvas.getAttr('height'))
         ctx.beginPath()
