@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Line } from 'react-konva'
+import { Shape as KonvaShape } from 'react-konva'
 import useSound from 'use-sound'
 import { Activity, Shape } from '../../../stores/activitiesStoreTypes'
+import { drawPoint, eraseInnerShape } from '../../../utils'
 import { playerColors } from '../../../utils/constants'
 
 interface ClickedShapes {
@@ -84,7 +85,6 @@ export function SoundboardActivity({
       }
     }
 
-
     setTimeout(() => {
       if (isMounted) {
         return
@@ -107,6 +107,7 @@ export function SoundboardActivity({
     return <></>
   }
 
+  // TODO: add wrong answers
   return (
     <>
       {activity.shapes.map((shape, i) => {
@@ -121,6 +122,7 @@ const ShapeCanvas = ({
   baseUrl,
   onShowShape,
 }: {
+  key: string
   shape: Shape
   baseUrl: string
   onShowShape: (pk: number, linkToPage?: number) => void
@@ -136,8 +138,8 @@ const ShapeCanvas = ({
     if (showShape) {
       return
     }
-
     setShowShape(true)
+
     if (!soundUrl) {
       onShowShape(shape.pk, shape.settings?.linkToPage)
       return
@@ -156,21 +158,35 @@ const ShapeCanvas = ({
     return <></>
   }
 
-  const points: number[] = []
-  shape.path.forEach((point) => {
-    points.push(point.x)
-    points.push(point.y)
-  })
-
-  // TODO: fix style
   return (
-    <Line
+    <KonvaShape
+      id={`konva_shape_${shape.pk}`}
       onClick={onClick}
-      points={points}
-      stroke={showShape ? playerColors.rightAnswerGrean : 'transparent'}
-      strokeWidth={5}
-      fill={'transparent'}
-      closed
+      lineCap="round"
+      lineJoin="round"
+      sceneFunc={(ctx, canvas) => {
+        ctx.rect(0, 0, canvas.getAttr('width'), canvas.getAttr('height'))
+        ctx.beginPath()
+
+        for (let i in shape.path) {
+          const point = shape.path[i]
+          drawPoint(point, ctx)
+        }
+
+        if (showShape) {
+          ctx.shadowBlur = 50
+          ctx.shadowColor = 'black'
+          ctx.lineWidth = 10
+          ctx.strokeStyle = playerColors.rightAnswerGrean
+          ctx.stroke()
+          ctx.restore()
+          ctx.beginPath()
+
+          eraseInnerShape(ctx, shape.path)
+        }
+
+        ctx.fillStrokeShape(canvas)
+      }}
     />
   )
 }

@@ -41,6 +41,8 @@ export interface PathItem {
   cp1y?: number
   cp2x?: number
   cp2y?: number
+  cpx?: number
+  cpy?: number
 }
 export interface Activity {
   recordingDuration: number
