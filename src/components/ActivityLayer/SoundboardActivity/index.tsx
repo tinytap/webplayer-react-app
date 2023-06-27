@@ -16,6 +16,8 @@ interface ReadingActivityProps {
   transitionLoading: boolean
   activity: Activity
   baseUrl: string
+  isQuizMode: boolean
+  onWrongAnswer: () => void
 }
 
 export function SoundboardActivity({
@@ -25,14 +27,12 @@ export function SoundboardActivity({
   transitionLoading,
   activity,
   baseUrl,
+  isQuizMode,
+  onWrongAnswer,
 }: ReadingActivityProps) {
   const [clickedShapes, setClickedShapes] = useState<ClickedShapes>({})
 
-  const [play, { stop }] = useSound(soundUrl, {
-    onend: () => {
-      // TODO: call again if needed / some other sound
-    },
-  })
+  const [play, { stop }] = useSound(soundUrl)
 
   const onShowShape = (shapePk: number, linkToPage?: number) => {
     setClickedShapes((oldValue) => {
@@ -48,8 +48,10 @@ export function SoundboardActivity({
   }
 
   const onNoShapeClick = () => {
-    console.log('onNoShapeClick')
-    //TODO: shake screen and add sound if speed mode
+    if (!isQuizMode) {
+      return
+    }
+    onWrongAnswer()
   }
 
   useEffect(() => {
@@ -145,6 +147,9 @@ const ShapeCanvas = ({
     }
     setShowShape(true)
 
+    // TODO: add default right answer sound
+    // TODO: add confetti
+    // TODO: add shape get bigger
     if (!soundUrl) {
       onShowShape(shape.pk, shape.settings?.linkToPage)
       return
@@ -184,6 +189,7 @@ const ShapeCanvas = ({
           ctx.shadowBlur = 50
           ctx.shadowColor = 'black'
           ctx.lineWidth = 10
+          // TODO: show grey and not green if needed
           ctx.strokeStyle = playerColors.rightAnswerGrean
           ctx.stroke()
           ctx.restore()

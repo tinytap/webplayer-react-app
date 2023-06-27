@@ -73,6 +73,14 @@ export interface GameStore {
   music: string | undefined
   pk: number | undefined
   shuffleType: any
+  settings: {
+    quizParameters?: {
+      activityTimeLimit: number
+      globalLivesLimit: number
+      globalTimeLimit: number
+      quizModeEnabled: boolean
+    }
+  }
   isFirstSlide: boolean
   isLastSlide: boolean
   selectedSlide: Slide | undefined
@@ -89,7 +97,6 @@ export interface GameStore {
   selectSlideIndex: (index: number, paused?: boolean) => void
   selectPrevSlide: () => void
   selectNextSlide: () => void
-
   refreshSelectedSlide: () => void
 }
 

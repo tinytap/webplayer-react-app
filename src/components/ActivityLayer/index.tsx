@@ -1,6 +1,7 @@
 import { Star } from 'react-konva'
 import { Activity, ActivityState } from '../../stores/activitiesStoreTypes'
 import { useGameStore } from '../../stores/gameStore'
+import { usePlayerStore } from '../../stores/playerStore'
 import { ReadingActivity } from './ReadingActivity'
 import { SoundboardActivity } from './SoundboardActivity'
 import { VideoActivity } from './VideoActivity'
@@ -24,6 +25,17 @@ export function ActivityLayer({ baseUrl, activity, activityState, engine }: Acti
   const soundUrl = baseUrl + activity.filePathIntroRecording
   const selectNextSlide = useGameStore((state) => state.selectNextSlide)
   const selectSlideIndex = useGameStore((state) => state.selectSlideIndex)
+  const onWrongAnswerEvent = usePlayerStore((state) => () => state.setWrongAnswerEvent(true))
+  const isQuizMode = useGameStore((state) => {
+    if (
+      state.settings.quizParameters &&
+      state.settings.quizParameters.quizModeEnabled &&
+      (state.settings.quizParameters.activityTimeLimit || state.settings.quizParameters.globalTimeLimit)
+    ) {
+      return true
+    }
+    return false
+  })
 
   const moveToNextSlide = (index: number | undefined) => {
     if (index !== undefined) {
@@ -58,6 +70,8 @@ export function ActivityLayer({ baseUrl, activity, activityState, engine }: Acti
           transitionLoading={transitionLoading}
           activity={activity}
           baseUrl={baseUrl}
+          isQuizMode={isQuizMode}
+          onWrongAnswer={onWrongAnswerEvent}
         />
       )
 

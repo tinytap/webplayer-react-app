@@ -39,3 +39,5 @@ export const PLAYER_HEIGHT = 768
 export const BG_MUSIC_VOLUME = 0.04
 export const SIDEMENU_WIDTH = 276
 
+export const SHAKE_SPEED_MS = 400
+
