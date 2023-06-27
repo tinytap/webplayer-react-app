@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Rect, Shape as KonvaShape } from 'react-konva'
+import { Group, Rect, Shape as KonvaShape } from 'react-konva'
 import useSound from 'use-sound'
 import { Activity, Shape } from '../../../stores/activitiesStoreTypes'
-import { drawPoint, eraseInnerShape } from '../../../utils'
-import { playerColors, PLAYER_HEIGHT, PLAYER_WIDTH } from '../../../utils/constants'
+import { drawShape } from '../../../utils'
+import { playerColors, PLAYER_HEIGHT, PLAYER_WIDTH, SHOW_HINT_TIME_S } from '../../../utils/constants'
 import DefaultGoodAnswer from '../../../assets/sounds/defaultGoodAnswer.mp3'
 import DefaultWrongAnswer from '../../../assets/sounds/defaultWrongAnswer.mp3'
 
@@ -141,7 +141,7 @@ export function SoundboardActivity({
         return
       }
       setShowHints(false)
-    }, 2000)
+    }, SHOW_HINT_TIME_S * 1000)
 
     return () => {
       isMounted = true
@@ -207,36 +207,43 @@ const ShapeCanvas = ({ shape, baseUrl, onShowShape, isFunMode, showShapeForce }:
   }
 
   return (
-    <KonvaShape
-      id={`konva_shape_${shape.pk}`}
-      onClick={onClick}
-      lineCap="round"
-      lineJoin="round"
-      stroke="transparent"
-      strokeWidth={10}
-      sceneFunc={(ctx, canvas) => {
-        ctx.beginPath()
-
-        for (let i in shape.path) {
-          const point = shape.path[i]
-          drawPoint(point, ctx)
+    <Group>
+      <KonvaShape
+        id={`konva_shape_${shape.pk}`}
+        onClick={onClick}
+        lineCap="round"
+        lineJoin="round"
+        stroke={
+          showShape || showShapeForce
+            ? isFunMode
+              ? playerColors.rightAnswerGrean
+              : playerColors.rightAnswerGrey
+            : 'transparent'
         }
+        strokeWidth={10}
+        shadowBlur={25}
+        sceneFunc={(ctx, canvas) => {
+          drawShape(ctx, shape)
 
-        if (showShape || showShapeForce) {
-          ctx.shadowBlur = 50
-          ctx.shadowColor = 'black'
-          ctx.lineWidth = 10
-          ctx.strokeStyle = isFunMode ? playerColors.rightAnswerGrean : playerColors.rightAnswerGrey
-          ctx.stroke()
-          ctx.restore()
-          ctx.beginPath()
-
-          eraseInnerShape(ctx, shape.path)
-        }
-
-        ctx.fillStrokeShape(canvas)
-      }}
-    />
+          ctx.fillStrokeShape(canvas)
+        }}
+      />
+      <Group globalCompositeOperation={'destination-out'}>
+        <KonvaShape
+          id={`konva_shape_erase_${shape.pk}`}
+          onClick={onClick}
+          lineCap="round"
+          lineJoin="round"
+          strokeWidth={0}
+          stroke={'black'}
+          sceneFunc={(ctx, canvas) => {
+            drawShape(ctx, shape)
+            ctx.fill()
+            ctx.fillStrokeShape(canvas)
+          }}
+        />
+      </Group>
+    </Group>
   )
 }
 

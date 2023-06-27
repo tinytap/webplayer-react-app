@@ -41,4 +41,5 @@ export const BG_MUSIC_VOLUME = 0.04
 export const SIDEMENU_WIDTH = 276
 
 export const SHAKE_SPEED_MS = 400
+export const SHOW_HINT_TIME_S = 2
 

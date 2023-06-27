@@ -1,5 +1,5 @@
 import { Context as KonvaContext } from 'konva/lib/Context'
-import { PathItem } from '../stores/activitiesStoreTypes'
+import { PathItem, Shape } from '../stores/activitiesStoreTypes'
 
 export const getYoutubeVideoId = (url: string) => {
   const regExp =
@@ -21,7 +21,7 @@ const pathElementType = {
   AddCurveToPoint: 3,
   CloseSubpath: 4,
 }
-export const drawPoint = (p: PathItem, ctx: KonvaContext) => {
+const drawPoint = (p: PathItem, ctx: KonvaContext) => {
   switch (p.type) {
     case pathElementType.AddLineToPoint:
       ctx.lineTo(p.x, p.y)
@@ -43,15 +43,12 @@ export const drawPoint = (p: PathItem, ctx: KonvaContext) => {
   }
 }
 
-export const eraseInnerShape = (ctx: KonvaContext, path: PathItem[]) => {
-  ctx.save()
-  ctx.globalCompositeOperation = 'destination-out'
-  ctx.fillStyle = 'white'
-  for (let i in path) {
-    const point = path[i]
+export const drawShape = (ctx: KonvaContext, shape: Shape) => {
+  ctx.beginPath()
+
+  for (let i in shape.path) {
+    const point = shape.path[i]
     drawPoint(point, ctx)
   }
-  ctx.fill()
-  ctx.restore()
 }
 
