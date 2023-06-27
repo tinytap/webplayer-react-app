@@ -4,6 +4,8 @@ import useSound from 'use-sound'
 import { Activity, Shape } from '../../../stores/activitiesStoreTypes'
 import { drawPoint, eraseInnerShape } from '../../../utils'
 import { playerColors, PLAYER_HEIGHT, PLAYER_WIDTH } from '../../../utils/constants'
+import DefaultGoodAnswer from '../../../assets/sounds/defaultGoodAnswer.mp3'
+import DefaultWrongAnswer from '../../../assets/sounds/defaultWrongAnswer.mp3'
 
 interface ClickedShapes {
   [shapePk: number]: { didClickShape: boolean; linkToPage?: number }
@@ -40,6 +42,7 @@ export function SoundboardActivity({
       }
     },
   })
+  const [playWrongAnswer, { stop: stopWrongAnswer }] = useSound(DefaultWrongAnswer)
 
   const onShowShape = (shapePk: number, linkToPage?: number) => {
     setClickedShapes((oldValue) => {
@@ -59,9 +62,11 @@ export function SoundboardActivity({
       if (!activity.settings.soundHideHints) {
         setShowHints(true)
       }
-
       return
     }
+
+    stopWrongAnswer()
+    playWrongAnswer()
     onWrongAnswer()
   }
 
@@ -183,7 +188,7 @@ const ShapeCanvas = ({
   const [showShape, setShowShape] = useState(false)
   const soundUrl = shape.filePathRecording1 ? baseUrl + shape.filePathRecording1 : undefined
 
-  const [play, { stop }] = useSound(soundUrl ?? '', {
+  const [play, { stop }] = useSound(soundUrl ?? DefaultGoodAnswer, {
     onend: () => onShowShape(shape.pk, shape.settings?.linkToPage),
   })
 
@@ -193,13 +198,8 @@ const ShapeCanvas = ({
     }
     setShowShape(true)
 
-    // TODO: add default right answer sound
     // TODO: add confetti
     // TODO: add shape get bigger
-    if (!soundUrl) {
-      onShowShape(shape.pk, shape.settings?.linkToPage)
-      return
-    }
     stop()
     play()
   }

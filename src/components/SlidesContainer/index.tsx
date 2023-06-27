@@ -33,7 +33,6 @@ export function SlidesContainerComponent() {
       if (isMounted) {
         return
       }
-      // TODO: add sound
       stopWrongAnswerEvent()
     }, SHAKE_SPEED_MS)
 
