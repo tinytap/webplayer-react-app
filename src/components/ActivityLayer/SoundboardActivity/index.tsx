@@ -47,7 +47,7 @@ export function SoundboardActivity({
   const onShowShape = (shapePk: number, linkToPage?: number) => {
     setClickedShapes((oldValue) => {
       const newValue = { ...oldValue }
-      if (newValue[shapePk] !== undefined) {
+      if (newValue[shapePk] !== undefined && !newValue[shapePk].didClickShape) {
         newValue[shapePk].didClickShape = true
         newValue[shapePk].linkToPage = linkToPage
         return newValue
@@ -171,20 +171,16 @@ export function SoundboardActivity({
   )
 }
 
-const ShapeCanvas = ({
-  shape,
-  baseUrl,
-  onShowShape,
-  isFunMode,
-  showShapeForce,
-}: {
+interface ShapeCanvasProps {
   key: string
   shape: Shape
   baseUrl: string
   onShowShape: (pk: number, linkToPage?: number) => void
   isFunMode: boolean
   showShapeForce: boolean
-}) => {
+}
+
+const ShapeCanvas = ({ shape, baseUrl, onShowShape, isFunMode, showShapeForce }: ShapeCanvasProps) => {
   const [showShape, setShowShape] = useState(false)
   const soundUrl = shape.filePathRecording1 ? baseUrl + shape.filePathRecording1 : undefined
 
@@ -193,11 +189,7 @@ const ShapeCanvas = ({
   })
 
   const onClick = () => {
-    if (showShape) {
-      return
-    }
     setShowShape(true)
-
     // TODO: add confetti
     // TODO: add shape get bigger
     stop()
@@ -223,7 +215,6 @@ const ShapeCanvas = ({
       stroke="transparent"
       strokeWidth={10}
       sceneFunc={(ctx, canvas) => {
-        ctx.rect(0, 0, canvas.getAttr('width'), canvas.getAttr('height'))
         ctx.beginPath()
 
         for (let i in shape.path) {
