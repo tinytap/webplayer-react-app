@@ -30,9 +30,16 @@ export function SoundboardActivity({
   isQuizMode,
   onWrongAnswer,
 }: ReadingActivityProps) {
+  const [showHints, setShowHints] = useState(false)
   const [clickedShapes, setClickedShapes] = useState<ClickedShapes>({})
 
-  const [play, { stop }] = useSound(soundUrl)
+  const [play, { stop }] = useSound(soundUrl, {
+    onend: () => {
+      if (activity.settings.kIsShowSoundboardHintsOnStart) {
+        setShowHints(true)
+      }
+    },
+  })
 
   const onShowShape = (shapePk: number, linkToPage?: number) => {
     setClickedShapes((oldValue) => {
@@ -49,6 +56,10 @@ export function SoundboardActivity({
 
   const onNoShapeClick = () => {
     if (!isQuizMode) {
+      if (!activity.settings.soundHideHints) {
+        setShowHints(true)
+      }
+
       return
     }
     onWrongAnswer()
@@ -80,35 +91,57 @@ export function SoundboardActivity({
 
   useEffect(() => {
     let isMounted = false
-    let allShapesAreClicked = true
-    let linkToPage: number | undefined = undefined
 
-    for (const prop in clickedShapes) {
-      const value = clickedShapes[prop]
-      if (!value.didClickShape) {
-        allShapesAreClicked = false
-      } else if (value.linkToPage !== undefined) {
-        linkToPage = value.linkToPage
+    const slideNavigate = () => {
+      let allShapesAreClicked = true
+      let linkToPage: number | undefined = undefined
+
+      for (const prop in clickedShapes) {
+        const value = clickedShapes[prop]
+        if (!value.didClickShape) {
+          allShapesAreClicked = false
+        } else if (value.linkToPage !== undefined) {
+          linkToPage = value.linkToPage
+        }
       }
+
+      setTimeout(() => {
+        if (isMounted) {
+          return
+        }
+        if (linkToPage !== undefined) {
+          moveToNextSlide(linkToPage)
+          return
+        }
+        if (allShapesAreClicked) {
+          moveToNextSlide(undefined)
+        }
+      }, 1000)
+    }
+    slideNavigate()
+
+    return () => {
+      isMounted = true
+    }
+  }, [clickedShapes, moveToNextSlide])
+
+  useEffect(() => {
+    let isMounted = false
+    if (!showHints) {
+      return
     }
 
     setTimeout(() => {
       if (isMounted) {
         return
       }
-      if (linkToPage !== undefined) {
-        moveToNextSlide(linkToPage)
-        return
-      }
-      if (allShapesAreClicked) {
-        moveToNextSlide(undefined)
-      }
-    }, 1000)
+      setShowHints(false)
+    }, 2000)
 
     return () => {
       isMounted = true
     }
-  }, [clickedShapes, moveToNextSlide])
+  }, [setShowHints, showHints])
 
   if (!activity.shapes || !activity.shapes.length) {
     return <></>
@@ -118,7 +151,16 @@ export function SoundboardActivity({
     <>
       <Rect x={0} y={0} width={PLAYER_WIDTH} height={PLAYER_HEIGHT} onClick={onNoShapeClick} />
       {activity.shapes.map((shape, i) => {
-        return <ShapeCanvas shape={shape} baseUrl={baseUrl} key={`shape_${shape.pk}_${i}`} onShowShape={onShowShape} />
+        return (
+          <ShapeCanvas
+            shape={shape}
+            baseUrl={baseUrl}
+            key={`shape_${shape.pk}_${i}`}
+            onShowShape={onShowShape}
+            isFunMode={!!activity.settings.soundFunMode}
+            showShapeForce={showHints}
+          />
+        )
       })}
     </>
   )
@@ -128,11 +170,15 @@ const ShapeCanvas = ({
   shape,
   baseUrl,
   onShowShape,
+  isFunMode,
+  showShapeForce,
 }: {
   key: string
   shape: Shape
   baseUrl: string
   onShowShape: (pk: number, linkToPage?: number) => void
+  isFunMode: boolean
+  showShapeForce: boolean
 }) => {
   const [showShape, setShowShape] = useState(false)
   const soundUrl = shape.filePathRecording1 ? baseUrl + shape.filePathRecording1 : undefined
@@ -185,12 +231,11 @@ const ShapeCanvas = ({
           drawPoint(point, ctx)
         }
 
-        if (showShape) {
+        if (showShape || showShapeForce) {
           ctx.shadowBlur = 50
           ctx.shadowColor = 'black'
           ctx.lineWidth = 10
-          // TODO: show grey and not green if needed
-          ctx.strokeStyle = playerColors.rightAnswerGrean
+          ctx.strokeStyle = isFunMode ? playerColors.rightAnswerGrean : playerColors.rightAnswerGrey
           ctx.stroke()
           ctx.restore()
           ctx.beginPath()

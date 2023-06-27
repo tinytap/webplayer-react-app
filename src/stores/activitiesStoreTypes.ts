@@ -61,6 +61,10 @@ export interface ActivitySettings {
   linkToPage?: number
   videoURL?: string
   transform: [number, number, number, number, number, number]
+  soundFunMode?: boolean
+  soundHideHints?: boolean
+  kIsShowSoundboardHintsOnStart?: boolean
+  kShowConfetti?: boolean
 }
 
 export interface ActivityData {
