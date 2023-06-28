@@ -1,4 +1,5 @@
 import { Context as KonvaContext } from 'konva/lib/Context'
+import { Group } from 'konva/lib/Group'
 import { PathItem, Shape } from '../stores/activitiesStoreTypes'
 
 export const getYoutubeVideoId = (url: string) => {
@@ -50,5 +51,63 @@ export const drawShape = (ctx: KonvaContext, shape: Shape) => {
     const point = shape.path[i]
     drawPoint(point, ctx)
   }
+}
+
+let isPulsing = false
+export const pulseShape = (shapeNode: Group, shape: Shape) => {
+  const originalCenterPoint = getPathCenterPoint(shape.path)
+
+  if (!originalCenterPoint || isPulsing) {
+    return
+  }
+  isPulsing = true
+
+  const scale = 1.1
+  const offsetX = originalCenterPoint.x * scale - originalCenterPoint.x
+  const offsetY = originalCenterPoint.y * scale - originalCenterPoint.y
+
+  shapeNode.to({
+    scaleX: scale,
+    scaleY: scale,
+    offsetX: offsetX,
+    offsetY: offsetY,
+    onFinish: () => {
+      shapeNode.to({
+        scaleX: 1,
+        scaleY: 1,
+        offsetX: 0,
+        offsetY: 0,
+        onFinish: () => {
+          isPulsing = false
+        },
+      })
+    },
+  })
+}
+
+const getPathCenterPoint = (path: PathItem[]) => {
+  if (!path || !path.length) {
+    return undefined
+  }
+
+  let maxX = path[0].x
+  let minX = path[0].x
+  let maxY = path[0].y
+  let minY = path[0].y
+
+  path.forEach((i) => {
+    if (i.x !== undefined) {
+      maxX = Math.max(maxX, i.x)
+      minX = Math.min(minX, i.x)
+    }
+
+    if (i.y !== undefined) {
+      maxY = Math.max(maxY, i.y)
+      minY = Math.min(minY, i.y)
+    }
+  })
+
+  const centerPoint = { y: minY + (maxY - minY) / 2, x: minX + (maxX - minX) / 2 }
+  return centerPoint
 }
 

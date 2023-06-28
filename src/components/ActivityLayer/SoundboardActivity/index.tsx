@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Group, Rect, Shape as KonvaShape } from 'react-konva'
 import useSound from 'use-sound'
 import { Activity, Shape } from '../../../stores/activitiesStoreTypes'
-import { drawShape } from '../../../utils'
+import { drawShape, pulseShape } from '../../../utils'
 import { playerColors, PLAYER_HEIGHT, PLAYER_WIDTH, SHOW_HINT_TIME_S } from '../../../utils/constants'
 import DefaultGoodAnswer from '../../../assets/sounds/defaultGoodAnswer.mp3'
 import DefaultWrongAnswer from '../../../assets/sounds/defaultWrongAnswer.mp3'
+import { Group as KonvaGroupType } from 'konva/lib/Group'
 
 interface ClickedShapes {
   [shapePk: number]: { didClickShape: boolean; linkToPage?: number }
@@ -95,8 +96,6 @@ export function SoundboardActivity({
   }, [isActivityActive, play, transitionLoading, stop])
 
   useEffect(() => {
-    let isMounted = false
-
     const slideNavigate = () => {
       let allShapesAreClicked = true
       let linkToPage: number | undefined = undefined
@@ -110,24 +109,15 @@ export function SoundboardActivity({
         }
       }
 
-      setTimeout(() => {
-        if (isMounted) {
-          return
-        }
-        if (linkToPage !== undefined) {
-          moveToNextSlide(linkToPage)
-          return
-        }
-        if (allShapesAreClicked) {
-          moveToNextSlide(undefined)
-        }
-      }, 1000)
+      if (linkToPage !== undefined) {
+        moveToNextSlide(linkToPage)
+        return
+      }
+      if (allShapesAreClicked) {
+        moveToNextSlide(undefined)
+      }
     }
     slideNavigate()
-
-    return () => {
-      isMounted = true
-    }
   }, [clickedShapes, moveToNextSlide])
 
   useEffect(() => {
@@ -181,6 +171,7 @@ interface ShapeCanvasProps {
 }
 
 const ShapeCanvas = ({ shape, baseUrl, onShowShape, isFunMode, showShapeForce }: ShapeCanvasProps) => {
+  const shapeRef = useRef<KonvaGroupType>(null)
   const [showShape, setShowShape] = useState(false)
   const soundUrl = shape.filePathRecording1 ? baseUrl + shape.filePathRecording1 : undefined
 
@@ -191,9 +182,14 @@ const ShapeCanvas = ({ shape, baseUrl, onShowShape, isFunMode, showShapeForce }:
   const onClick = () => {
     setShowShape(true)
     // TODO: add confetti
-    // TODO: add shape get bigger
     stop()
     play()
+
+    if (!shapeRef.current) {
+      return
+    }
+
+    pulseShape(shapeRef.current, shape)
   }
 
   useEffect(() => {
@@ -207,7 +203,7 @@ const ShapeCanvas = ({ shape, baseUrl, onShowShape, isFunMode, showShapeForce }:
   }
 
   return (
-    <Group>
+    <Group ref={shapeRef}>
       <KonvaShape
         id={`konva_shape_${shape.pk}`}
         onClick={onClick}
