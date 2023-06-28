@@ -63,6 +63,7 @@ export const pulseShape = (shapeNode: Group, shape: Shape) => {
   isPulsing = true
 
   const scale = 1.1
+  // TODO: fix offset calculation 
   const offsetX = originalCenterPoint.x * scale - originalCenterPoint.x
   const offsetY = originalCenterPoint.y * scale - originalCenterPoint.y
 
