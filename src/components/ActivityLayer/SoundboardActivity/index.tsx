@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Rect } from 'react-konva'
+import { Group, Rect } from 'react-konva'
 import useSound from 'use-sound'
 import { Activity } from '../../../stores/activitiesStoreTypes'
 import { PLAYER_HEIGHT, PLAYER_WIDTH, SHOW_HINT_TIME_S } from '../../../utils/constants'
@@ -10,7 +10,7 @@ interface ClickedShapes {
   [shapePk: number]: { didClickShape: boolean; linkToPage?: number }
 }
 
-interface ReadingActivityProps {
+interface SoundboardActivityProps {
   moveToNextSlide: (index: number | undefined) => void
   soundUrl: string
   isActivityActive: boolean
@@ -30,7 +30,7 @@ export function SoundboardActivity({
   baseUrl,
   isQuizMode,
   onWrongAnswer,
-}: ReadingActivityProps) {
+}: SoundboardActivityProps) {
   const [showHints, setShowHints] = useState(false)
   const [clickedShapes, setClickedShapes] = useState<ClickedShapes>({})
 
@@ -141,7 +141,7 @@ export function SoundboardActivity({
   }
 
   return (
-    <>
+    <Group>
       <Rect x={0} y={0} width={PLAYER_WIDTH} height={PLAYER_HEIGHT} onClick={onNoShapeClick} />
       {activity.shapes.map((shape, i) => {
         return (
@@ -155,7 +155,7 @@ export function SoundboardActivity({
           />
         )
       })}
-    </>
+    </Group>
   )
 }
 
