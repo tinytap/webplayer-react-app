@@ -53,14 +53,12 @@ export const drawShape = (ctx: KonvaContext, shape: Shape) => {
   }
 }
 
-let isPulsing = false
 export const pulseShape = (shapeNode: Group, shape: Shape) => {
   const originalCenterPoint = getPathCenterPoint(shape.path)
 
-  if (!originalCenterPoint || isPulsing) {
+  if (!originalCenterPoint) {
     return
   }
-  isPulsing = true
 
   const scale = 1.1
   // TODO: fix offset calculation 
@@ -77,10 +75,7 @@ export const pulseShape = (shapeNode: Group, shape: Shape) => {
         scaleX: 1,
         scaleY: 1,
         offsetX: 0,
-        offsetY: 0,
-        onFinish: () => {
-          isPulsing = false
-        },
+        offsetY: 0
       })
     },
   })

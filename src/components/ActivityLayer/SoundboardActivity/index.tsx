@@ -1,12 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
-import { Group, Rect, Shape as KonvaShape } from 'react-konva'
+import { useEffect, useState } from 'react'
+import { Rect } from 'react-konva'
 import useSound from 'use-sound'
-import { Activity, Shape } from '../../../stores/activitiesStoreTypes'
-import { drawShape, pulseShape } from '../../../utils'
-import { playerColors, PLAYER_HEIGHT, PLAYER_WIDTH, SHOW_HINT_TIME_S } from '../../../utils/constants'
-import DefaultGoodAnswer from '../../../assets/sounds/defaultGoodAnswer.mp3'
+import { Activity } from '../../../stores/activitiesStoreTypes'
+import { PLAYER_HEIGHT, PLAYER_WIDTH, SHOW_HINT_TIME_S } from '../../../utils/constants'
 import DefaultWrongAnswer from '../../../assets/sounds/defaultWrongAnswer.mp3'
-import { Group as KonvaGroupType } from 'konva/lib/Group'
+import { AnswerShape } from '../shapes/AnswerShape'
 
 interface ClickedShapes {
   [shapePk: number]: { didClickShape: boolean; linkToPage?: number }
@@ -147,7 +145,7 @@ export function SoundboardActivity({
       <Rect x={0} y={0} width={PLAYER_WIDTH} height={PLAYER_HEIGHT} onClick={onNoShapeClick} />
       {activity.shapes.map((shape, i) => {
         return (
-          <ShapeCanvas
+          <AnswerShape
             shape={shape}
             baseUrl={baseUrl}
             key={`shape_${shape.pk}_${i}`}
@@ -158,88 +156,6 @@ export function SoundboardActivity({
         )
       })}
     </>
-  )
-}
-
-interface ShapeCanvasProps {
-  key: string
-  shape: Shape
-  baseUrl: string
-  onShowShape: (pk: number, linkToPage?: number) => void
-  isFunMode: boolean
-  showShapeForce: boolean
-}
-
-const ShapeCanvas = ({ shape, baseUrl, onShowShape, isFunMode, showShapeForce }: ShapeCanvasProps) => {
-  const shapeRef = useRef<KonvaGroupType>(null)
-  const [showShape, setShowShape] = useState(false)
-  const soundUrl = shape.filePathRecording1 ? baseUrl + shape.filePathRecording1 : undefined
-
-  const [play, { stop }] = useSound(soundUrl ?? DefaultGoodAnswer, {
-    onend: () => onShowShape(shape.pk, shape.settings?.linkToPage),
-  })
-
-  const onClick = () => {
-    setShowShape(true)
-    // TODO: add confetti
-    stop()
-    play()
-
-    if (!shapeRef.current) {
-      return
-    }
-
-    pulseShape(shapeRef.current, shape)
-  }
-
-  useEffect(() => {
-    return () => {
-      stop()
-    }
-  }, [stop])
-
-  if (!shape.path || !shape.path.length) {
-    return <></>
-  }
-
-  return (
-    <Group ref={shapeRef}>
-      <KonvaShape
-        id={`konva_shape_${shape.pk}`}
-        onClick={onClick}
-        lineCap="round"
-        lineJoin="round"
-        stroke={
-          showShape || showShapeForce
-            ? isFunMode
-              ? playerColors.rightAnswerGrean
-              : playerColors.rightAnswerGrey
-            : 'transparent'
-        }
-        strokeWidth={10}
-        shadowBlur={25}
-        sceneFunc={(ctx, canvas) => {
-          drawShape(ctx, shape)
-
-          ctx.fillStrokeShape(canvas)
-        }}
-      />
-      <Group globalCompositeOperation={'destination-out'}>
-        <KonvaShape
-          id={`konva_shape_erase_${shape.pk}`}
-          onClick={onClick}
-          lineCap="round"
-          lineJoin="round"
-          strokeWidth={0}
-          stroke={'black'}
-          sceneFunc={(ctx, canvas) => {
-            drawShape(ctx, shape)
-            ctx.fill()
-            ctx.fillStrokeShape(canvas)
-          }}
-        />
-      </Group>
-    </Group>
   )
 }
 
