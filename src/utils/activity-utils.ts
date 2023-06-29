@@ -61,9 +61,8 @@ export const pulseShape = (shapeNode: Group, shape: Shape) => {
   }
 
   const scale = 1.1
-  // TODO: fix offset calculation 
-  const offsetX = originalCenterPoint.x * scale - originalCenterPoint.x
-  const offsetY = originalCenterPoint.y * scale - originalCenterPoint.y
+  const offsetX = (originalCenterPoint.x * scale - originalCenterPoint.x) / scale
+  const offsetY = (originalCenterPoint.y * scale - originalCenterPoint.y) / scale
 
   shapeNode.to({
     scaleX: scale,
@@ -103,7 +102,7 @@ const getPathCenterPoint = (path: PathItem[]) => {
     }
   })
 
-  const centerPoint = { y: minY + (maxY - minY) / 2, x: minX + (maxX - minX) / 2 }
+  const centerPoint = { y: (maxY + minY) / 2, x: (maxX + minX) / 2 }
   return centerPoint
 }
 
