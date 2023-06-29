@@ -1,8 +1,43 @@
-import styled from 'styled-components'
-import { SIDEMENU_WIDTH } from '../../utils/constants'
+import styled, { css } from 'styled-components'
+import { SHAKE_SPEED_MS, SIDEMENU_WIDTH } from '../../utils/constants'
 
+const shakeAnimation = css`
+  @keyframes shake-animation {
+    0% {
+      margin-left: 0;
+    }
+    11% {
+      margin-left: -8px;
+    }
+    22% {
+      margin-left: 8px;
+    }
+    33% {
+      margin-left: -7px;
+    }
+    44% {
+      margin-left: 7px;
+    }
+    56% {
+      margin-left: -6px;
+    }
+    67% {
+      margin-left: 6px;
+    }
+    78% {
+      margin-left: -5px;
+    }
+    89% {
+      margin-left: 5px;
+    }
+    100% {
+      margin-left: 0;
+    }
+  }
+`
 interface SlideThumbnailContainerProps {
   menuOpened: boolean
+  shakePlayer: boolean
 }
 export const SlidesContainerElement = styled.div<SlideThumbnailContainerProps>`
   position: absolute;
@@ -22,6 +57,16 @@ export const SlidesContainerElement = styled.div<SlideThumbnailContainerProps>`
       margin-top: 0;
     }
   }
+
+  ${({ shakePlayer }) =>
+    shakePlayer &&
+    css`
+      animation-name: shake-animation;
+      animation-duration: ${SHAKE_SPEED_MS}ms;
+      animation-iteration-count: 1;
+
+      ${shakeAnimation}
+    `}
 `
 
 export const AllSlidesContainer = styled.div`

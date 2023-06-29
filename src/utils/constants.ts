@@ -4,6 +4,8 @@ export const playerColors = {
   cyan: '#61c2e9',
   lightCyan: '#81ceed',
   white: '#fff',
+  rightAnswerGrean: '#79c843',
+  rightAnswerGrey: '#33333388',
 }
 
 export const textColors = {
@@ -37,4 +39,7 @@ export const PLAYER_HEIGHT = 768
 
 export const BG_MUSIC_VOLUME = 0.04
 export const SIDEMENU_WIDTH = 276
+
+export const SHAKE_SPEED_MS = 400
+export const SHOW_HINT_TIME_S = 2
 

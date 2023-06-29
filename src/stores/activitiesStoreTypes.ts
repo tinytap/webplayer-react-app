@@ -25,6 +25,7 @@ export interface Shape {
   filePathThumb: string
   settings: {
     originTransform: [number, number, number, number, number, number]
+    linkToPage?: number
   }
   filePathRecording2: string
   filePathRecording1: string
@@ -40,6 +41,8 @@ export interface PathItem {
   cp1y?: number
   cp2x?: number
   cp2y?: number
+  cpx?: number
+  cpy?: number
 }
 export interface Activity {
   recordingDuration: number
@@ -58,6 +61,10 @@ export interface ActivitySettings {
   linkToPage?: number
   videoURL?: string
   transform: [number, number, number, number, number, number]
+  soundFunMode?: boolean
+  soundHideHints?: boolean
+  kIsShowSoundboardHintsOnStart?: boolean
+  kShowConfetti?: boolean
 }
 
 export interface ActivityData {

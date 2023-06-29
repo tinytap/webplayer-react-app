@@ -12,7 +12,7 @@ const devMiddlewaresPersist = (f: any) =>
     persist(f, {
       name: STORAGE_NAME,
       getStorage: () => sessionStorage, // Use the browser's session storage
-      partialize: ({ base_url, slides, music, pk, shuffleType, album, author }: GameStore) => ({
+      partialize: ({ base_url, slides, music, pk, shuffleType, album, author, settings }: GameStore) => ({
         base_url,
         slides,
         album,
@@ -20,6 +20,7 @@ const devMiddlewaresPersist = (f: any) =>
         music,
         pk,
         shuffleType,
+        settings,
       }),
     }),
   ) as any
@@ -51,6 +52,7 @@ export const useGameStore = create<GameStore>()(
     author: undefined,
     isLastSlide: false,
     isFirstSlide: false,
+    settings: {},
     refreshSelectedSlide: () => {
       /*
       set((state: GameStore) => {
@@ -104,10 +106,11 @@ export const useGameStore = create<GameStore>()(
         })
 
         const {
-          structure: { slides, musicFile: music, shuffleType, pk },
+          structure: { slides, musicFile: music, shuffleType, pk, settings },
           base_url,
           album_store,
         } = game
+
         let author = {} as any
         let ready = false
         let age_group_text = null
@@ -161,6 +164,7 @@ export const useGameStore = create<GameStore>()(
           music,
           shuffleType,
           pk,
+          settings,
           lastSelectedSlideIndex: 0,
           selectedSlideIndex: 0,
           isLastSlide: false,
