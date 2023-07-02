@@ -2,6 +2,7 @@ import { Star } from 'react-konva'
 import { Activity, ActivityState } from '../../stores/activitiesStoreTypes'
 import { useGameStore } from '../../stores/gameStore'
 import { usePlayerStore } from '../../stores/playerStore'
+import { QuestionsActivity } from './QuestionsActivity'
 import { ReadingActivity } from './ReadingActivity'
 import { SoundboardActivity } from './SoundboardActivity'
 import { VideoActivity } from './VideoActivity'
@@ -18,9 +19,10 @@ interface ActivityLayerProps {
     | 'text input'*/
   activity: Activity
   activityState: ActivityState
+  onMoveToNextActivity: () => boolean
 }
 
-export function ActivityLayer({ baseUrl, activity, activityState, engine }: ActivityLayerProps) {
+export function ActivityLayer({ baseUrl, activity, activityState, engine, onMoveToNextActivity }: ActivityLayerProps) {
   const transitionLoading = useGameStore((state) => state.transitionLoading)
   const soundUrl = baseUrl + activity.filePathIntroRecording
   const selectNextSlide = useGameStore((state) => state.selectNextSlide)
@@ -37,7 +39,7 @@ export function ActivityLayer({ baseUrl, activity, activityState, engine }: Acti
     return false
   })
 
-  const moveToNextSlide = (index: number | undefined) => {
+  const moveToNextSlide = (index?: number) => {
     if (index !== undefined) {
       selectSlideIndex(index)
     } else {
@@ -71,6 +73,24 @@ export function ActivityLayer({ baseUrl, activity, activityState, engine }: Acti
           activity={activity}
           baseUrl={baseUrl}
           isQuizMode={isQuizMode}
+          onWrongAnswer={onWrongAnswerEvent}
+        />
+      )
+    case 'Q':
+      return (
+        <QuestionsActivity
+          onFinishQuestion={() => {
+            const didMove = onMoveToNextActivity()
+            if (didMove) {
+              return
+            }
+            moveToNextSlide()
+          }}
+          soundUrl={soundUrl}
+          isActivityActive={!activityState.paused && !!activityState.started}
+          transitionLoading={transitionLoading}
+          activity={activity}
+          baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
         />
       )

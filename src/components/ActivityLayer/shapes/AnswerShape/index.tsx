@@ -12,11 +12,17 @@ interface AnswerShapeProps {
   shape: Shape
   baseUrl: string
   onShowShape: (pk: number, linkToPage?: number) => void
-  isFunMode: boolean
-  showShapeForce: boolean
+  isFunMode?: boolean
+  showShapeForce?: boolean
 }
 
-export const AnswerShape = ({ shape, baseUrl, onShowShape, isFunMode, showShapeForce }: AnswerShapeProps) => {
+export const AnswerShape = ({
+  shape,
+  baseUrl,
+  onShowShape,
+  isFunMode = true,
+  showShapeForce = false,
+}: AnswerShapeProps) => {
   const shapeRef = useRef<KonvaGroupType>(null)
   const [showShape, setShowShape] = useState(false)
   const soundUrl = shape.filePathRecording1 ? baseUrl + shape.filePathRecording1 : undefined

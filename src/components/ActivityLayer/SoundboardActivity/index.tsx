@@ -11,7 +11,7 @@ interface ClickedShapes {
 }
 
 interface SoundboardActivityProps {
-  moveToNextSlide: (index: number | undefined) => void
+  moveToNextSlide: (index?: number) => void
   soundUrl: string
   isActivityActive: boolean
   transitionLoading: boolean
@@ -112,7 +112,7 @@ export function SoundboardActivity({
         return
       }
       if (allShapesAreClicked) {
-        moveToNextSlide(undefined)
+        moveToNextSlide()
       }
     }
     slideNavigate()
@@ -150,7 +150,7 @@ export function SoundboardActivity({
             baseUrl={baseUrl}
             key={`shape_${shape.pk}_${i}`}
             onShowShape={onShowShape}
-            isFunMode={!!activity.settings.soundFunMode}
+            isFunMode={activity.settings.soundFunMode !== false}
             showShapeForce={showHints}
           />
         )
