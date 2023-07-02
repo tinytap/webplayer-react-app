@@ -39,6 +39,7 @@ export function QuestionsActivity({
 
   const [playWrongAnswer, { stop: stopWrongAnswer }] = useSound(wrongAnswerSoundUrl, {
     onend: () => {
+      // TODO: does not always play again
       play()
     },
   })
@@ -97,6 +98,7 @@ export function QuestionsActivity({
         key={`shape_${activity.shapes[0].pk}`}
         onShowShape={onFinishQuestion}
         showShapeForce={showHints}
+        stopIntroSound={stop}
       />
     </Group>
   )

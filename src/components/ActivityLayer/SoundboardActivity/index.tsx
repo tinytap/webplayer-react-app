@@ -64,6 +64,7 @@ export function SoundboardActivity({
       return
     }
 
+    stop()
     stopWrongAnswer()
     playWrongAnswer()
     onWrongAnswer()
@@ -152,6 +153,7 @@ export function SoundboardActivity({
             onShowShape={onShowShape}
             isFunMode={activity.settings.soundFunMode !== false}
             showShapeForce={showHints}
+            stopIntroSound={stop}
           />
         )
       })}

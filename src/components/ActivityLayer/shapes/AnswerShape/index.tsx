@@ -14,6 +14,7 @@ interface AnswerShapeProps {
   onShowShape: (pk: number, linkToPage?: number) => void
   isFunMode?: boolean
   showShapeForce?: boolean
+  stopIntroSound: () => void
 }
 
 export const AnswerShape = ({
@@ -22,6 +23,7 @@ export const AnswerShape = ({
   onShowShape,
   isFunMode = true,
   showShapeForce = false,
+  stopIntroSound,
 }: AnswerShapeProps) => {
   const shapeRef = useRef<KonvaGroupType>(null)
   const [showShape, setShowShape] = useState(false)
@@ -34,6 +36,7 @@ export const AnswerShape = ({
   const onClick = () => {
     setShowShape(true)
     // TODO: add confetti
+    stopIntroSound()
     stop()
     play()
 
