@@ -43,3 +43,5 @@ export const SIDEMENU_WIDTH = 276
 export const SHAKE_SPEED_MS = 400
 export const SHOW_HINT_TIME_S = 2
 export const SHOW_HINTS_QUESTIONS_ACTIVITY = true
+export const PLAY_ACTIVITY_SOUND_AGAIN_TIME_S = 30
+
