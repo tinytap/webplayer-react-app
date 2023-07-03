@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react'
 import { Group, Rect } from 'react-konva'
 import useSound from 'use-sound'
 import { Activity } from '../../../stores/activitiesStoreTypes'
-import { PLAYER_HEIGHT, PLAYER_WIDTH, SHOW_HINT_TIME_S } from '../../../utils/constants'
+import { PLAYER_HEIGHT, PLAYER_WIDTH } from '../../../utils/constants'
 import DefaultWrongAnswer from '../../../assets/sounds/defaultWrongAnswer.mp3'
 import { AnswerShape } from '../shapes/AnswerShape'
 import { usePlayIntro } from '../../../hooks/usePlayIntro'
+import { useShowHints } from '../../../hooks/useShowHints'
 
 interface ClickedShapes {
   [shapePk: number]: { didClickShape: boolean; linkToPage?: number }
@@ -32,7 +33,7 @@ export function SoundboardActivity({
   isQuizMode,
   onWrongAnswer,
 }: SoundboardActivityProps) {
-  const [showHints, setShowHints] = useState(false)
+  const { showHints, setShowHints } = useShowHints()
   const [clickedShapes, setClickedShapes] = useState<ClickedShapes>({})
 
   const { stop } = usePlayIntro({
@@ -110,24 +111,6 @@ export function SoundboardActivity({
     }
     slideNavigate()
   }, [clickedShapes, moveToNextSlide])
-
-  useEffect(() => {
-    let isMounted = false
-    if (!showHints) {
-      return
-    }
-
-    setTimeout(() => {
-      if (isMounted) {
-        return
-      }
-      setShowHints(false)
-    }, SHOW_HINT_TIME_S * 1000)
-
-    return () => {
-      isMounted = true
-    }
-  }, [setShowHints, showHints])
 
   if (!activity.shapes || !activity.shapes.length) {
     return <></>

@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
 import { Group, Rect } from 'react-konva'
 import useSound from 'use-sound'
 import { Activity } from '../../../stores/activitiesStoreTypes'
-import { PLAYER_HEIGHT, PLAYER_WIDTH, SHOW_HINTS_QUESTIONS_ACTIVITY, SHOW_HINT_TIME_S } from '../../../utils/constants'
+import { PLAYER_HEIGHT, PLAYER_WIDTH, SHOW_HINTS_QUESTIONS_ACTIVITY } from '../../../utils/constants'
 import DefaultWrongAnswer from '../../../assets/sounds/defaultWrongAnswer.mp3'
 import { AnswerShape } from '../shapes/AnswerShape'
 import { usePlayIntro } from '../../../hooks/usePlayIntro'
+import { useShowHints } from '../../../hooks/useShowHints'
 
 interface QuestionsActivityProps {
   onFinishQuestion: () => void
@@ -26,7 +26,7 @@ export function QuestionsActivity({
   baseUrl,
   onWrongAnswer,
 }: QuestionsActivityProps) {
-  const [showHints, setShowHints] = useState(false)
+  const { showHints, setShowHints } = useShowHints()
 
   const { playAgain, stop } = usePlayIntro({ soundUrl, isActivityActive, transitionLoading })
 
@@ -49,24 +49,6 @@ export function QuestionsActivity({
     playWrongAnswer()
     onWrongAnswer()
   }
-
-  useEffect(() => {
-    let isMounted = false
-    if (!showHints || !SHOW_HINTS_QUESTIONS_ACTIVITY) {
-      return
-    }
-
-    setTimeout(() => {
-      if (isMounted) {
-        return
-      }
-      setShowHints(false)
-    }, SHOW_HINT_TIME_S * 1000)
-
-    return () => {
-      isMounted = true
-    }
-  }, [setShowHints, showHints])
 
   if (!activity.shapes || !activity.shapes.length) {
     return <></>
