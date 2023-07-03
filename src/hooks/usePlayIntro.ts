@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import useSound from 'use-sound'
 import { PLAY_ACTIVITY_SOUND_AGAIN_TIME_S } from '../utils/constants'
 
-interface IntroPlayerProps {
+interface usePlayIntroProps {
   isActivityActive: boolean
   transitionLoading: boolean
   soundUrl: string
@@ -16,7 +16,7 @@ export function usePlayIntro({
   soundUrl,
   playIntroAgainWithTimer = true,
   onSoundEnd,
-}: IntroPlayerProps) {
+}: usePlayIntroProps) {
   const [didIntoEnd, setDidIntoEnd] = useState(false)
   const [playIntro, setPlayIntro] = useState(0)
 
@@ -34,6 +34,11 @@ export function usePlayIntro({
 
   const playAgain = useCallback(() => {
     setPlayIntro(Math.random())
+  }, [])
+
+  const startTimerAgain = useCallback(() => {
+    setDidIntoEnd(false)
+    setDidIntoEnd(true)
   }, [])
 
   useEffect(() => {
@@ -68,6 +73,6 @@ export function usePlayIntro({
     }
   }, [play, didIntoEnd, playAgain])
 
-  return { playAgain, stop }
+  return { playAgain, stop, startTimerAgain }
 }
 

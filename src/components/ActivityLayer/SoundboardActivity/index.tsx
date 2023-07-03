@@ -36,7 +36,7 @@ export function SoundboardActivity({
   const { showHints, setShowHints } = useShowHints()
   const [clickedShapes, setClickedShapes] = useState<ClickedShapes>({})
 
-  const { stop } = usePlayIntro({
+  const { stop, startTimerAgain } = usePlayIntro({
     soundUrl,
     isActivityActive,
     transitionLoading,
@@ -50,6 +50,8 @@ export function SoundboardActivity({
   const [playWrongAnswer, { stop: stopWrongAnswer }] = useSound(DefaultWrongAnswer)
 
   const onShowShape = (shapePk: number, linkToPage?: number) => {
+    startTimerAgain()
+    
     setClickedShapes((oldValue) => {
       const newValue = { ...oldValue }
       if (newValue[shapePk] !== undefined && !newValue[shapePk].didClickShape) {
@@ -63,6 +65,8 @@ export function SoundboardActivity({
   }
 
   const onNoShapeClick = () => {
+    startTimerAgain()
+
     if (!isQuizMode) {
       if (!activity.settings.soundHideHints) {
         setShowHints(true)
