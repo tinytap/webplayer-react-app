@@ -40,6 +40,7 @@ export function SoundboardActivity({
     soundUrl,
     isActivityActive,
     transitionLoading,
+    playIntroAgainWithTimer: !!activity.settings.soundFunModeV2,
     onSoundEnd: () => {
       if (activity.settings.kIsShowSoundboardHintsOnStart) {
         setShowHints(true)
@@ -51,7 +52,7 @@ export function SoundboardActivity({
 
   const onShowShape = (shapePk: number, linkToPage?: number) => {
     startTimerAgain()
-    
+
     setClickedShapes((oldValue) => {
       const newValue = { ...oldValue }
       if (newValue[shapePk] !== undefined && !newValue[shapePk].didClickShape) {

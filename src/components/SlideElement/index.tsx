@@ -100,7 +100,7 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
     }
     const activity = slideActivityState.activities[currentActivityIndex]
 
-    if (!activity) {
+    if (!activity || !slide) {
       return <></>
     }
 
@@ -120,9 +120,10 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
           }
           return false
         }}
+        slideThumbnailUrl={base_url + slide.filePathImage}
       />
     )
-  }, [playable, selected, slideActivityState, base_url, currentActivityIndex])
+  }, [playable, selected, slideActivityState, base_url, currentActivityIndex, slide])
 
   // Show loading spinner if slide is not available
   if (!slide) return <LoaderSpinner />

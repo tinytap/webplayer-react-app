@@ -56,7 +56,7 @@ export interface ActivitySettings {
   soundFlatMode?: boolean
   ShapePuzzleThemeV2?: number
   showShapeV2?: boolean
-  soundFunModeV2?: number
+  soundFunModeV2?: boolean
   advance?: boolean
   linkToPage?: number
   videoURL?: string

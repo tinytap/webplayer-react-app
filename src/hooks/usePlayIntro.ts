@@ -26,9 +26,7 @@ export function usePlayIntro({
         onSoundEnd()
       }
 
-      if (playIntroAgainWithTimer) {
-        setDidIntoEnd(true)
-      }
+      setDidIntoEnd(true)
     },
   })
 
@@ -56,7 +54,7 @@ export function usePlayIntro({
   }, [isActivityActive, play, transitionLoading, stop, playIntro])
 
   useEffect(() => {
-    if (!didIntoEnd) {
+    if (!didIntoEnd || !playIntroAgainWithTimer) {
       return
     }
     let isMounted = false
@@ -71,7 +69,7 @@ export function usePlayIntro({
     return () => {
       isMounted = true
     }
-  }, [play, didIntoEnd, playAgain])
+  }, [play, didIntoEnd, playAgain, playIntroAgainWithTimer])
 
   return { playAgain, stop, startTimerAgain }
 }

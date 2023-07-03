@@ -8,7 +8,6 @@ import { playerColors } from '../../../../utils/constants'
 import DefaultGoodAnswer from '../../../../assets/sounds/defaultGoodAnswer.mp3'
 
 interface AnswerShapeProps {
-  key: string
   shape: Shape
   baseUrl: string
   onShowShape: (pk: number, linkToPage?: number) => void
