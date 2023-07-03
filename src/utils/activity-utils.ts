@@ -54,6 +54,7 @@ export const drawShape = (ctx: KonvaContext, shape: Shape) => {
 }
 
 export const pulseShape = (shapeNode: Group, shape: Shape) => {
+  //TODO: fix pulse animation
   const originalCenterPoint = getPathCenterPoint(shape.path)
 
   if (!originalCenterPoint) {
