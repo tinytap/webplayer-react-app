@@ -2,15 +2,10 @@ import { useEffect, useState } from 'react'
 import { Group, Rect } from 'react-konva'
 import useSound from 'use-sound'
 import { Activity } from '../../../stores/activitiesStoreTypes'
-import {
-  PLAYER_HEIGHT,
-  PLAYER_WIDTH,
-  PLAY_ACTIVITY_SOUND_AGAIN_TIME_S,
-  SHOW_HINTS_QUESTIONS_ACTIVITY,
-  SHOW_HINT_TIME_S,
-} from '../../../utils/constants'
+import { PLAYER_HEIGHT, PLAYER_WIDTH, SHOW_HINTS_QUESTIONS_ACTIVITY, SHOW_HINT_TIME_S } from '../../../utils/constants'
 import DefaultWrongAnswer from '../../../assets/sounds/defaultWrongAnswer.mp3'
 import { AnswerShape } from '../shapes/AnswerShape'
+import { usePlayIntro } from '../../../hooks/usePlayIntro'
 
 interface QuestionsActivityProps {
   onFinishQuestion: () => void
@@ -31,15 +26,9 @@ export function QuestionsActivity({
   baseUrl,
   onWrongAnswer,
 }: QuestionsActivityProps) {
-  const [didIntoEnd, setDidIntoEnd] = useState(false)
-  const [playIntro, setPlayIntro] = useState(0)
   const [showHints, setShowHints] = useState(false)
 
-  const [play, { stop }] = useSound(soundUrl, {
-    onend: () => {
-      setDidIntoEnd(true)
-    },
-  })
+  const { playAgain, stop } = usePlayIntro({ soundUrl, isActivityActive, transitionLoading })
 
   const wrongAnswerSoundUrl = activity.shapes[0]?.filePathRecording2
     ? baseUrl + activity.shapes[0].filePathRecording2
@@ -47,7 +36,7 @@ export function QuestionsActivity({
 
   const [playWrongAnswer, { stop: stopWrongAnswer }] = useSound(wrongAnswerSoundUrl, {
     onend: () => {
-      setPlayIntro(Math.random())
+      playAgain()
     },
   })
 
@@ -60,38 +49,6 @@ export function QuestionsActivity({
     playWrongAnswer()
     onWrongAnswer()
   }
-
-  useEffect(() => {
-    if (!isActivityActive || transitionLoading) {
-      stop()
-      return
-    }
-
-    setDidIntoEnd(false)
-    play()
-
-    return () => {
-      stop()
-    }
-  }, [isActivityActive, play, transitionLoading, stop, playIntro])
-
-  useEffect(() => {
-    if (!didIntoEnd) {
-      return
-    }
-    let isMounted = false
-
-    setTimeout(() => {
-      if (isMounted) {
-        return
-      }
-      setPlayIntro(Math.random())
-    }, PLAY_ACTIVITY_SOUND_AGAIN_TIME_S * 1000)
-
-    return () => {
-      isMounted = true
-    }
-  }, [play, didIntoEnd])
 
   useEffect(() => {
     let isMounted = false

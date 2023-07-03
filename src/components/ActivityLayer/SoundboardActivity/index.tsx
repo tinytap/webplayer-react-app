@@ -5,6 +5,7 @@ import { Activity } from '../../../stores/activitiesStoreTypes'
 import { PLAYER_HEIGHT, PLAYER_WIDTH, SHOW_HINT_TIME_S } from '../../../utils/constants'
 import DefaultWrongAnswer from '../../../assets/sounds/defaultWrongAnswer.mp3'
 import { AnswerShape } from '../shapes/AnswerShape'
+import { usePlayIntro } from '../../../hooks/usePlayIntro'
 
 interface ClickedShapes {
   [shapePk: number]: { didClickShape: boolean; linkToPage?: number }
@@ -34,13 +35,17 @@ export function SoundboardActivity({
   const [showHints, setShowHints] = useState(false)
   const [clickedShapes, setClickedShapes] = useState<ClickedShapes>({})
 
-  const [play, { stop }] = useSound(soundUrl, {
-    onend: () => {
+  const { stop } = usePlayIntro({
+    soundUrl,
+    isActivityActive,
+    transitionLoading,
+    onSoundEnd: () => {
       if (activity.settings.kIsShowSoundboardHintsOnStart) {
         setShowHints(true)
       }
     },
   })
+
   const [playWrongAnswer, { stop: stopWrongAnswer }] = useSound(DefaultWrongAnswer)
 
   const onShowShape = (shapePk: number, linkToPage?: number) => {
@@ -80,19 +85,6 @@ export function SoundboardActivity({
     })
     setClickedShapes(data)
   }, [activity.shapes])
-
-  useEffect(() => {
-    if (!isActivityActive || transitionLoading) {
-      stop()
-      return
-    }
-
-    play()
-
-    return () => {
-      stop()
-    }
-  }, [isActivityActive, play, transitionLoading, stop])
 
   useEffect(() => {
     const slideNavigate = () => {
