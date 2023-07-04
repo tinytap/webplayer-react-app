@@ -159,3 +159,28 @@ export const updateShapesStatus = ({
   })
 }
 
+export const getPathRect = (path: PathItem[]) => {
+  if (!path || !path.length) {
+    return undefined
+  }
+
+  let maxX = path[0].x
+  let minX = path[0].x
+  let maxY = path[0].y
+  let minY = path[0].y
+
+  path.forEach((i) => {
+    if (i.x !== undefined) {
+      maxX = Math.max(maxX, i.x)
+      minX = Math.min(minX, i.x)
+    }
+
+    if (i.y !== undefined) {
+      maxY = Math.max(maxY, i.y)
+      minY = Math.min(minY, i.y)
+    }
+  })
+
+  const rect = { y: minY, x: minX, w: maxX - minX, h: maxY - minY }
+  return rect
+}

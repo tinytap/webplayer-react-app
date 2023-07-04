@@ -182,9 +182,12 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
               )}
             </Layer>
             {/** Activities layered together */}
-            {slideActivityState?.engineType !== 'V' && <Layer>{ActivityElement}</Layer>}
+            {slideActivityState?.engineType !== 'V' && slideActivityState?.engineType !== 'T' && (
+              <Layer>{ActivityElement}</Layer>
+            )}
           </Stage>
-          {slideActivityState?.engineType === 'V' && <AbsoluteContainer>{ActivityElement}</AbsoluteContainer>}
+          {slideActivityState?.engineType === 'V' ||
+            (slideActivityState?.engineType === 'T' && <AbsoluteContainer>{ActivityElement}</AbsoluteContainer>)}
         </SlideContainer>
       )}
     </Transition>

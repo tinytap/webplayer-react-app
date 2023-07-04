@@ -6,6 +6,7 @@ import { PuzzleActivity } from './PuzzleActivity'
 import { QuestionsActivity } from './QuestionsActivity'
 import { ReadingActivity } from './ReadingActivity'
 import { SoundboardActivity } from './SoundboardActivity'
+import { TalkOrTypeActivity } from './TalkOrTypeActivity'
 import { VideoActivity } from './VideoActivity'
 
 interface ActivityLayerProps {
@@ -114,6 +115,19 @@ export function ActivityLayer({
           baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
           slideThumbnailUrl={slideThumbnailUrl}
+        />
+      )
+    case 'T':
+      return (
+        // this activity should not be inside Stage (from react-konva)
+        <TalkOrTypeActivity
+          moveToNextSlide={moveToNextSlide}
+          soundUrl={soundUrl}
+          isActivityActive={!activityState.paused && !!activityState.started}
+          transitionLoading={transitionLoading}
+          activity={activity}
+          baseUrl={baseUrl}
+          onWrongAnswer={onWrongAnswerEvent}
         />
       )
 

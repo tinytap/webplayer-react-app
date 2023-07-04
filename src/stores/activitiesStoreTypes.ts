@@ -26,6 +26,7 @@ export interface Shape {
   settings: {
     originTransform: [number, number, number, number, number, number]
     linkToPage?: number
+    textAnswerArray?: string[]
   }
   filePathRecording2: string
   filePathRecording1: string
@@ -66,6 +67,7 @@ export interface ActivitySettings {
   kIsShowSoundboardHintsOnStart?: boolean
   kShowConfetti?: boolean
   DisableHints?: boolean
+  soundShowToolTip?: boolean
 }
 
 export interface ActivityData {
