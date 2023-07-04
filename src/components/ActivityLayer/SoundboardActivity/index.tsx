@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { Group, Rect } from 'react-konva'
 import useSound from 'use-sound'
 import { Activity } from '../../../stores/activitiesStoreTypes'
@@ -7,10 +6,8 @@ import DefaultWrongAnswer from '../../../assets/sounds/defaultWrongAnswer.mp3'
 import { AnswerShape } from '../shapes/AnswerShape'
 import { usePlayIntro } from '../../../hooks/usePlayIntro'
 import { useShowHints } from '../../../hooks/useShowHints'
-
-interface ClickedShapes {
-  [shapePk: number]: { didClickShape: boolean; linkToPage?: number }
-}
+import { updateShapesStatus } from '../../../utils'
+import { useShapesStatus } from '../../../hooks/useShapesStatus'
 
 interface SoundboardActivityProps {
   moveToNextSlide: (index?: number) => void
@@ -34,7 +31,7 @@ export function SoundboardActivity({
   onWrongAnswer,
 }: SoundboardActivityProps) {
   const { showHints, setShowHints } = useShowHints()
-  const [clickedShapes, setClickedShapes] = useState<ClickedShapes>({})
+  const { setShapeStatus } = useShapesStatus({ shapes: activity.shapes, moveToNextSlide })
 
   const { stop, startTimerAgain } = usePlayIntro({
     soundUrl,
@@ -50,19 +47,10 @@ export function SoundboardActivity({
 
   const [playWrongAnswer, { stop: stopWrongAnswer }] = useSound(DefaultWrongAnswer)
 
-  const onShowShape = (shapePk: number, linkToPage?: number) => {
+  const onShapeRightSoundEnd = (shapePk: number, linkToPage?: number) => {
     startTimerAgain()
 
-    setClickedShapes((oldValue) => {
-      const newValue = { ...oldValue }
-      if (newValue[shapePk] !== undefined && !newValue[shapePk].didClickShape) {
-        newValue[shapePk].didClickShape = true
-        newValue[shapePk].linkToPage = linkToPage
-        return newValue
-      }
-
-      return oldValue
-    })
+    updateShapesStatus({ setClickedShapes: setShapeStatus, shapePk, linkToPage })
   }
 
   const onNoShapeClick = () => {
@@ -81,42 +69,6 @@ export function SoundboardActivity({
     onWrongAnswer()
   }
 
-  useEffect(() => {
-    const data: ClickedShapes = {}
-    activity.shapes.forEach((s) => {
-      if (!s.path || !s.path.length) {
-        return
-      }
-      data[s.pk] = { didClickShape: false }
-    })
-    setClickedShapes(data)
-  }, [activity.shapes])
-
-  useEffect(() => {
-    const slideNavigate = () => {
-      let allShapesAreClicked = true
-      let linkToPage: number | undefined = undefined
-
-      for (const prop in clickedShapes) {
-        const value = clickedShapes[prop]
-        if (!value.didClickShape) {
-          allShapesAreClicked = false
-        } else if (value.linkToPage !== undefined) {
-          linkToPage = value.linkToPage
-        }
-      }
-
-      if (linkToPage !== undefined) {
-        moveToNextSlide(linkToPage)
-        return
-      }
-      if (allShapesAreClicked) {
-        moveToNextSlide()
-      }
-    }
-    slideNavigate()
-  }, [clickedShapes, moveToNextSlide])
-
   if (!activity.shapes || !activity.shapes.length) {
     return <></>
   }
@@ -130,7 +82,7 @@ export function SoundboardActivity({
             shape={shape}
             baseUrl={baseUrl}
             key={`shape_${shape.pk}_${i}`}
-            onRightSoundEnd={onShowShape}
+            onRightSoundEnd={onShapeRightSoundEnd}
             isFunMode={activity.settings.soundFunMode !== false}
             showShapeForce={showHints}
             stopIntroSound={stop}

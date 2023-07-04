@@ -1,5 +1,6 @@
 import { Context as KonvaContext } from 'konva/lib/Context'
 import { Group } from 'konva/lib/Group'
+import { ShapesStatus } from '../hooks/useShapesStatus'
 import { PathItem, Shape } from '../stores/activitiesStoreTypes'
 
 export const getYoutubeVideoId = (url: string) => {
@@ -135,5 +136,26 @@ export const moveShape = ({ shapeNode, location, duration, onFinish, shape }: mo
       onFinish: onFinish,
     })
   }
+}
+
+export const updateShapesStatus = ({
+  setClickedShapes,
+  shapePk,
+  linkToPage,
+}: {
+  setClickedShapes: (value: React.SetStateAction<ShapesStatus | undefined>) => void
+  shapePk: number
+  linkToPage?: number
+}) => {
+  setClickedShapes((oldValue) => {
+    const newValue = { ...oldValue }
+    if (newValue[shapePk] !== undefined && !newValue[shapePk].didClickShape) {
+      newValue[shapePk].didClickShape = true
+      newValue[shapePk].linkToPage = linkToPage
+      return newValue
+    }
+
+    return oldValue
+  })
 }
 
