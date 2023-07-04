@@ -1,6 +1,8 @@
 import { Group } from 'react-konva'
 import { usePlayIntro } from '../../../hooks/usePlayIntro'
+import { useShapesStatus } from '../../../hooks/useShapesStatus'
 import { Activity } from '../../../stores/activitiesStoreTypes'
+import { updateShapesStatus } from '../../../utils'
 import { PuzzleShape, PuzzleShapeHole } from '../shapes/PuzzleShape'
 
 interface PuzzleActivityProps {
@@ -14,7 +16,6 @@ interface PuzzleActivityProps {
   slideThumbnailUrl: string
 }
 
-// TODO: jump to page + on finish
 export function PuzzleActivity({
   activity,
   slideThumbnailUrl,
@@ -23,6 +24,7 @@ export function PuzzleActivity({
   soundUrl,
   baseUrl,
   onWrongAnswer,
+  moveToNextSlide,
 }: PuzzleActivityProps) {
   const { stop } = usePlayIntro({
     soundUrl,
@@ -30,6 +32,12 @@ export function PuzzleActivity({
     transitionLoading,
     playIntroAgainWithTimer: false,
   })
+
+  const { setShapeStatus } = useShapesStatus({ shapes: activity.shapes, moveToNextSlide })
+
+  const onShapeRightSoundEnd = (shapePk: number) => {
+    updateShapesStatus({ setClickedShapes: setShapeStatus, shapePk, linkToPage: activity.settings.linkToPage })
+  }
 
   if (!activity.shapes || !activity.shapes.length) {
     return <></>
@@ -53,6 +61,7 @@ export function PuzzleActivity({
             baseUrl={baseUrl}
             onWrongAnswer={onWrongAnswer}
             showHint={!activity.settings.DisableHints}
+            onRightSoundEnd={onShapeRightSoundEnd}
           />
         )
       })}

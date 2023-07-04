@@ -20,6 +20,7 @@ interface PuzzleShapeProps {
   baseUrl: string
   onWrongAnswer: () => void
   showHint: boolean
+  onRightSoundEnd: (pk: number) => void
 }
 
 // TODO: 3d shapes
@@ -33,6 +34,7 @@ export const PuzzleShape = ({
   baseUrl,
   onWrongAnswer,
   showHint,
+  onRightSoundEnd,
 }: PuzzleShapeProps) => {
   const [didFinish, setDidFinish] = useState(false)
   const shapeRef = useRef<KonvaGroupType>(null)
@@ -42,7 +44,9 @@ export const PuzzleShape = ({
 
   const [play, { stop }] = useSound(soundUrl ?? '')
   const [playWrongAnswer, { stop: stopWrongAnswer }] = useSound(DefaultWrongAnswer)
-  const [playRightAnswer] = useSound(defaultGoodAnswer)
+  const [playRightAnswer] = useSound(defaultGoodAnswer, {
+    onend: () => onRightSoundEnd(shape.pk),
+  })
 
   const shapeHintRef = useRef<KonvaGroupType>(null)
   const [wrongAnswerObj, setWrongAnswerObj] = useState({ showHint: false, count: 0 })
@@ -65,7 +69,10 @@ export const PuzzleShape = ({
       shapeNode: shapeHintRef.current,
       location: 'to-right-place',
       duration: 1,
-      onFinish: () => setWrongAnswerObj({ showHint: false, count: 0 }),
+      onFinish: () =>
+        setWrongAnswerObj((oldV) => {
+          return { showHint: false, count: oldV.count }
+        }),
       shape,
     })
   }, [wrongAnswerObj, shape])
@@ -118,6 +125,7 @@ export const PuzzleShape = ({
   return (
     <Group>
       {wrongAnswerObj.showHint && shapeRef.current && (
+        // the shape hint
         <Group
           ref={shapeHintRef}
           clipFunc={function (ctx) {
