@@ -4,9 +4,11 @@ import { drawShape } from '../../../../utils'
 import { PLAYER_HEIGHT, PLAYER_WIDTH, PUZZLE_OFFSET_SHAPE_DETECT_PX } from '../../../../utils/constants'
 import { useImage } from '../../../../hooks/useImage'
 import { KonvaEventObject } from 'konva/lib/Node'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Group as KonvaGroupType } from 'konva/lib/Group'
 import useSound from 'use-sound'
+import DefaultWrongAnswer from '../../../../assets/sounds/DefaultWrongAnswer.mp3'
+import defaultGoodAnswer from '../../../../assets/sounds/defaultGoodAnswer.mp3'
 
 interface PuzzleShapeProps {
   shape: Shape
@@ -16,6 +18,7 @@ interface PuzzleShapeProps {
   bounceBack: boolean
   stopIntroSound: () => void
   baseUrl: string
+  onWrongAnswer: () => void
 }
 
 // TODO: 3d shapes
@@ -28,13 +31,17 @@ export const PuzzleShape = ({
   bounceBack,
   stopIntroSound,
   baseUrl,
+  onWrongAnswer,
 }: PuzzleShapeProps) => {
+  const [didFinish, setDidFinish] = useState(false)
   const shapeRef = useRef<KonvaGroupType>(null)
   const [image] = useImage(slideThumbnailUrl)
 
   const soundUrl = shape.filePathRecording1 ? baseUrl + shape.filePathRecording1 : undefined
 
   const [play, { stop }] = useSound(soundUrl ?? '')
+  const [playWrongAnswer, { stop: stopWrongAnswer }] = useSound(DefaultWrongAnswer)
+  const [playRightAnswer] = useSound(defaultGoodAnswer)
 
   const moveShape = useCallback(
     (location: 'to-right-place' | 'to-origin-place', duration?: number) => {
@@ -64,7 +71,9 @@ export const PuzzleShape = ({
   useEffect(() => {
     if (slideIsActive && easyMode) {
       moveShape('to-origin-place', 1)
-    } else if (!easyMode) {
+    } else if (easyMode) {
+      moveShape('to-right-place', 0)
+    } else {
       moveShape('to-origin-place', 0)
     }
   }, [easyMode, moveShape, slideIsActive])
@@ -78,9 +87,24 @@ export const PuzzleShape = ({
       Math.abs(e.target.attrs.x) < PUZZLE_OFFSET_SHAPE_DETECT_PX &&
       Math.abs(e.target.attrs.y) < PUZZLE_OFFSET_SHAPE_DETECT_PX
 
+    if (soundUrl) {
+      stop()
+    } else {
+      stopIntroSound()
+    }
+    stopWrongAnswer()
+
     if (isRightLocaion) {
+      setDidFinish(true)
+      playRightAnswer()
       moveShape('to-right-place')
-    } else if (bounceBack) {
+      return
+    }
+
+    playWrongAnswer()
+    onWrongAnswer()
+
+    if (bounceBack) {
       moveShape('to-origin-place')
     }
   }
@@ -99,7 +123,7 @@ export const PuzzleShape = ({
       clipFunc={function (ctx) {
         drawShape(ctx, shape)
       }}
-      draggable
+      draggable={!didFinish}
       onDragEnd={onDragEnd}
       onDragStart={onDragStart}
     >

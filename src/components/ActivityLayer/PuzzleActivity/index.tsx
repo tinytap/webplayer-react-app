@@ -15,7 +15,6 @@ interface PuzzleActivityProps {
 }
 
 // TODO: jump to page + on finish
-// TODO: wrong answer
 export function PuzzleActivity({
   activity,
   slideThumbnailUrl,
@@ -23,6 +22,7 @@ export function PuzzleActivity({
   transitionLoading,
   soundUrl,
   baseUrl,
+  onWrongAnswer,
 }: PuzzleActivityProps) {
   const { stop } = usePlayIntro({
     soundUrl,
@@ -51,6 +51,7 @@ export function PuzzleActivity({
             bounceBack={!!activity.settings.soundFunModeV2}
             stopIntroSound={stop}
             baseUrl={baseUrl}
+            onWrongAnswer={onWrongAnswer}
           />
         )
       })}
