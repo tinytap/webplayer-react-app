@@ -52,6 +52,7 @@ export function PuzzleActivity({
             stopIntroSound={stop}
             baseUrl={baseUrl}
             onWrongAnswer={onWrongAnswer}
+            showHint={!activity.settings.DisableHints}
           />
         )
       })}

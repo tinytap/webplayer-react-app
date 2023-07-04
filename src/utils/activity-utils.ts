@@ -75,7 +75,7 @@ export const pulseShape = (shapeNode: Group, shape: Shape) => {
         scaleX: 1,
         scaleY: 1,
         offsetX: 0,
-        offsetY: 0
+        offsetY: 0,
       })
     },
   })
@@ -105,5 +105,35 @@ const getPathCenterPoint = (path: PathItem[]) => {
 
   const centerPoint = { y: (maxY + minY) / 2, x: (maxX + minX) / 2 }
   return centerPoint
+}
+
+interface moveShapeProps {
+  shapeNode: Group | null
+  location: 'to-right-place' | 'to-origin-place'
+  duration?: number
+  onFinish?: () => void
+  shape: Shape
+}
+
+export const moveShape = ({ shapeNode, location, duration, onFinish, shape }: moveShapeProps) => {
+  if (!shapeNode) {
+    return
+  }
+
+  if (location === 'to-origin-place') {
+    shapeNode.to({
+      x: shape.settings.originTransform[4],
+      y: shape.settings.originTransform[5],
+      duration: duration,
+      onFinish: onFinish,
+    })
+  } else {
+    shapeNode.to({
+      x: 0,
+      y: 0,
+      duration: duration,
+      onFinish: onFinish,
+    })
+  }
 }
 

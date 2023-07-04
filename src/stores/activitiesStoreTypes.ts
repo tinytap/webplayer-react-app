@@ -65,6 +65,7 @@ export interface ActivitySettings {
   soundHideHints?: boolean
   kIsShowSoundboardHintsOnStart?: boolean
   kShowConfetti?: boolean
+  DisableHints?: boolean
 }
 
 export interface ActivityData {
