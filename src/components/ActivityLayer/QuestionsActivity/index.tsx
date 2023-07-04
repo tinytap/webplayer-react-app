@@ -6,6 +6,7 @@ import DefaultWrongAnswer from '../../../assets/sounds/defaultWrongAnswer.mp3'
 import { AnswerShape } from '../shapes/AnswerShape'
 import { usePlayIntro } from '../../../hooks/usePlayIntro'
 import { useShowHints } from '../../../hooks/useShowHints'
+import { useState } from 'react'
 
 interface QuestionsActivityProps {
   onFinishQuestion: () => void
@@ -26,6 +27,7 @@ export function QuestionsActivity({
   baseUrl,
   onWrongAnswer,
 }: QuestionsActivityProps) {
+  const [didFinish, setDidFinish] = useState(false)
   const { showHints, setShowHints } = useShowHints()
 
   const { playAgain, stop } = usePlayIntro({ soundUrl, isActivityActive, transitionLoading })
@@ -41,6 +43,9 @@ export function QuestionsActivity({
   })
 
   const onNoShapeClick = () => {
+    if (didFinish) {
+      return
+    }
     if (SHOW_HINTS_QUESTIONS_ACTIVITY) {
       setShowHints(true)
     }
@@ -61,9 +66,12 @@ export function QuestionsActivity({
         shape={activity.shapes[0]}
         baseUrl={baseUrl}
         key={`shape_${activity.shapes[0].pk}`}
-        onShowShape={onFinishQuestion}
+        onRightSoundEnd={onFinishQuestion}
         showShapeForce={showHints}
         stopIntroSound={stop}
+        onRightClick={() => {
+          setDidFinish(true)
+        }}
       />
     </Group>
   )

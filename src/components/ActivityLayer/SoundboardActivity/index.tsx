@@ -130,7 +130,7 @@ export function SoundboardActivity({
             shape={shape}
             baseUrl={baseUrl}
             key={`shape_${shape.pk}_${i}`}
-            onShowShape={onShowShape}
+            onRightSoundEnd={onShowShape}
             isFunMode={activity.settings.soundFunMode !== false}
             showShapeForce={showHints}
             stopIntroSound={stop}

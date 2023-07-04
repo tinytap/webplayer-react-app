@@ -10,7 +10,8 @@ import DefaultGoodAnswer from '../../../../assets/sounds/defaultGoodAnswer.mp3'
 interface AnswerShapeProps {
   shape: Shape
   baseUrl: string
-  onShowShape: (pk: number, linkToPage?: number) => void
+  onRightSoundEnd: (pk: number, linkToPage?: number) => void
+  onRightClick?: () => void
   isFunMode?: boolean
   showShapeForce?: boolean
   stopIntroSound: () => void
@@ -19,7 +20,8 @@ interface AnswerShapeProps {
 export const AnswerShape = ({
   shape,
   baseUrl,
-  onShowShape,
+  onRightSoundEnd,
+  onRightClick,
   isFunMode = true,
   showShapeForce = false,
   stopIntroSound,
@@ -29,10 +31,13 @@ export const AnswerShape = ({
   const soundUrl = shape.filePathRecording1 ? baseUrl + shape.filePathRecording1 : DefaultGoodAnswer
 
   const [play, { stop }] = useSound(soundUrl, {
-    onend: () => onShowShape(shape.pk, shape.settings?.linkToPage),
+    onend: () => onRightSoundEnd(shape.pk, shape.settings?.linkToPage),
   })
 
   const onClick = () => {
+    if (onRightClick) {
+      onRightClick()
+    }
     setShowShape(true)
     // TODO: add confetti
     stopIntroSound()
