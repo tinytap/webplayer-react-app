@@ -6,6 +6,7 @@ import { useImage } from '../../../../hooks/useImage'
 import { KonvaEventObject } from 'konva/lib/Node'
 import { useCallback, useEffect, useRef } from 'react'
 import { Group as KonvaGroupType } from 'konva/lib/Group'
+import useSound from 'use-sound'
 
 interface PuzzleShapeProps {
   shape: Shape
@@ -13,13 +14,27 @@ interface PuzzleShapeProps {
   easyMode: boolean
   slideIsActive: boolean
   bounceBack: boolean
+  stopIntroSound: () => void
+  baseUrl: string
 }
 
 // TODO: 3d shapes
 // TODO: hints
-export const PuzzleShape = ({ shape, slideThumbnailUrl, easyMode, slideIsActive, bounceBack }: PuzzleShapeProps) => {
+export const PuzzleShape = ({
+  shape,
+  slideThumbnailUrl,
+  easyMode,
+  slideIsActive,
+  bounceBack,
+  stopIntroSound,
+  baseUrl,
+}: PuzzleShapeProps) => {
   const shapeRef = useRef<KonvaGroupType>(null)
   const [image] = useImage(slideThumbnailUrl)
+
+  const soundUrl = shape.filePathRecording1 ? baseUrl + shape.filePathRecording1 : undefined
+
+  const [play, { stop }] = useSound(soundUrl ?? '')
 
   const moveShape = useCallback(
     (location: 'to-right-place' | 'to-origin-place', duration?: number) => {
@@ -70,6 +85,14 @@ export const PuzzleShape = ({ shape, slideThumbnailUrl, easyMode, slideIsActive,
     }
   }
 
+  const onDragStart = () => {
+    if (soundUrl) {
+      stopIntroSound()
+      stop()
+      play()
+    }
+  }
+
   return (
     <Group
       ref={shapeRef}
@@ -78,6 +101,7 @@ export const PuzzleShape = ({ shape, slideThumbnailUrl, easyMode, slideIsActive,
       }}
       draggable
       onDragEnd={onDragEnd}
+      onDragStart={onDragStart}
     >
       <Image width={PLAYER_WIDTH} height={PLAYER_HEIGHT} image={image} />
     </Group>

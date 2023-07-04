@@ -26,9 +26,9 @@ export const AnswerShape = ({
 }: AnswerShapeProps) => {
   const shapeRef = useRef<KonvaGroupType>(null)
   const [showShape, setShowShape] = useState(false)
-  const soundUrl = shape.filePathRecording1 ? baseUrl + shape.filePathRecording1 : undefined
+  const soundUrl = shape.filePathRecording1 ? baseUrl + shape.filePathRecording1 : DefaultGoodAnswer
 
-  const [play, { stop }] = useSound(soundUrl ?? DefaultGoodAnswer, {
+  const [play, { stop }] = useSound(soundUrl, {
     onend: () => onShowShape(shape.pk, shape.settings?.linkToPage),
   })
 

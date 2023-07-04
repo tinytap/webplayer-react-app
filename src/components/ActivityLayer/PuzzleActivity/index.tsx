@@ -1,4 +1,5 @@
 import { Group } from 'react-konva'
+import { usePlayIntro } from '../../../hooks/usePlayIntro'
 import { Activity } from '../../../stores/activitiesStoreTypes'
 import { PuzzleShape, PuzzleShapeHole } from '../shapes/PuzzleShape'
 
@@ -15,13 +16,21 @@ interface PuzzleActivityProps {
 
 // TODO: jump to page + on finish
 // TODO: wrong answer
-// TODO: add sounds
 export function PuzzleActivity({
   activity,
   slideThumbnailUrl,
   isActivityActive,
   transitionLoading,
+  soundUrl,
+  baseUrl,
 }: PuzzleActivityProps) {
+  const { stop } = usePlayIntro({
+    soundUrl,
+    isActivityActive,
+    transitionLoading,
+    playIntroAgainWithTimer: false,
+  })
+
   if (!activity.shapes || !activity.shapes.length) {
     return <></>
   }
@@ -40,6 +49,8 @@ export function PuzzleActivity({
             easyMode={!!activity.settings.showShapeV2}
             slideIsActive={isActivityActive && !transitionLoading}
             bounceBack={!!activity.settings.soundFunModeV2}
+            stopIntroSound={stop}
+            baseUrl={baseUrl}
           />
         )
       })}
