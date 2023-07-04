@@ -100,6 +100,7 @@ export const PuzzleShape = ({
     stopWrongAnswer()
 
     if (isRightLocaion) {
+      // TODO: add confetti
       setDidFinish(true)
       playRightAnswer()
       moveShape({ shapeNode: shapeRef.current, location: 'to-right-place', shape })

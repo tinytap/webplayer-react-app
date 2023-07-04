@@ -37,6 +37,7 @@ export function PuzzleActivity({
 
   const onShapeRightSoundEnd = (shapePk: number) => {
     updateShapesStatus({ setClickedShapes: setShapeStatus, shapePk, linkToPage: activity.settings.linkToPage })
+    // TODO: add fireworks when all pieces are in the right place
   }
 
   if (!activity.shapes || !activity.shapes.length) {
