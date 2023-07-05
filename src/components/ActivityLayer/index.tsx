@@ -15,8 +15,10 @@ export interface ShapeSoundObj {
   onend?: () => void
   soundUrl: string
   fireOnendOnSoundStop?: boolean
-  playSound?: boolean
   id?: string
+  didEnd?: boolean
+  isLoaded?: boolean
+  playSound?: boolean
 }
 
 interface ActivityLayerProps {
@@ -63,18 +65,17 @@ export function ActivityLayer({
     soundUrl: soundUrl,
   })
 
-  const [isPlaying, setIsPlaying] = useState(false)
   const [play, { stop }] = useSound(shapeSoundObj.soundUrl, {
     onend: () => {
-      setIsPlaying(false)
-      if (shapeSoundObj.onend) {
-        shapeSoundObj.onend()
-      }
+      setShapeSoundObj((oldV) => ({ ...oldV, didEnd: true }))
+    },
+    onload: () => {
+      setShapeSoundObj((oldV) => ({ ...oldV, isLoaded: true }))
     },
   })
 
   useEffect(() => {
-    if (!shapeSoundObj.soundUrl || !shapeSoundObj.playSound) {
+    if (!shapeSoundObj.soundUrl || !shapeSoundObj.playSound || !shapeSoundObj.isLoaded || shapeSoundObj.didEnd) {
       return
     }
 
@@ -83,19 +84,26 @@ export function ActivityLayer({
       stop()
     }
   }, [shapeSoundObj, stop, play])
+  useEffect(() => {
+    if (!shapeSoundObj.didEnd || !shapeSoundObj.onend) {
+      return
+    }
+    shapeSoundObj.onend()
+  }, [shapeSoundObj])
 
   const playShapeSound = ({ onend, soundUrl, fireOnendOnSoundStop, id }: ShapeSoundObj) => {
-    if (shapeSoundObj.fireOnendOnSoundStop && shapeSoundObj.onend && shapeSoundObj.id !== id && isPlaying) {
+    if (shapeSoundObj.fireOnendOnSoundStop && shapeSoundObj.onend && shapeSoundObj.id !== id && !shapeSoundObj.didEnd) {
       shapeSoundObj.onend()
     }
 
-    setIsPlaying(true)
     setShapeSoundObj({
       onend: onend,
       soundUrl: soundUrl,
       fireOnendOnSoundStop: fireOnendOnSoundStop,
-      playSound: true,
       id: id,
+      didEnd: false,
+      isLoaded: soundUrl === shapeSoundObj.soundUrl,
+      playSound: true,
     })
   }
 
