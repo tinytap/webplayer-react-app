@@ -1,5 +1,5 @@
 // Required libraries and components
-import React, { useCallback, useMemo, useRef } from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { Stage, Layer, Star } from 'react-konva'
 import { Transition } from 'react-transition-group'
 import { useGameStore } from '../../stores/gameStore'
@@ -92,22 +92,40 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
 
   // Retrieve slide activity for the current slide
   const slideActivityState = useActivitiesStore((state) => state.getSlideActivityState(slideIndex))
+  const [currentActivityIndex, setCurrentActivityIndex] = useState(0)
 
   const ActivityElement = useMemo(() => {
-    if (!playable || !selected) {
+    if (!playable || !selected || !slideActivityState?.activities || !slideActivityState.activities.length) {
+      setCurrentActivityIndex(0)
+      return <></>
+    }
+    const activity = slideActivityState.activities[currentActivityIndex]
+
+    if (!activity || !slide) {
+      setCurrentActivityIndex(0)
       return <></>
     }
 
-    return slideActivityState?.activities?.map((activity, index: number) => (
+    return (
       <ActivityLayer
         engine={slideActivityState.engineType}
-        key={activity.pk + '_' + index}
+        key={activity.pk + '_activity'}
         baseUrl={base_url}
         activity={activity}
-        activityState={{...slideActivityState, activities: undefined}}
+        activityState={{ ...slideActivityState, activities: undefined }}
+        onMoveToNextActivity={() => {
+          const newActivityIndex = currentActivityIndex + 1
+
+          if (newActivityIndex < slideActivityState.activities!.length) {
+            setCurrentActivityIndex(newActivityIndex)
+            return true
+          }
+          return false
+        }}
+        slideThumbnailUrl={base_url + slide.filePathImage}
       />
-    ))
-  }, [playable, selected, slideActivityState, base_url])
+    )
+  }, [playable, selected, slideActivityState, base_url, currentActivityIndex, slide])
 
   // Show loading spinner if slide is not available
   if (!slide) return <LoaderSpinner />
@@ -166,9 +184,12 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
               )}
             </Layer>
             {/** Activities layered together */}
-            {slideActivityState?.engineType !== 'V' && <Layer>{ActivityElement}</Layer>}
+            {slideActivityState?.engineType !== 'V' && slideActivityState?.engineType !== 'T' && (
+              <Layer>{ActivityElement}</Layer>
+            )}
           </Stage>
-          {slideActivityState?.engineType === 'V' && <AbsoluteContainer>{ActivityElement}</AbsoluteContainer>}
+          {slideActivityState?.engineType === 'V' ||
+            (slideActivityState?.engineType === 'T' && <AbsoluteContainer>{ActivityElement}</AbsoluteContainer>)}
         </SlideContainer>
       )}
     </Transition>

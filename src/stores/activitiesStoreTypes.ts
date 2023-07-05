@@ -26,6 +26,7 @@ export interface Shape {
   settings: {
     originTransform: [number, number, number, number, number, number]
     linkToPage?: number
+    textAnswerArray?: string[]
   }
   filePathRecording2: string
   filePathRecording1: string
@@ -56,7 +57,7 @@ export interface ActivitySettings {
   soundFlatMode?: boolean
   ShapePuzzleThemeV2?: number
   showShapeV2?: boolean
-  soundFunModeV2?: number
+  soundFunModeV2?: boolean
   advance?: boolean
   linkToPage?: number
   videoURL?: string
@@ -65,6 +66,8 @@ export interface ActivitySettings {
   soundHideHints?: boolean
   kIsShowSoundboardHintsOnStart?: boolean
   kShowConfetti?: boolean
+  DisableHints?: boolean
+  soundShowToolTip?: boolean
 }
 
 export interface ActivityData {

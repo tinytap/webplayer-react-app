@@ -1,5 +1,6 @@
 import { Context as KonvaContext } from 'konva/lib/Context'
 import { Group } from 'konva/lib/Group'
+import { ShapesStatus } from '../hooks/useShapesStatus'
 import { PathItem, Shape } from '../stores/activitiesStoreTypes'
 
 export const getYoutubeVideoId = (url: string) => {
@@ -44,43 +45,117 @@ const drawPoint = (p: PathItem, ctx: KonvaContext) => {
   }
 }
 
-export const drawShape = (ctx: KonvaContext, shape: Shape) => {
+export const drawShape = (ctx: KonvaContext, path: PathItem[]) => {
   ctx.beginPath()
 
-  for (let i in shape.path) {
-    const point = shape.path[i]
+  for (let i in path) {
+    const point = path[i]
     drawPoint(point, ctx)
   }
 }
 
-export const pulseShape = (shapeNode: Group, shape: Shape) => {
-  const originalCenterPoint = getPathCenterPoint(shape.path)
-
-  if (!originalCenterPoint) {
-    return
-  }
-
+export const pulseShape = (shapeNode: Group) => {
   const scale = 1.1
-  const offsetX = (originalCenterPoint.x * scale - originalCenterPoint.x) / scale
-  const offsetY = (originalCenterPoint.y * scale - originalCenterPoint.y) / scale
 
   shapeNode.to({
     scaleX: scale,
     scaleY: scale,
-    offsetX: offsetX,
-    offsetY: offsetY,
     onFinish: () => {
       shapeNode.to({
         scaleX: 1,
         scaleY: 1,
-        offsetX: 0,
-        offsetY: 0
       })
     },
   })
 }
 
-const getPathCenterPoint = (path: PathItem[]) => {
+export const getPathFromOriginPosition = (
+  path: PathItem[],
+  shapePosition: {
+    y: number
+    x: number
+  },
+) => {
+  return path.map((oldV) => {
+    const newV = { ...oldV }
+
+    newV.x = oldV.x - shapePosition.x
+    newV.y = oldV.y - shapePosition.y
+    if (typeof oldV.cpx === 'number') {
+      newV.cpx = oldV.cpx - shapePosition.x
+    }
+    if (typeof oldV.cpy === 'number') {
+      newV.cpy = oldV.cpy - shapePosition.y
+    }
+    if (typeof oldV.cp1x === 'number') {
+      newV.cp1x = oldV.cp1x - shapePosition.x
+    }
+    if (typeof oldV.cp1y === 'number') {
+      newV.cp1y = oldV.cp1y - shapePosition.y
+    }
+    if (typeof oldV.cp2x === 'number') {
+      newV.cp2x = oldV.cp2x - shapePosition.x
+    }
+    if (typeof oldV.cp2y === 'number') {
+      newV.cp2y = oldV.cp2y - shapePosition.y
+    }
+
+    return newV
+  })
+}
+
+interface moveShapeProps {
+  shapeNode: Group | null
+  location: 'to-right-place' | 'to-origin-place'
+  duration?: number
+  onFinish?: () => void
+  shape: Shape
+}
+
+export const moveShape = ({ shapeNode, location, duration, onFinish, shape }: moveShapeProps) => {
+  if (!shapeNode) {
+    return
+  }
+
+  if (location === 'to-origin-place') {
+    shapeNode.to({
+      x: shape.settings.originTransform[4],
+      y: shape.settings.originTransform[5],
+      duration: duration,
+      onFinish: onFinish,
+    })
+  } else {
+    shapeNode.to({
+      x: 0,
+      y: 0,
+      duration: duration,
+      onFinish: onFinish,
+    })
+  }
+}
+
+export const updateShapesStatus = ({
+  setClickedShapes,
+  shapePk,
+  linkToPage,
+}: {
+  setClickedShapes: (value: React.SetStateAction<ShapesStatus | undefined>) => void
+  shapePk: number
+  linkToPage?: number
+}) => {
+  setClickedShapes((oldValue) => {
+    const newValue = { ...oldValue }
+    if (newValue[shapePk] !== undefined && !newValue[shapePk].didClickShape) {
+      newValue[shapePk].didClickShape = true
+      newValue[shapePk].linkToPage = linkToPage
+      return newValue
+    }
+
+    return oldValue
+  })
+}
+
+export const getPathRect = (path: PathItem[]) => {
   if (!path || !path.length) {
     return undefined
   }
@@ -102,7 +177,41 @@ const getPathCenterPoint = (path: PathItem[]) => {
     }
   })
 
-  const centerPoint = { y: (maxY + minY) / 2, x: (maxX + minX) / 2 }
-  return centerPoint
+  const rect = { y: minY, x: minX, w: maxX - minX, h: maxY - minY }
+  return rect
+}
+
+interface getFontSizeProps {
+  text: string
+  containerSize: { h: number; w: number }
+  fontFamily?: string
+  minSize?: number
+}
+export const getFontSize = ({ text, containerSize, fontFamily = 'ariel', minSize = 16 }: getFontSizeProps) => {
+  const test = document.createElement('span')
+  test.style.visibility = 'hidden'
+  test.style.border = '0'
+  test.style.padding = '0'
+  test.style.whiteSpace = 'pre'
+
+  const minFont = 10
+  const maxFont = 100
+  test.innerHTML = text
+  test.style.fontFamily = fontFamily
+  document.body.append(test)
+
+  test.style.fontSize = maxFont + 'px'
+  const { width: maxWidth, height: maxHeight } = test.getBoundingClientRect()
+
+  test.style.fontSize = minFont + 'px'
+  const { width: minWidth, height: minHeight } = test.getBoundingClientRect()
+
+  test.remove()
+
+  const width = ((containerSize.w - minWidth) * (maxFont - minFont)) / (maxWidth - minWidth) + minFont
+  const height = ((containerSize.h - minHeight) * (maxFont - minFont)) / (maxHeight - minHeight) + minFont
+  const size = Math.min(width, height) - 5
+
+  return Math.max(size, minSize)
 }
 

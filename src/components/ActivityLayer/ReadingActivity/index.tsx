@@ -1,6 +1,5 @@
-import { useEffect } from 'react'
 import { Rect } from 'react-konva'
-import useSound from 'use-sound'
+import { usePlayIntro } from '../../../hooks/usePlayIntro'
 import { ActivitySettings, ActivityState } from '../../../stores/activitiesStoreTypes'
 import { PLAYER_HEIGHT, PLAYER_WIDTH } from '../../../utils/constants'
 
@@ -19,8 +18,12 @@ export function ReadingActivity({
   transitionLoading,
   activitySettings,
 }: ReadingActivityProps) {
-  const [play, { stop }] = useSound(soundUrl, {
-    onend: () => {
+  const { stop } = usePlayIntro({
+    soundUrl,
+    isActivityActive: activityState.started || !activityState.paused,
+    transitionLoading,
+    playIntroAgainWithTimer: false,
+    onSoundEnd: () => {
       if (!activitySettings.advance || activityState.doesSlideHaveClickableLayer) {
         return
       }
@@ -35,19 +38,6 @@ export function ReadingActivity({
     stop()
     moveToNextSlide(activitySettings.linkToPage)
   }
-
-  useEffect(() => {
-    if (!activityState.started || activityState.paused || transitionLoading) {
-      stop()
-      return
-    }
-
-    play()
-
-    return () => {
-        stop()
-    }
-  }, [activityState, play, transitionLoading, stop])
 
   return <Rect x={0} y={0} width={PLAYER_WIDTH} height={PLAYER_HEIGHT} onClick={onClick} />
 }
