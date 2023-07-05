@@ -45,67 +45,63 @@ const drawPoint = (p: PathItem, ctx: KonvaContext) => {
   }
 }
 
-export const drawShape = (ctx: KonvaContext, shape: Shape) => {
+export const drawShape = (ctx: KonvaContext, path: PathItem[]) => {
   ctx.beginPath()
 
-  for (let i in shape.path) {
-    const point = shape.path[i]
+  for (let i in path) {
+    const point = path[i]
     drawPoint(point, ctx)
   }
 }
 
-export const pulseShape = (shapeNode: Group, shape: Shape) => {
-  //TODO: fix pulse animation
-  const originalCenterPoint = getPathCenterPoint(shape.path)
-
-  if (!originalCenterPoint) {
-    return
-  }
-
+export const pulseShape = (shapeNode: Group) => {
   const scale = 1.1
-  const offsetX = (originalCenterPoint.x * scale - originalCenterPoint.x) / scale
-  const offsetY = (originalCenterPoint.y * scale - originalCenterPoint.y) / scale
 
   shapeNode.to({
     scaleX: scale,
     scaleY: scale,
-    offsetX: offsetX,
-    offsetY: offsetY,
     onFinish: () => {
       shapeNode.to({
         scaleX: 1,
         scaleY: 1,
-        offsetX: 0,
-        offsetY: 0,
       })
     },
   })
 }
 
-const getPathCenterPoint = (path: PathItem[]) => {
-  if (!path || !path.length) {
-    return undefined
-  }
+export const getPathFromOriginPosition = (
+  path: PathItem[],
+  shapePosition: {
+    y: number
+    x: number
+  },
+) => {
+  return path.map((oldV) => {
+    const newV = { ...oldV }
 
-  let maxX = path[0].x
-  let minX = path[0].x
-  let maxY = path[0].y
-  let minY = path[0].y
-
-  path.forEach((i) => {
-    if (i.x !== undefined) {
-      maxX = Math.max(maxX, i.x)
-      minX = Math.min(minX, i.x)
+    newV.x = oldV.x - shapePosition.x
+    newV.y = oldV.y - shapePosition.y
+    if (typeof oldV.cpx === 'number') {
+      newV.cpx = oldV.cpx - shapePosition.x
+    }
+    if (typeof oldV.cpy === 'number') {
+      newV.cpy = oldV.cpy - shapePosition.y
+    }
+    if (typeof oldV.cp1x === 'number') {
+      newV.cp1x = oldV.cp1x - shapePosition.x
+    }
+    if (typeof oldV.cp1y === 'number') {
+      newV.cp1y = oldV.cp1y - shapePosition.y
+    }
+    if (typeof oldV.cp2x === 'number') {
+      newV.cp2x = oldV.cp2x - shapePosition.x
+    }
+    if (typeof oldV.cp2y === 'number') {
+      newV.cp2y = oldV.cp2y - shapePosition.y
     }
 
-    if (i.y !== undefined) {
-      maxY = Math.max(maxY, i.y)
-      minY = Math.min(minY, i.y)
-    }
+    return newV
   })
-
-  const centerPoint = { y: (maxY + minY) / 2, x: (maxX + minX) / 2 }
-  return centerPoint
 }
 
 interface moveShapeProps {

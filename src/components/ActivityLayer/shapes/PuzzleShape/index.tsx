@@ -125,7 +125,7 @@ export const PuzzleShape = ({
         <Group
           ref={shapeHintRef}
           clipFunc={function (ctx) {
-            drawShape(ctx, shape)
+            drawShape(ctx, shape.path)
           }}
           x={shapeRef.current.attrs.x}
           y={shapeRef.current.attrs.y}
@@ -137,7 +137,7 @@ export const PuzzleShape = ({
       <Group
         ref={shapeRef}
         clipFunc={function (ctx) {
-          drawShape(ctx, shape)
+          drawShape(ctx, shape.path)
         }}
         draggable={!didFinish}
         onDragEnd={onDragEnd}
@@ -162,7 +162,7 @@ export const PuzzleShapeHole = ({ shape }: { shape: Shape }) => {
       stroke={'#00000033'}
       strokeWidth={1}
       sceneFunc={(ctx, canvas) => {
-        drawShape(ctx, shape)
+        drawShape(ctx, shape.path)
 
         ctx.fillStrokeShape(canvas)
       }}

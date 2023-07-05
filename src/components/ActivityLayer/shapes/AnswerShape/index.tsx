@@ -1,8 +1,8 @@
 import { Group as KonvaGroupType } from 'konva/lib/Group'
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Group, Shape as KonvaShape } from 'react-konva'
 import { Shape } from '../../../../stores/activitiesStoreTypes'
-import { drawShape, pulseShape } from '../../../../utils'
+import { drawShape, getPathFromOriginPosition, getPathRect, pulseShape } from '../../../../utils'
 import { playerColors } from '../../../../utils/constants'
 import DefaultGoodAnswer from '../../../../assets/sounds/defaultGoodAnswer.mp3'
 import { ShapeSoundObj } from '../..'
@@ -32,6 +32,18 @@ export const AnswerShape = ({
   const [showShape, setShowShape] = useState(false)
   const soundUrl = shape.filePathRecording1 ? baseUrl + shape.filePathRecording1 : DefaultGoodAnswer
 
+  const shapeRect = useMemo(() => {
+    if (!shape.path || !shape.path.length) {
+      return
+    }
+    const rect = getPathRect(shape.path)
+    if (!rect) {
+      return
+    }
+    const newPath = getPathFromOriginPosition(shape.path, rect)
+    return { ...rect, path: newPath }
+  }, [shape.path])
+
   const onClick = () => {
     if (onRightClick) {
       onRightClick()
@@ -50,15 +62,22 @@ export const AnswerShape = ({
       return
     }
 
-    pulseShape(shapeRef.current, shape)
+    pulseShape(shapeRef.current)
   }
 
-  if (!shape.path || !shape.path.length) {
+  if (!shapeRect) {
     return <></>
   }
 
   return (
-    <Group ref={shapeRef}>
+    <Group
+      ref={shapeRef}
+      x={shapeRect.x + shapeRect.w / 2}
+      y={shapeRect.y + shapeRect.h / 2}
+      offset={{ x: shapeRect.w / 2, y: shapeRect.h / 2 }}
+      height={shapeRect.h}
+      width={0}
+    >
       <KonvaShape
         id={`konva_shape_${shape.pk}`}
         onClick={onClick}
@@ -74,7 +93,7 @@ export const AnswerShape = ({
         strokeWidth={10}
         shadowBlur={25}
         sceneFunc={(ctx, canvas) => {
-          drawShape(ctx, shape)
+          drawShape(ctx, shapeRect.path)
 
           ctx.fillStrokeShape(canvas)
         }}
@@ -88,7 +107,7 @@ export const AnswerShape = ({
           strokeWidth={0}
           stroke={'black'}
           sceneFunc={(ctx, canvas) => {
-            drawShape(ctx, shape)
+            drawShape(ctx, shapeRect.path)
             ctx.fill()
             ctx.fillStrokeShape(canvas)
           }}

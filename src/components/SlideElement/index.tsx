@@ -96,11 +96,13 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
 
   const ActivityElement = useMemo(() => {
     if (!playable || !selected || !slideActivityState?.activities || !slideActivityState.activities.length) {
+      setCurrentActivityIndex(0)
       return <></>
     }
     const activity = slideActivityState.activities[currentActivityIndex]
 
     if (!activity || !slide) {
+      setCurrentActivityIndex(0)
       return <></>
     }
 
