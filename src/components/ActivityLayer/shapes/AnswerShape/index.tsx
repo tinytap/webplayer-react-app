@@ -56,6 +56,7 @@ export const AnswerShape = ({
       soundUrl: soundUrl,
       onend: () => onRightSoundEnd(shape.pk, shape.settings?.linkToPage),
       fireOnendOnSoundStop: true,
+      id: `right_${shape.pk}`,
     })
 
     if (!shapeRef.current) {

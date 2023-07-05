@@ -16,6 +16,7 @@ export interface ShapeSoundObj {
   soundUrl: string
   fireOnendOnSoundStop?: boolean
   playSound?: boolean
+  id?: string
 }
 
 interface ActivityLayerProps {
@@ -81,8 +82,8 @@ export function ActivityLayer({
     }
   }, [shapeSoundObj, stop, play])
 
-  const playShapeSound = ({ onend, soundUrl, fireOnendOnSoundStop }: ShapeSoundObj) => {
-    if (shapeSoundObj.fireOnendOnSoundStop && shapeSoundObj.onend) {
+  const playShapeSound = ({ onend, soundUrl, fireOnendOnSoundStop, id }: ShapeSoundObj) => {
+    if (shapeSoundObj.fireOnendOnSoundStop && shapeSoundObj.onend && shapeSoundObj.id !== id) {
       shapeSoundObj.onend()
     }
 
@@ -91,6 +92,7 @@ export function ActivityLayer({
       soundUrl: soundUrl,
       fireOnendOnSoundStop: fireOnendOnSoundStop,
       playSound: true,
+      id: id,
     })
   }
 

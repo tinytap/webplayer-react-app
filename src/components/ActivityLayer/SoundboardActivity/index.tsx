@@ -35,7 +35,7 @@ export function SoundboardActivity({
   const { showHints, setShowHints } = useShowHints()
   const { setShapeStatus } = useShapesStatus({ shapes: activity.shapes, moveToNextSlide })
 
-  const { stop, startTimerAgain } = usePlayIntro({
+  const { stop, setStartIntoWithTimer } = usePlayIntro({
     soundUrl,
     isActivityActive,
     transitionLoading,
@@ -48,13 +48,13 @@ export function SoundboardActivity({
   })
 
   const onShapeRightSoundEnd = (shapePk: number, linkToPage?: number) => {
-    startTimerAgain()
+    setStartIntoWithTimer(true)
 
     updateShapesStatus({ setClickedShapes: setShapeStatus, shapePk, linkToPage })
   }
 
   const onNoShapeClick = () => {
-    startTimerAgain()
+    setStartIntoWithTimer(true)
 
     if (!isQuizMode) {
       if (!activity.settings.soundHideHints) {
@@ -86,6 +86,7 @@ export function SoundboardActivity({
             showShapeForce={showHints}
             stopIntroSound={stop}
             playShapeSound={playShapeSound}
+            onRightClick={() => setStartIntoWithTimer(false)}
           />
         )
       })}

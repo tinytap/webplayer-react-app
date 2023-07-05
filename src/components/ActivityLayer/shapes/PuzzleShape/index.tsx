@@ -98,6 +98,7 @@ export const PuzzleShape = ({
         soundUrl: defaultGoodAnswer,
         onend: () => onRightSoundEnd(shape.pk),
         fireOnendOnSoundStop: true,
+        id: `right_${shape.pk}`,
       })
       moveShape({ shapeNode: shapeRef.current, location: 'to-right-place', shape })
       return

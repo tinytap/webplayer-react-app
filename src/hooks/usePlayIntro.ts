@@ -17,7 +17,7 @@ export function usePlayIntro({
   playIntroAgainWithTimer = true,
   onSoundEnd,
 }: usePlayIntroProps) {
-  const [didIntoEnd, setDidIntoEnd] = useState(false)
+  const [startIntoWithTimer, setStartIntoWithTimer] = useState(false)
   const [playIntro, setPlayIntro] = useState(0)
 
   const [play, { stop }] = useSound(soundUrl, {
@@ -26,17 +26,12 @@ export function usePlayIntro({
         onSoundEnd()
       }
 
-      setDidIntoEnd(true)
+      setStartIntoWithTimer(true)
     },
   })
 
   const playAgain = useCallback(() => {
     setPlayIntro(Math.random())
-  }, [])
-
-  const startTimerAgain = useCallback(() => {
-    setDidIntoEnd(false)
-    setDidIntoEnd(true)
   }, [])
 
   useEffect(() => {
@@ -45,7 +40,7 @@ export function usePlayIntro({
       return
     }
 
-    setDidIntoEnd(false)
+    setStartIntoWithTimer(false)
     play()
 
     return () => {
@@ -54,7 +49,7 @@ export function usePlayIntro({
   }, [isActivityActive, play, transitionLoading, stop, playIntro])
 
   useEffect(() => {
-    if (!didIntoEnd || !playIntroAgainWithTimer) {
+    if (!startIntoWithTimer || !playIntroAgainWithTimer) {
       return
     }
     let isMounted = false
@@ -69,8 +64,8 @@ export function usePlayIntro({
     return () => {
       isMounted = true
     }
-  }, [play, didIntoEnd, playAgain, playIntroAgainWithTimer])
+  }, [startIntoWithTimer, playAgain, playIntroAgainWithTimer])
 
-  return { playAgain, stop, startTimerAgain }
+  return { playAgain, stop, setStartIntoWithTimer }
 }
 

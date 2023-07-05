@@ -83,6 +83,7 @@ export const InputShape = ({
         soundUrl: defaultGoodAnswer,
         onend: () => onRightSoundEnd(shape.pk),
         fireOnendOnSoundStop: true,
+        id: `right_${shape.pk}`
       })
     }
     setAnswerStatus(status)
