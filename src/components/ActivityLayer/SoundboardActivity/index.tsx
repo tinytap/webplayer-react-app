@@ -1,5 +1,4 @@
 import { Group, Rect } from 'react-konva'
-import useSound from 'use-sound'
 import { Activity } from '../../../stores/activitiesStoreTypes'
 import { PLAYER_HEIGHT, PLAYER_WIDTH } from '../../../utils/constants'
 import DefaultWrongAnswer from '../../../assets/sounds/defaultWrongAnswer.mp3'
@@ -8,6 +7,7 @@ import { usePlayIntro } from '../../../hooks/usePlayIntro'
 import { useShowHints } from '../../../hooks/useShowHints'
 import { updateShapesStatus } from '../../../utils'
 import { useShapesStatus } from '../../../hooks/useShapesStatus'
+import { ShapeSoundObj } from '..'
 
 interface SoundboardActivityProps {
   moveToNextSlide: (index?: number) => void
@@ -18,6 +18,7 @@ interface SoundboardActivityProps {
   baseUrl: string
   isQuizMode: boolean
   onWrongAnswer: () => void
+  playShapeSound: ({ onend, soundUrl }: ShapeSoundObj) => void
 }
 
 export function SoundboardActivity({
@@ -29,6 +30,7 @@ export function SoundboardActivity({
   baseUrl,
   isQuizMode,
   onWrongAnswer,
+  playShapeSound,
 }: SoundboardActivityProps) {
   const { showHints, setShowHints } = useShowHints()
   const { setShapeStatus } = useShapesStatus({ shapes: activity.shapes, moveToNextSlide })
@@ -44,8 +46,6 @@ export function SoundboardActivity({
       }
     },
   })
-
-  const [playWrongAnswer, { stop: stopWrongAnswer }] = useSound(DefaultWrongAnswer)
 
   const onShapeRightSoundEnd = (shapePk: number, linkToPage?: number) => {
     startTimerAgain()
@@ -64,8 +64,7 @@ export function SoundboardActivity({
     }
 
     stop()
-    stopWrongAnswer()
-    playWrongAnswer()
+    playShapeSound({ soundUrl: DefaultWrongAnswer })
     onWrongAnswer()
   }
 
@@ -86,6 +85,7 @@ export function SoundboardActivity({
             isFunMode={activity.settings.soundFunMode !== false}
             showShapeForce={showHints}
             stopIntroSound={stop}
+            playShapeSound={playShapeSound}
           />
         )
       })}

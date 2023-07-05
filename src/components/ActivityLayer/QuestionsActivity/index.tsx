@@ -1,5 +1,4 @@
 import { Group, Rect } from 'react-konva'
-import useSound from 'use-sound'
 import { Activity } from '../../../stores/activitiesStoreTypes'
 import { PLAYER_HEIGHT, PLAYER_WIDTH, SHOW_HINTS_QUESTIONS_ACTIVITY } from '../../../utils/constants'
 import DefaultWrongAnswer from '../../../assets/sounds/defaultWrongAnswer.mp3'
@@ -7,6 +6,7 @@ import { AnswerShape } from '../shapes/AnswerShape'
 import { usePlayIntro } from '../../../hooks/usePlayIntro'
 import { useShowHints } from '../../../hooks/useShowHints'
 import { useState } from 'react'
+import { ShapeSoundObj } from '..'
 
 interface QuestionsActivityProps {
   onFinishQuestion: () => void
@@ -16,6 +16,7 @@ interface QuestionsActivityProps {
   activity: Activity
   baseUrl: string
   onWrongAnswer: () => void
+  playShapeSound: ({ onend, soundUrl }: ShapeSoundObj) => void
 }
 
 export function QuestionsActivity({
@@ -26,6 +27,7 @@ export function QuestionsActivity({
   activity,
   baseUrl,
   onWrongAnswer,
+  playShapeSound,
 }: QuestionsActivityProps) {
   const [didFinish, setDidFinish] = useState(false)
   const { showHints, setShowHints } = useShowHints()
@@ -36,12 +38,6 @@ export function QuestionsActivity({
     ? baseUrl + activity.shapes[0].filePathRecording2
     : DefaultWrongAnswer
 
-  const [playWrongAnswer, { stop: stopWrongAnswer }] = useSound(wrongAnswerSoundUrl, {
-    onend: () => {
-      playAgain()
-    },
-  })
-
   const onNoShapeClick = () => {
     if (didFinish) {
       return
@@ -50,8 +46,11 @@ export function QuestionsActivity({
       setShowHints(true)
     }
     stop()
-    stopWrongAnswer()
-    playWrongAnswer()
+
+    playShapeSound({
+      soundUrl: wrongAnswerSoundUrl,
+      onend: () => playAgain(),
+    })
     onWrongAnswer()
   }
 
@@ -72,6 +71,7 @@ export function QuestionsActivity({
         onRightClick={() => {
           setDidFinish(true)
         }}
+        playShapeSound={playShapeSound}
       />
     </Group>
   )

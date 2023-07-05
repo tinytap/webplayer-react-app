@@ -6,9 +6,9 @@ import { useImage } from '../../../../hooks/useImage'
 import { KonvaEventObject } from 'konva/lib/Node'
 import { useEffect, useRef, useState } from 'react'
 import { Group as KonvaGroupType } from 'konva/lib/Group'
-import useSound from 'use-sound'
 import DefaultWrongAnswer from '../../../../assets/sounds/DefaultWrongAnswer.mp3'
 import defaultGoodAnswer from '../../../../assets/sounds/defaultGoodAnswer.mp3'
+import { ShapeSoundObj } from '../..'
 
 interface PuzzleShapeProps {
   shape: Shape
@@ -21,6 +21,7 @@ interface PuzzleShapeProps {
   onWrongAnswer: () => void
   showHint: boolean
   onRightSoundEnd: (pk: number) => void
+  playShapeSound: ({ onend, soundUrl }: ShapeSoundObj) => void
 }
 
 // TODO: 3d shapes
@@ -35,18 +36,13 @@ export const PuzzleShape = ({
   onWrongAnswer,
   showHint,
   onRightSoundEnd,
+  playShapeSound,
 }: PuzzleShapeProps) => {
   const [didFinish, setDidFinish] = useState(false)
   const shapeRef = useRef<KonvaGroupType>(null)
   const [image] = useImage(slideThumbnailUrl)
 
   const soundUrl = shape.filePathRecording1 ? baseUrl + shape.filePathRecording1 : undefined
-
-  const [play, { stop }] = useSound(soundUrl ?? '')
-  const [playWrongAnswer, { stop: stopWrongAnswer }] = useSound(DefaultWrongAnswer)
-  const [playRightAnswer] = useSound(defaultGoodAnswer, {
-    onend: () => onRightSoundEnd(shape.pk),
-  })
 
   const shapeHintRef = useRef<KonvaGroupType>(null)
   const [wrongAnswerObj, setWrongAnswerObj] = useState({ showHint: false, count: 0 })
@@ -86,9 +82,7 @@ export const PuzzleShape = ({
       Math.abs(e.target.attrs.x) < PUZZLE_OFFSET_SHAPE_DETECT_PX &&
       Math.abs(e.target.attrs.y) < PUZZLE_OFFSET_SHAPE_DETECT_PX
 
-    if (soundUrl) {
-      stop()
-    } else {
+    if (!soundUrl) {
       stopIntroSound()
     }
 
@@ -97,17 +91,19 @@ export const PuzzleShape = ({
       return { showHint: newCount % 3 === 0 && showHint, count: newCount }
     })
 
-    stopWrongAnswer()
-
     if (isRightLocaion) {
       // TODO: add confetti
       setDidFinish(true)
-      playRightAnswer()
+      playShapeSound({
+        soundUrl: defaultGoodAnswer,
+        onend: () => onRightSoundEnd(shape.pk),
+        fireOnendOnSoundStop: true,
+      })
       moveShape({ shapeNode: shapeRef.current, location: 'to-right-place', shape })
       return
     }
 
-    playWrongAnswer()
+    playShapeSound({ soundUrl: DefaultWrongAnswer })
     onWrongAnswer()
 
     if (bounceBack) {
@@ -118,8 +114,7 @@ export const PuzzleShape = ({
   const onDragStart = () => {
     if (soundUrl) {
       stopIntroSound()
-      stop()
-      play()
+      playShapeSound({ soundUrl })
     }
   }
 

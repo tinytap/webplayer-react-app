@@ -3,6 +3,7 @@ import { usePlayIntro } from '../../../hooks/usePlayIntro'
 import { updateShapesStatus } from '../../../utils'
 import { useShapesStatus } from '../../../hooks/useShapesStatus'
 import { InputShape } from '../shapes/InputShape'
+import { ShapeSoundObj } from '..'
 
 interface TalkOrTypeActivityProps {
   moveToNextSlide: (index?: number) => void
@@ -12,6 +13,7 @@ interface TalkOrTypeActivityProps {
   activity: Activity
   baseUrl: string
   onWrongAnswer: () => void
+  playShapeSound: ({ onend, soundUrl }: ShapeSoundObj) => void
 }
 
 export function TalkOrTypeActivity({
@@ -22,6 +24,7 @@ export function TalkOrTypeActivity({
   activity,
   baseUrl,
   onWrongAnswer,
+  playShapeSound,
 }: TalkOrTypeActivityProps) {
   const { setShapeStatus } = useShapesStatus({ shapes: activity.shapes, moveToNextSlide })
 
@@ -53,6 +56,7 @@ export function TalkOrTypeActivity({
             showHints={activity.settings.soundShowToolTip !== false}
             stopIntroSound={stop}
             onWrongAnswer={onWrongAnswer}
+            playShapeSound={playShapeSound}
           />
         )
       })}

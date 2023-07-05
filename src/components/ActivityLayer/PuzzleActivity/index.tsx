@@ -1,4 +1,5 @@
 import { Group } from 'react-konva'
+import { ShapeSoundObj } from '..'
 import { usePlayIntro } from '../../../hooks/usePlayIntro'
 import { useShapesStatus } from '../../../hooks/useShapesStatus'
 import { Activity } from '../../../stores/activitiesStoreTypes'
@@ -14,6 +15,7 @@ interface PuzzleActivityProps {
   baseUrl: string
   onWrongAnswer: () => void
   slideThumbnailUrl: string
+  playShapeSound: ({ onend, soundUrl }: ShapeSoundObj) => void
 }
 
 export function PuzzleActivity({
@@ -25,6 +27,7 @@ export function PuzzleActivity({
   baseUrl,
   onWrongAnswer,
   moveToNextSlide,
+  playShapeSound,
 }: PuzzleActivityProps) {
   const { stop } = usePlayIntro({
     soundUrl,
@@ -63,6 +66,7 @@ export function PuzzleActivity({
             onWrongAnswer={onWrongAnswer}
             showHint={!activity.settings.DisableHints}
             onRightSoundEnd={onShapeRightSoundEnd}
+            playShapeSound={playShapeSound}
           />
         )
       })}

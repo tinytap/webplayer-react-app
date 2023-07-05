@@ -1,11 +1,11 @@
-import { FocusEvent, useEffect, useMemo, useState } from 'react'
-import useSound from 'use-sound'
+import { FocusEvent, useMemo, useState } from 'react'
 import { Shape } from '../../../../stores/activitiesStoreTypes'
 import { getFontSize, getPathRect } from '../../../../utils'
 import DefaultGoodAnswer from '../../../../assets/sounds/defaultGoodAnswer.mp3'
 import { Input } from './styles'
 import DefaultWrongAnswer from '../../../../assets/sounds/DefaultWrongAnswer.mp3'
 import defaultGoodAnswer from '../../../../assets/sounds/defaultGoodAnswer.mp3'
+import { ShapeSoundObj } from '../..'
 
 export type AnswerStatus = 'empty' | 'right' | 'wrong'
 
@@ -16,16 +16,19 @@ interface InputShapeProps {
   showHints: boolean
   stopIntroSound: () => void
   onWrongAnswer: () => void
+  playShapeSound: ({ onend, soundUrl }: ShapeSoundObj) => void
 }
 
 //TODO: create hints
-export const InputShape = ({ shape, baseUrl, onRightSoundEnd, stopIntroSound, onWrongAnswer }: InputShapeProps) => {
+export const InputShape = ({
+  shape,
+  baseUrl,
+  onRightSoundEnd,
+  stopIntroSound,
+  onWrongAnswer,
+  playShapeSound,
+}: InputShapeProps) => {
   const soundUrl = shape.filePathRecording1 ? baseUrl + shape.filePathRecording1 : DefaultGoodAnswer
-  const [play, { stop }] = useSound(soundUrl)
-  const [playWrongAnswer] = useSound(DefaultWrongAnswer)
-  const [playRightAnswer] = useSound(defaultGoodAnswer, {
-    onend: () => onRightSoundEnd(shape.pk),
-  })
 
   const [answerStatus, setAnswerStatus] = useState<AnswerStatus>('empty')
 
@@ -48,24 +51,16 @@ export const InputShape = ({ shape, baseUrl, onRightSoundEnd, stopIntroSound, on
     return { ...shapeRect, fontSize, maxLength: maxWord.length }
   }, [shape])
 
-  useEffect(() => {
-    return () => {
-      stop()
-    }
-  }, [stop])
-
   if (!inputProps) {
     return <></>
   }
 
   const onFocus = () => {
     stopIntroSound()
-    play()
+    playShapeSound({ soundUrl })
   }
 
   const onBlur = (e: FocusEvent<HTMLInputElement>) => {
-    stop()
-
     const inputValue = e.target.value
     if (inputValue === '') {
       setAnswerStatus('empty')
@@ -80,10 +75,15 @@ export const InputShape = ({ shape, baseUrl, onRightSoundEnd, stopIntroSound, on
     })
 
     if (status === 'wrong') {
-      playWrongAnswer()
+      playShapeSound({ soundUrl: DefaultWrongAnswer })
+
       onWrongAnswer()
     } else {
-      playRightAnswer()
+      playShapeSound({
+        soundUrl: defaultGoodAnswer,
+        onend: () => onRightSoundEnd(shape.pk),
+        fireOnendOnSoundStop: true,
+      })
     }
     setAnswerStatus(status)
   }

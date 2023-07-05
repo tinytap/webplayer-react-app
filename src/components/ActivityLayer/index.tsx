@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react'
 import { Star } from 'react-konva'
+import useSound from 'use-sound'
 import { Activity, ActivityState } from '../../stores/activitiesStoreTypes'
 import { useGameStore } from '../../stores/gameStore'
 import { usePlayerStore } from '../../stores/playerStore'
@@ -8,6 +10,13 @@ import { ReadingActivity } from './ReadingActivity'
 import { SoundboardActivity } from './SoundboardActivity'
 import { TalkOrTypeActivity } from './TalkOrTypeActivity'
 import { VideoActivity } from './VideoActivity'
+
+export interface ShapeSoundObj {
+  onend?: () => void
+  soundUrl: string
+  fireOnendOnSoundStop?: boolean
+  playSound?: boolean
+}
 
 interface ActivityLayerProps {
   baseUrl: string
@@ -49,6 +58,42 @@ export function ActivityLayer({
     return false
   })
 
+  const [shapeSoundObj, setShapeSoundObj] = useState<ShapeSoundObj>({
+    soundUrl: soundUrl,
+  })
+
+  const [play, { stop }] = useSound(shapeSoundObj.soundUrl, {
+    onend: () => {
+      if (shapeSoundObj.onend) {
+        shapeSoundObj.onend()
+      }
+    },
+  })
+
+  useEffect(() => {
+    if (!shapeSoundObj.soundUrl || !shapeSoundObj.playSound) {
+      return
+    }
+
+    play()
+    return () => {
+      stop()
+    }
+  }, [shapeSoundObj, stop, play])
+
+  const playShapeSound = ({ onend, soundUrl, fireOnendOnSoundStop }: ShapeSoundObj) => {
+    if (shapeSoundObj.fireOnendOnSoundStop && shapeSoundObj.onend) {
+      shapeSoundObj.onend()
+    }
+
+    setShapeSoundObj({
+      onend: onend,
+      soundUrl: soundUrl,
+      fireOnendOnSoundStop: fireOnendOnSoundStop,
+      playSound: true,
+    })
+  }
+
   const moveToNextSlide = (index?: number) => {
     if (index !== undefined) {
       selectSlideIndex(index)
@@ -81,6 +126,7 @@ export function ActivityLayer({
           baseUrl={baseUrl}
           isQuizMode={isQuizMode}
           onWrongAnswer={onWrongAnswerEvent}
+          playShapeSound={playShapeSound}
         />
       )
     case 'Q':
@@ -99,6 +145,7 @@ export function ActivityLayer({
           activity={activity}
           baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
+          playShapeSound={playShapeSound}
         />
       )
     case 'P':
@@ -112,6 +159,7 @@ export function ActivityLayer({
           baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
           slideThumbnailUrl={slideThumbnailUrl}
+          playShapeSound={playShapeSound}
         />
       )
     //TODO: fix HTML elements issue inside konva
@@ -126,6 +174,7 @@ export function ActivityLayer({
           activity={activity}
           baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
+          playShapeSound={playShapeSound}
         />
       )
     case 'V':
