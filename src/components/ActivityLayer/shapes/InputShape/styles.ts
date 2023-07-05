@@ -31,8 +31,7 @@ const wrongAnswerAnimation = css`
   }
 `
 
-// TODO: fix font-size
-export const Input = styled.input<{ x: number; y: number; w: number; h: number }>`
+export const Input = styled.input<{ x: number; y: number; w: number; h: number; fontSize?: number }>`
   font-family: arial;
   position: absolute;
   border-radius: 7px;
@@ -40,12 +39,14 @@ export const Input = styled.input<{ x: number; y: number; w: number; h: number }
   background-color: ${playerColors.inputColor};
   text-align: center;
   color: #222;
+  box-sizing: border-box;
+
   ${(props) => css`
     top: ${props.y}px;
     left: ${props.x}px;
-    width: ${props.w - (INPUT_PADDING + 1) * 2}px;
-    height: ${props.h - (INPUT_PADDING + 1) * 2}px;
-    font-size: ${props.h - (INPUT_PADDING + 1) * 4}px;
+    width: ${props.w}px;
+    height: ${props.h}px;
+    font-size: ${props.fontSize}px;
   `}
 
   animation-duration: 3s;

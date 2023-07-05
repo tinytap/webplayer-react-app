@@ -184,3 +184,38 @@ export const getPathRect = (path: PathItem[]) => {
   const rect = { y: minY, x: minX, w: maxX - minX, h: maxY - minY }
   return rect
 }
+
+interface getFontSizeProps {
+  text: string
+  containerSize: { h: number; w: number }
+  fontFamily?: string
+  minSize?: number
+}
+export const getFontSize = ({ text, containerSize, fontFamily = 'ariel', minSize = 16 }: getFontSizeProps) => {
+  const test = document.createElement('span')
+  test.style.visibility = 'hidden'
+  test.style.border = '0'
+  test.style.padding = '0'
+  test.style.whiteSpace = 'pre'
+
+  const minFont = 10
+  const maxFont = 100
+  test.innerHTML = text
+  test.style.fontFamily = fontFamily
+  document.body.append(test)
+
+  test.style.fontSize = maxFont + 'px'
+  const { width: maxWidth, height: maxHeight } = test.getBoundingClientRect()
+
+  test.style.fontSize = minFont + 'px'
+  const { width: minWidth, height: minHeight } = test.getBoundingClientRect()
+
+  test.remove()
+
+  const width = ((containerSize.w - minWidth) * (maxFont - minFont)) / (maxWidth - minWidth) + minFont
+  const height = ((containerSize.h - minHeight) * (maxFont - minFont)) / (maxHeight - minHeight) + minFont
+  const size = Math.min(width, height) - 5
+
+  return Math.max(size, minSize)
+}
+

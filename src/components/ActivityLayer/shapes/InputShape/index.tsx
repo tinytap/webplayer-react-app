@@ -1,7 +1,7 @@
 import { FocusEvent, useEffect, useMemo, useState } from 'react'
 import useSound from 'use-sound'
 import { Shape } from '../../../../stores/activitiesStoreTypes'
-import { getPathRect } from '../../../../utils'
+import { getFontSize, getPathRect } from '../../../../utils'
 import DefaultGoodAnswer from '../../../../assets/sounds/defaultGoodAnswer.mp3'
 import { Input } from './styles'
 import DefaultWrongAnswer from '../../../../assets/sounds/DefaultWrongAnswer.mp3'
@@ -21,7 +21,6 @@ interface InputShapeProps {
 //TODO: create hints
 export const InputShape = ({ shape, baseUrl, onRightSoundEnd, stopIntroSound, onWrongAnswer }: InputShapeProps) => {
   const soundUrl = shape.filePathRecording1 ? baseUrl + shape.filePathRecording1 : DefaultGoodAnswer
-
   const [play, { stop }] = useSound(soundUrl)
   const [playWrongAnswer] = useSound(DefaultWrongAnswer)
   const [playRightAnswer] = useSound(defaultGoodAnswer, {
@@ -30,21 +29,24 @@ export const InputShape = ({ shape, baseUrl, onRightSoundEnd, stopIntroSound, on
 
   const [answerStatus, setAnswerStatus] = useState<AnswerStatus>('empty')
 
-  const shapeRect = useMemo(() => {
-    return getPathRect(shape.path)
-  }, [shape.path])
+  const inputProps = useMemo(() => {
+    const shapeRect = getPathRect(shape.path)
 
-  const maxLength = useMemo(() => {
-    let answerLength = 0
-
+    let maxWord = ''
     shape.settings.textAnswerArray?.forEach((t) => {
-      if (t.length > answerLength) {
-        answerLength = t.length
+      if (t.length > maxWord.length) {
+        maxWord = t
       }
     })
 
-    return answerLength
-  }, [shape.settings.textAnswerArray])
+    if (!maxWord || !shapeRect) {
+      return
+    }
+
+    const fontSize = getFontSize({ text: maxWord, containerSize: shapeRect })
+
+    return { ...shapeRect, fontSize, maxLength: maxWord.length }
+  }, [shape])
 
   useEffect(() => {
     return () => {
@@ -52,7 +54,7 @@ export const InputShape = ({ shape, baseUrl, onRightSoundEnd, stopIntroSound, on
     }
   }, [stop])
 
-  if (!shapeRect || !maxLength) {
+  if (!inputProps) {
     return <></>
   }
 
@@ -89,8 +91,7 @@ export const InputShape = ({ shape, baseUrl, onRightSoundEnd, stopIntroSound, on
   return (
     <Input
       readOnly={answerStatus === 'right'}
-      maxLength={maxLength}
-      {...shapeRect}
+      {...inputProps}
       onFocus={onFocus}
       onBlur={onBlur}
       className={answerStatus}

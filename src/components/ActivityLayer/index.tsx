@@ -68,9 +68,6 @@ export function ActivityLayer({
           moveToNextSlide={moveToNextSlide}
         />
       )
-    case 'V':
-      // this activity should not be inside Stage (from react-konva)
-      return <VideoActivity activitySettings={activity.settings} moveToNextSlide={moveToNextSlide} baseUrl={baseUrl} />
     case 'S':
       return <></>
     case 'A':
@@ -117,6 +114,7 @@ export function ActivityLayer({
           slideThumbnailUrl={slideThumbnailUrl}
         />
       )
+    //TODO: fix HTML elements issue inside konva
     case 'T':
       return (
         // this activity should not be inside Stage (from react-konva)
@@ -130,6 +128,9 @@ export function ActivityLayer({
           onWrongAnswer={onWrongAnswerEvent}
         />
       )
+    case 'V':
+      // this activity should not be inside Stage (from react-konva)
+      return <VideoActivity activitySettings={activity.settings} moveToNextSlide={moveToNextSlide} baseUrl={baseUrl} />
 
     default:
       return <Star numPoints={10} innerRadius={50} outerRadius={100} x={300} y={300} fill="red" />
