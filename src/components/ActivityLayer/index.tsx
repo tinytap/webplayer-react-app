@@ -63,8 +63,10 @@ export function ActivityLayer({
     soundUrl: soundUrl,
   })
 
+  const [isPlaying, setIsPlaying] = useState(false)
   const [play, { stop }] = useSound(shapeSoundObj.soundUrl, {
     onend: () => {
+      setIsPlaying(false)
       if (shapeSoundObj.onend) {
         shapeSoundObj.onend()
       }
@@ -83,10 +85,11 @@ export function ActivityLayer({
   }, [shapeSoundObj, stop, play])
 
   const playShapeSound = ({ onend, soundUrl, fireOnendOnSoundStop, id }: ShapeSoundObj) => {
-    if (shapeSoundObj.fireOnendOnSoundStop && shapeSoundObj.onend && shapeSoundObj.id !== id) {
+    if (shapeSoundObj.fireOnendOnSoundStop && shapeSoundObj.onend && shapeSoundObj.id !== id && isPlaying) {
       shapeSoundObj.onend()
     }
 
+    setIsPlaying(true)
     setShapeSoundObj({
       onend: onend,
       soundUrl: soundUrl,
