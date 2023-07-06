@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Group as KonvaGroupType } from 'konva/lib/Group'
 import DefaultWrongAnswer from '../../../../assets/sounds/DefaultWrongAnswer.mp3'
 import defaultGoodAnswer from '../../../../assets/sounds/defaultGoodAnswer.mp3'
-import { ShapeSoundObj } from '../..'
+import { SlideSoundObj } from '../../../../hooks/useSlideSound'
 
 interface PuzzleShapeProps {
   shape: Shape
@@ -21,7 +21,7 @@ interface PuzzleShapeProps {
   onWrongAnswer: () => void
   showHint: boolean
   onRightSoundEnd: (pk: number) => void
-  playShapeSound: ({ onend, soundUrl }: ShapeSoundObj) => void
+  playShapeSound: ({ onend, soundUrl }: SlideSoundObj) => void
   is3D: boolean
 }
 

@@ -7,7 +7,7 @@ import { usePlayIntro } from '../../../hooks/usePlayIntro'
 import { useShowHints } from '../../../hooks/useShowHints'
 import { updateShapesStatus } from '../../../utils'
 import { useShapesStatus } from '../../../hooks/useShapesStatus'
-import { ShapeSoundObj } from '..'
+import { SlideSoundObj } from '../../../hooks/useSlideSound'
 
 interface SoundboardActivityProps {
   moveToNextSlide: (index?: number) => void
@@ -18,7 +18,7 @@ interface SoundboardActivityProps {
   baseUrl: string
   isQuizMode: boolean
   onWrongAnswer: () => void
-  playShapeSound: ({ onend, soundUrl }: ShapeSoundObj) => void
+  playShapeSound: ({ onend, soundUrl }: SlideSoundObj) => void
 }
 
 export function SoundboardActivity({

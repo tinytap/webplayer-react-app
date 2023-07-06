@@ -3,8 +3,8 @@ import { usePlayIntro } from '../../../hooks/usePlayIntro'
 import { updateShapesStatus } from '../../../utils'
 import { useShapesStatus } from '../../../hooks/useShapesStatus'
 import { InputShape } from '../shapes/InputShape'
-import { ShapeSoundObj } from '..'
 import { Html } from 'react-konva-utils'
+import { SlideSoundObj } from '../../../hooks/useSlideSound'
 
 interface TalkOrTypeActivityProps {
   moveToNextSlide: (index?: number) => void
@@ -14,7 +14,7 @@ interface TalkOrTypeActivityProps {
   activity: Activity
   baseUrl: string
   onWrongAnswer: () => void
-  playShapeSound: ({ onend, soundUrl }: ShapeSoundObj) => void
+  playShapeSound: ({ onend, soundUrl }: SlideSoundObj) => void
 }
 
 export function TalkOrTypeActivity({

@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react'
 import { Star } from 'react-konva'
-import useSound from 'use-sound'
+import { useSlideSound } from '../../hooks/useSlideSound'
 import { Activity, ActivityState } from '../../stores/activitiesStoreTypes'
 import { useGameStore } from '../../stores/gameStore'
 import { usePlayerStore } from '../../stores/playerStore'
@@ -10,16 +9,6 @@ import { ReadingActivity } from './ReadingActivity'
 import { SoundboardActivity } from './SoundboardActivity'
 import { TalkOrTypeActivity } from './TalkOrTypeActivity'
 import { VideoActivity } from './VideoActivity'
-
-export interface ShapeSoundObj {
-  onend?: () => void
-  soundUrl: string
-  fireOnendOnSoundStop?: boolean
-  id?: string
-  didEnd?: boolean
-  isLoaded?: boolean
-  playSound?: boolean
-}
 
 interface ActivityLayerProps {
   baseUrl: string
@@ -61,51 +50,7 @@ export function ActivityLayer({
     return false
   })
 
-  const [shapeSoundObj, setShapeSoundObj] = useState<ShapeSoundObj>({
-    soundUrl: soundUrl,
-  })
-
-  const [play, { stop }] = useSound(shapeSoundObj.soundUrl, {
-    onend: () => {
-      setShapeSoundObj((oldV) => ({ ...oldV, didEnd: true }))
-    },
-    onload: () => {
-      setShapeSoundObj((oldV) => ({ ...oldV, isLoaded: true }))
-    },
-  })
-
-  useEffect(() => {
-    if (!shapeSoundObj.soundUrl || !shapeSoundObj.playSound || !shapeSoundObj.isLoaded || shapeSoundObj.didEnd) {
-      return
-    }
-
-    play()
-    return () => {
-      stop()
-    }
-  }, [shapeSoundObj, stop, play])
-  useEffect(() => {
-    if (!shapeSoundObj.didEnd || !shapeSoundObj.onend) {
-      return
-    }
-    shapeSoundObj.onend()
-  }, [shapeSoundObj])
-
-  const playShapeSound = ({ onend, soundUrl, fireOnendOnSoundStop, id }: ShapeSoundObj) => {
-    if (shapeSoundObj.fireOnendOnSoundStop && shapeSoundObj.onend && shapeSoundObj.id !== id && !shapeSoundObj.didEnd) {
-      shapeSoundObj.onend()
-    }
-
-    setShapeSoundObj({
-      onend: onend,
-      soundUrl: soundUrl,
-      fireOnendOnSoundStop: fireOnendOnSoundStop,
-      id: id,
-      didEnd: false,
-      isLoaded: soundUrl === shapeSoundObj.soundUrl,
-      playSound: true,
-    })
-  }
+  const { playSlideSound } = useSlideSound()
 
   const moveToNextSlide = (index?: number) => {
     if (index !== undefined) {
@@ -139,7 +84,7 @@ export function ActivityLayer({
           baseUrl={baseUrl}
           isQuizMode={isQuizMode}
           onWrongAnswer={onWrongAnswerEvent}
-          playShapeSound={playShapeSound}
+          playShapeSound={playSlideSound}
         />
       )
     case 'Q':
@@ -158,7 +103,7 @@ export function ActivityLayer({
           activity={activity}
           baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
-          playShapeSound={playShapeSound}
+          playShapeSound={playSlideSound}
         />
       )
     case 'P':
@@ -172,7 +117,7 @@ export function ActivityLayer({
           baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
           slideThumbnailUrl={slideThumbnailUrl}
-          playShapeSound={playShapeSound}
+          playShapeSound={playSlideSound}
         />
       )
     case 'T':
@@ -185,7 +130,7 @@ export function ActivityLayer({
           activity={activity}
           baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
-          playShapeSound={playShapeSound}
+          playShapeSound={playSlideSound}
         />
       )
     case 'V':

@@ -5,7 +5,7 @@ import DefaultGoodAnswer from '../../../../assets/sounds/defaultGoodAnswer.mp3'
 import { Input } from './styles'
 import DefaultWrongAnswer from '../../../../assets/sounds/DefaultWrongAnswer.mp3'
 import defaultGoodAnswer from '../../../../assets/sounds/defaultGoodAnswer.mp3'
-import { ShapeSoundObj } from '../..'
+import { SlideSoundObj } from '../../../../hooks/useSlideSound'
 
 export type AnswerStatus = 'empty' | 'right' | 'wrong'
 
@@ -16,7 +16,7 @@ interface InputShapeProps {
   showHints: boolean
   stopIntroSound: () => void
   onWrongAnswer: () => void
-  playShapeSound: ({ onend, soundUrl }: ShapeSoundObj) => void
+  playShapeSound: ({ onend, soundUrl }: SlideSoundObj) => void
 }
 
 //TODO: create hints
@@ -83,7 +83,7 @@ export const InputShape = ({
         soundUrl: defaultGoodAnswer,
         onend: () => onRightSoundEnd(shape.pk),
         fireOnendOnSoundStop: true,
-        id: `right_${shape.pk}`
+        id: `right_${shape.pk}`,
       })
     }
     setAnswerStatus(status)

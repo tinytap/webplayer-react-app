@@ -6,7 +6,7 @@ import { AnswerShape } from '../shapes/AnswerShape'
 import { usePlayIntro } from '../../../hooks/usePlayIntro'
 import { useShowHints } from '../../../hooks/useShowHints'
 import { useState } from 'react'
-import { ShapeSoundObj } from '..'
+import { SlideSoundObj } from '../../../hooks/useSlideSound'
 
 interface QuestionsActivityProps {
   onFinishQuestion: () => void
@@ -16,7 +16,7 @@ interface QuestionsActivityProps {
   activity: Activity
   baseUrl: string
   onWrongAnswer: () => void
-  playShapeSound: ({ onend, soundUrl }: ShapeSoundObj) => void
+  playShapeSound: ({ onend, soundUrl }: SlideSoundObj) => void
 }
 
 export function QuestionsActivity({
