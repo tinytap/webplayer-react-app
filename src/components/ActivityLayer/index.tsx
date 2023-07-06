@@ -1,5 +1,4 @@
 import { Star } from 'react-konva'
-import { useSlideSound } from '../../hooks/useSlideSound'
 import { Activity, ActivityState } from '../../stores/activitiesStoreTypes'
 import { useGameStore } from '../../stores/gameStore'
 import { usePlayerStore } from '../../stores/playerStore'
@@ -50,8 +49,6 @@ export function ActivityLayer({
     return false
   })
 
-  const { playSlideSound } = useSlideSound()
-
   const moveToNextSlide = (index?: number) => {
     if (index !== undefined) {
       selectSlideIndex(index)
@@ -84,7 +81,6 @@ export function ActivityLayer({
           baseUrl={baseUrl}
           isQuizMode={isQuizMode}
           onWrongAnswer={onWrongAnswerEvent}
-          playShapeSound={playSlideSound}
         />
       )
     case 'Q':
@@ -103,7 +99,6 @@ export function ActivityLayer({
           activity={activity}
           baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
-          playShapeSound={playSlideSound}
         />
       )
     case 'P':
@@ -117,7 +112,6 @@ export function ActivityLayer({
           baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
           slideThumbnailUrl={slideThumbnailUrl}
-          playShapeSound={playSlideSound}
         />
       )
     case 'T':
@@ -130,7 +124,6 @@ export function ActivityLayer({
           activity={activity}
           baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
-          playShapeSound={playSlideSound}
         />
       )
     case 'V':

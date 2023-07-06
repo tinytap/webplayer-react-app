@@ -4,11 +4,11 @@ import { drawShape, moveShape } from '../../../../utils'
 import { PLAYER_HEIGHT, PLAYER_WIDTH, PUZZLE_OFFSET_SHAPE_DETECT_PX } from '../../../../utils/constants'
 import { useImage } from '../../../../hooks/useImage'
 import { KonvaEventObject } from 'konva/lib/Node'
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { Group as KonvaGroupType } from 'konva/lib/Group'
 import DefaultWrongAnswer from '../../../../assets/sounds/DefaultWrongAnswer.mp3'
 import defaultGoodAnswer from '../../../../assets/sounds/defaultGoodAnswer.mp3'
-import { SlideSoundObj } from '../../../../hooks/useSlideSound'
+import { PlayerContext } from '../../../Player/context'
 
 interface PuzzleShapeProps {
   shape: Shape
@@ -21,7 +21,6 @@ interface PuzzleShapeProps {
   onWrongAnswer: () => void
   showHint: boolean
   onRightSoundEnd: (pk: number) => void
-  playShapeSound: ({ onend, soundUrl }: SlideSoundObj) => void
   is3D: boolean
 }
 
@@ -36,9 +35,10 @@ export const PuzzleShape = ({
   onWrongAnswer,
   showHint,
   onRightSoundEnd,
-  playShapeSound,
   is3D,
 }: PuzzleShapeProps) => {
+  const { playSlideSound } = useContext(PlayerContext)
+
   const [didFinish, setDidFinish] = useState(false)
   const shapeRef = useRef<KonvaGroupType>(null)
   const [image] = useImage(slideThumbnailUrl)
@@ -95,7 +95,7 @@ export const PuzzleShape = ({
     if (isRightLocaion) {
       // TODO: add confetti
       setDidFinish(true)
-      playShapeSound({
+      playSlideSound({
         soundUrl: defaultGoodAnswer,
         onend: () => onRightSoundEnd(shape.pk),
         fireOnendOnSoundStop: true,
@@ -105,7 +105,7 @@ export const PuzzleShape = ({
       return
     }
 
-    playShapeSound({ soundUrl: DefaultWrongAnswer })
+    playSlideSound({ soundUrl: DefaultWrongAnswer })
     onWrongAnswer()
 
     if (bounceBack) {
@@ -116,7 +116,7 @@ export const PuzzleShape = ({
   const onDragStart = () => {
     if (soundUrl) {
       stopIntroSound()
-      playShapeSound({ soundUrl })
+      playSlideSound({ soundUrl })
     }
   }
 
@@ -138,7 +138,7 @@ export const PuzzleShape = ({
       )}
 
       <Group draggable={!didFinish} onDragEnd={onDragEnd} onDragStart={onDragStart} ref={shapeRef}>
-        {is3D && !didFinish && (
+        {is3D && !didFinish && !!image && (
           <Group
             id={`puzzle_shape_shadow_${shape.pk}`}
             clipFunc={function (ctx) {

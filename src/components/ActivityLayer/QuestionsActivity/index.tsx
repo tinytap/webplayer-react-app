@@ -5,8 +5,8 @@ import DefaultWrongAnswer from '../../../assets/sounds/defaultWrongAnswer.mp3'
 import { AnswerShape } from '../shapes/AnswerShape'
 import { usePlayIntro } from '../../../hooks/usePlayIntro'
 import { useShowHints } from '../../../hooks/useShowHints'
-import { useState } from 'react'
-import { SlideSoundObj } from '../../../hooks/useSlideSound'
+import { useContext, useState } from 'react'
+import { PlayerContext } from '../../Player/context'
 
 interface QuestionsActivityProps {
   onFinishQuestion: () => void
@@ -16,7 +16,6 @@ interface QuestionsActivityProps {
   activity: Activity
   baseUrl: string
   onWrongAnswer: () => void
-  playShapeSound: ({ onend, soundUrl }: SlideSoundObj) => void
 }
 
 export function QuestionsActivity({
@@ -27,8 +26,9 @@ export function QuestionsActivity({
   activity,
   baseUrl,
   onWrongAnswer,
-  playShapeSound,
 }: QuestionsActivityProps) {
+  const { playSlideSound } = useContext(PlayerContext)
+
   const [didFinish, setDidFinish] = useState(false)
   const { showHints, setShowHints } = useShowHints()
 
@@ -47,7 +47,7 @@ export function QuestionsActivity({
     }
     stop()
 
-    playShapeSound({
+    playSlideSound({
       soundUrl: wrongAnswerSoundUrl,
       onend: () => playAgain(),
     })
@@ -71,7 +71,7 @@ export function QuestionsActivity({
         onRightClick={() => {
           setDidFinish(true)
         }}
-        playShapeSound={playShapeSound}
+        playShapeSound={playSlideSound}
       />
     </Group>
   )
