@@ -55,7 +55,7 @@ export interface Activity {
 
 export interface ActivitySettings {
   soundFlatMode?: boolean
-  ShapePuzzleThemeV2?: number
+  ShapePuzzleThemeV2?: number | boolean
   showShapeV2?: boolean
   soundFunModeV2?: boolean
   advance?: boolean

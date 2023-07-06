@@ -36,7 +36,7 @@ export function PuzzleActivity({
     playIntroAgainWithTimer: false,
   })
 
-  const { setShapeStatus } = useShapesStatus({ shapes: activity.shapes, moveToNextSlide })
+  const { shapesStatus, setShapeStatus } = useShapesStatus({ shapes: activity.shapes, moveToNextSlide })
 
   const onShapeRightSoundEnd = (shapePk: number) => {
     updateShapesStatus({ setClickedShapes: setShapeStatus, shapePk, linkToPage: activity.settings.linkToPage })
@@ -50,9 +50,17 @@ export function PuzzleActivity({
   return (
     <Group>
       {activity.shapes.map((shape, i) => {
+        if (shapesStatus && shapesStatus[shape.pk]?.didClickShape) {
+          return null
+        }
+
         return <PuzzleShapeHole shape={shape} key={`shape_hole_${shape.pk}_${i}`} />
       })}
       {activity.shapes.map((shape, i) => {
+        if (shapesStatus && shapesStatus[shape.pk]?.didClickShape) {
+          return null
+        }
+
         return (
           <PuzzleShape
             shape={shape}
@@ -67,6 +75,7 @@ export function PuzzleActivity({
             showHint={!activity.settings.DisableHints}
             onRightSoundEnd={onShapeRightSoundEnd}
             playShapeSound={playShapeSound}
+            is3D={!!activity.settings.ShapePuzzleThemeV2}
           />
         )
       })}

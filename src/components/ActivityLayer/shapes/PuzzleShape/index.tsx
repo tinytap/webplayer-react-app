@@ -1,4 +1,4 @@
-import { Group, Shape as KonvaShape, Image } from 'react-konva'
+import { Group, Shape as KonvaShape, Image, Rect } from 'react-konva'
 import { Shape } from '../../../../stores/activitiesStoreTypes'
 import { drawShape, moveShape } from '../../../../utils'
 import { PLAYER_HEIGHT, PLAYER_WIDTH, PUZZLE_OFFSET_SHAPE_DETECT_PX } from '../../../../utils/constants'
@@ -22,9 +22,9 @@ interface PuzzleShapeProps {
   showHint: boolean
   onRightSoundEnd: (pk: number) => void
   playShapeSound: ({ onend, soundUrl }: ShapeSoundObj) => void
+  is3D: boolean
 }
 
-// TODO: 3d shapes
 export const PuzzleShape = ({
   shape,
   slideThumbnailUrl,
@@ -37,6 +37,7 @@ export const PuzzleShape = ({
   showHint,
   onRightSoundEnd,
   playShapeSound,
+  is3D,
 }: PuzzleShapeProps) => {
   const [didFinish, setDidFinish] = useState(false)
   const shapeRef = useRef<KonvaGroupType>(null)
@@ -122,8 +123,8 @@ export const PuzzleShape = ({
   return (
     <Group>
       {wrongAnswerObj.showHint && shapeRef.current && (
-        // the shape hint
         <Group
+          id={`puzzle_shape_hint_${shape.pk}`}
           ref={shapeHintRef}
           clipFunc={function (ctx) {
             drawShape(ctx, shape.path)
@@ -135,16 +136,29 @@ export const PuzzleShape = ({
           <Image width={PLAYER_WIDTH} height={PLAYER_HEIGHT} image={image} />
         </Group>
       )}
-      <Group
-        ref={shapeRef}
-        clipFunc={function (ctx) {
-          drawShape(ctx, shape.path)
-        }}
-        draggable={!didFinish}
-        onDragEnd={onDragEnd}
-        onDragStart={onDragStart}
-      >
-        <Image width={PLAYER_WIDTH} height={PLAYER_HEIGHT} image={image} />
+
+      <Group draggable={!didFinish} onDragEnd={onDragEnd} onDragStart={onDragStart} ref={shapeRef}>
+        {is3D && !didFinish && (
+          <Group
+            id={`puzzle_shape_shadow_${shape.pk}`}
+            clipFunc={function (ctx) {
+              drawShape(ctx, shape.path)
+            }}
+            offset={{ x: -5, y: -5 }}
+          >
+            <Image width={PLAYER_WIDTH} height={PLAYER_HEIGHT} image={image} />
+            <Rect width={PLAYER_WIDTH} height={PLAYER_HEIGHT} fill={'black'} opacity={0.5} />
+          </Group>
+        )}
+
+        <Group
+          id={`puzzle_shape_${shape.pk}`}
+          clipFunc={function (ctx) {
+            drawShape(ctx, shape.path)
+          }}
+        >
+          <Image width={PLAYER_WIDTH} height={PLAYER_HEIGHT} image={image} />
+        </Group>
       </Group>
     </Group>
   )
