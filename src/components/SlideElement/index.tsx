@@ -9,7 +9,7 @@ import { PLAYER_HEIGHT, PLAYER_WIDTH } from '../../utils/constants'
 import { LoaderSpinner } from '../Loader/styles'
 import { BackgroundLayer } from './BackgroundLayer'
 import { StickerLayer } from './StickerLayer'
-import { AbsoluteContainer, DebugContainer, SlideContainer } from './styles'
+import { DebugContainer, SlideContainer } from './styles'
 import { TextLayer } from './TextLayer'
 import { AnimationStickerLayer } from './AnimationStickerLayer'
 import { useActivitiesStore } from '../../stores/activitiesStore'
@@ -184,12 +184,8 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
               )}
             </Layer>
             {/** Activities layered together */}
-            {slideActivityState?.engineType !== 'V' && slideActivityState?.engineType !== 'T' && (
-              <Layer>{ActivityElement}</Layer>
-            )}
+            {<Layer>{ActivityElement}</Layer>}
           </Stage>
-          {slideActivityState?.engineType === 'V' ||
-            (slideActivityState?.engineType === 'T' && <AbsoluteContainer>{ActivityElement}</AbsoluteContainer>)}
         </SlideContainer>
       )}
     </Transition>

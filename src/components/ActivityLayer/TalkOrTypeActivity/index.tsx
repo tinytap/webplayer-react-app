@@ -4,6 +4,7 @@ import { updateShapesStatus } from '../../../utils'
 import { useShapesStatus } from '../../../hooks/useShapesStatus'
 import { InputShape } from '../shapes/InputShape'
 import { ShapeSoundObj } from '..'
+import { Html } from 'react-konva-utils'
 
 interface TalkOrTypeActivityProps {
   moveToNextSlide: (index?: number) => void
@@ -45,7 +46,7 @@ export function TalkOrTypeActivity({
   }
 
   return (
-    <>
+    <Html>
       {activity.shapes.map((shape, i) => {
         return (
           <InputShape
@@ -60,7 +61,7 @@ export function TalkOrTypeActivity({
           />
         )
       })}
-    </>
+    </Html>
   )
 }
 

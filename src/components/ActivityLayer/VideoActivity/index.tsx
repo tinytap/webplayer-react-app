@@ -5,6 +5,7 @@ import ReactPlayer from 'react-player'
 import { usePlayerStore } from '../../../stores/playerStore'
 import { useEffect } from 'react'
 import { PLAYER_HEIGHT, PLAYER_WIDTH } from '../../../utils/constants'
+import { Html } from 'react-konva-utils'
 
 const YOUTUBE_VIDEO_WIDTH = 527
 const YOUTUBE_VIDEO_HEIGHT = 297
@@ -50,18 +51,20 @@ export function VideoActivity({ activitySettings, moveToNextSlide, baseUrl }: Vi
   }
 
   return (
-    <VideoContainer iframeStyle={iframeStyle}>
-      <ReactPlayer
-        playing
-        allowFullScreen
-        stopOnUnmount
-        onEnded={() => moveToNextSlide(activitySettings.linkToPage)}
-        width={PLAYER_WIDTH}
-        height={PLAYER_HEIGHT}
-        url={videoPath}
-        title="YouTube video player"
-      />
-    </VideoContainer>
+    <Html>
+      <VideoContainer iframeStyle={iframeStyle}>
+        <ReactPlayer
+          playing
+          allowFullScreen
+          stopOnUnmount
+          onEnded={() => moveToNextSlide(activitySettings.linkToPage)}
+          width={PLAYER_WIDTH}
+          height={PLAYER_HEIGHT}
+          url={videoPath}
+          title="YouTube video player"
+        />
+      </VideoContainer>
+    </Html>
   )
 }
 

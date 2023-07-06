@@ -175,10 +175,8 @@ export function ActivityLayer({
           playShapeSound={playShapeSound}
         />
       )
-    //TODO: fix HTML elements issue inside konva
     case 'T':
       return (
-        // this activity should not be inside Stage (from react-konva)
         <TalkOrTypeActivity
           moveToNextSlide={moveToNextSlide}
           soundUrl={soundUrl}
@@ -191,7 +189,6 @@ export function ActivityLayer({
         />
       )
     case 'V':
-      // this activity should not be inside Stage (from react-konva)
       return <VideoActivity activitySettings={activity.settings} moveToNextSlide={moveToNextSlide} baseUrl={baseUrl} />
 
     default:
