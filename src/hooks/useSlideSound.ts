@@ -43,29 +43,23 @@ export function useSlideSound() {
     slideSoundObj.onend()
   }, [slideSoundObj])
 
-  const playSlideSound = useCallback(
-    ({ onend, soundUrl, fireOnendOnSoundStop, id }: SlideSoundObj) => {
-      if (
-        slideSoundObj.fireOnendOnSoundStop &&
-        slideSoundObj.onend &&
-        slideSoundObj.id !== id &&
-        !slideSoundObj.didEnd
-      ) {
-        slideSoundObj.onend()
+  const playSlideSound = useCallback(({ onend, soundUrl, fireOnendOnSoundStop, id }: SlideSoundObj) => {
+    setSlideSoundObj((oldV) => {
+      if (oldV.fireOnendOnSoundStop && oldV.onend && oldV.id !== id && !oldV.didEnd) {
+        oldV.onend()
       }
 
-      setSlideSoundObj({
+      return {
         onend: onend,
         soundUrl: soundUrl,
         fireOnendOnSoundStop: fireOnendOnSoundStop,
         id: id,
         didEnd: false,
-        isLoaded: soundUrl === slideSoundObj.soundUrl,
+        isLoaded: soundUrl === oldV.soundUrl,
         playSound: true,
-      })
-    },
-    [slideSoundObj],
-  )
+      }
+    })
+  }, [])
 
   return {
     playSlideSound,
