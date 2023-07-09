@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import { Star } from 'react-konva'
+import { useSlideSound } from '../../hooks/useSlideSound'
 import { Activity, ActivityState } from '../../stores/activitiesStoreTypes'
 import { useGameStore } from '../../stores/gameStore'
 import { usePlayerStore } from '../../stores/playerStore'
@@ -38,6 +40,7 @@ export function ActivityLayer({
   const selectNextSlide = useGameStore((state) => state.selectNextSlide)
   const selectSlideIndex = useGameStore((state) => state.selectSlideIndex)
   const onWrongAnswerEvent = usePlayerStore((state) => () => state.setWrongAnswerEvent(true))
+
   const isQuizMode = useGameStore((state) => {
     if (
       state.settings.quizParameters &&
@@ -56,6 +59,15 @@ export function ActivityLayer({
       selectNextSlide()
     }
   }
+
+  const { playSlideSound, stop } = useSlideSound()
+
+  useEffect(() => {
+    if (!activityState.paused && !!activityState.started && !transitionLoading) {
+      return
+    }
+    stop()
+  }, [stop, transitionLoading, activityState.started, activityState.paused])
 
   switch (engine) {
     case 'R':
@@ -81,6 +93,7 @@ export function ActivityLayer({
           baseUrl={baseUrl}
           isQuizMode={isQuizMode}
           onWrongAnswer={onWrongAnswerEvent}
+          playSlideSound={playSlideSound}
         />
       )
     case 'Q':
@@ -99,6 +112,7 @@ export function ActivityLayer({
           activity={activity}
           baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
+          playSlideSound={playSlideSound}
         />
       )
     case 'P':
@@ -112,6 +126,7 @@ export function ActivityLayer({
           baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
           slideThumbnailUrl={slideThumbnailUrl}
+          playSlideSound={playSlideSound}
         />
       )
     case 'T':
@@ -124,6 +139,7 @@ export function ActivityLayer({
           activity={activity}
           baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
+          playSlideSound={playSlideSound}
         />
       )
     case 'V':

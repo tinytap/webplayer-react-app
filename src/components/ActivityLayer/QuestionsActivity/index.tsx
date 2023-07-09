@@ -5,8 +5,8 @@ import DefaultWrongAnswer from '../../../assets/sounds/defaultWrongAnswer.mp3'
 import { AnswerShape } from '../shapes/AnswerShape'
 import { usePlayIntro } from '../../../hooks/usePlayIntro'
 import { useShowHints } from '../../../hooks/useShowHints'
-import { useContext, useState } from 'react'
-import { PlayerContext } from '../../Player/context'
+import { useState } from 'react'
+import { SlideSoundObj } from '../../../hooks/useSlideSound'
 
 interface QuestionsActivityProps {
   onFinishQuestion: () => void
@@ -16,6 +16,7 @@ interface QuestionsActivityProps {
   activity: Activity
   baseUrl: string
   onWrongAnswer: () => void
+  playSlideSound: (props: SlideSoundObj) => void
 }
 
 export function QuestionsActivity({
@@ -26,9 +27,8 @@ export function QuestionsActivity({
   activity,
   baseUrl,
   onWrongAnswer,
+  playSlideSound,
 }: QuestionsActivityProps) {
-  const { playSlideSound } = useContext(PlayerContext)
-
   const [didFinish, setDidFinish] = useState(false)
   const { showHints, setShowHints } = useShowHints()
 

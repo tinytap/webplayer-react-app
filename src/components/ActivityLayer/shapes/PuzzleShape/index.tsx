@@ -4,11 +4,11 @@ import { drawShape, moveShape } from '../../../../utils'
 import { PLAYER_HEIGHT, PLAYER_WIDTH, PUZZLE_OFFSET_SHAPE_DETECT_PX } from '../../../../utils/constants'
 import { useImage } from '../../../../hooks/useImage'
 import { KonvaEventObject } from 'konva/lib/Node'
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Group as KonvaGroupType } from 'konva/lib/Group'
 import DefaultWrongAnswer from '../../../../assets/sounds/DefaultWrongAnswer.mp3'
 import defaultGoodAnswer from '../../../../assets/sounds/defaultGoodAnswer.mp3'
-import { PlayerContext } from '../../../Player/context'
+import { SlideSoundObj } from '../../../../hooks/useSlideSound'
 
 interface PuzzleShapeProps {
   shape: Shape
@@ -22,6 +22,7 @@ interface PuzzleShapeProps {
   showHint: boolean
   onRightSoundEnd: (pk: number) => void
   is3D: boolean
+  playSlideSound: (props: SlideSoundObj) => void
 }
 
 export const PuzzleShape = ({
@@ -36,9 +37,8 @@ export const PuzzleShape = ({
   showHint,
   onRightSoundEnd,
   is3D,
+  playSlideSound,
 }: PuzzleShapeProps) => {
-  const { playSlideSound } = useContext(PlayerContext)
-
   const [didFinish, setDidFinish] = useState(false)
   const shapeRef = useRef<KonvaGroupType>(null)
   const [image] = useImage(slideThumbnailUrl)

@@ -4,8 +4,7 @@ import { updateShapesStatus } from '../../../utils'
 import { useShapesStatus } from '../../../hooks/useShapesStatus'
 import { InputShape } from '../shapes/InputShape'
 import { Html } from 'react-konva-utils'
-import { useContext } from 'react'
-import { PlayerContext } from '../../Player/context'
+import { SlideSoundObj } from '../../../hooks/useSlideSound'
 
 interface TalkOrTypeActivityProps {
   moveToNextSlide: (index?: number) => void
@@ -15,6 +14,7 @@ interface TalkOrTypeActivityProps {
   activity: Activity
   baseUrl: string
   onWrongAnswer: () => void
+  playSlideSound: (props: SlideSoundObj) => void
 }
 
 export function TalkOrTypeActivity({
@@ -25,9 +25,8 @@ export function TalkOrTypeActivity({
   activity,
   baseUrl,
   onWrongAnswer,
+  playSlideSound,
 }: TalkOrTypeActivityProps) {
-  const { playSlideSound } = useContext(PlayerContext)
-
   const { setShapeStatus } = useShapesStatus({ shapes: activity.shapes, moveToNextSlide })
 
   const { stop } = usePlayIntro({

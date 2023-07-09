@@ -1,6 +1,5 @@
 import { useEffect, useLayoutEffect } from 'react'
 import useDebounce from '../../hooks/useDebounce'
-import { useSlideSound } from '../../hooks/useSlideSound'
 import { useWindowSize } from '../../hooks/useWindowSize'
 import { useGameStore } from '../../stores/gameStore'
 import { usePlayerStore } from '../../stores/playerStore'
@@ -8,7 +7,6 @@ import { GameCover } from '../GameCover'
 import { LoaderScreen } from '../Loader'
 import { SideMenu } from '../SideMenu'
 import { SlidesContainer } from '../SlidesContainer'
-import { PlayerContext } from './context'
 import { PlayerContainer } from './styles'
 
 export function Player() {
@@ -19,8 +17,6 @@ export function Player() {
 
   const windowSize = useWindowSize()
   const debouncedWindowSize = useDebounce(windowSize, 150)
-
-  const { playSlideSound } = useSlideSound()
 
   useLayoutEffect(() => {
     getStructureFile()
@@ -48,14 +44,14 @@ export function Player() {
   console.log('PLAYER RENDER')
 
   return (
-    <PlayerContext.Provider value={{ playSlideSound: playSlideSound }}>
+    <>
       <PlayerContainer scale={playerScale}>
         <SideMenu />
         <SlidesContainer />
         <GameCover />
         <LoaderScreen />
       </PlayerContainer>
-    </PlayerContext.Provider>
+    </>
   )
 }
 
