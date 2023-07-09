@@ -58,7 +58,6 @@ const SlideLayer = ({ layer, layerIndex, slideBase, slideIndex }: LayerProps) =>
       outerRadius={40}
       fill="#89b717"
       opacity={0.8}
-      draggable
       rotation={1}
       shadowColor="black"
       shadowBlur={10}

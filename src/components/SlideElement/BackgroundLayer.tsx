@@ -65,7 +65,6 @@ const BackgroundLayerComponent: React.FC<LayerProps> = ({ layer, slideBase, laye
   // Render a Konva Rect with image applied if imageSize is defined
   return imageSize?.w ? (
     <Rect
-      draggable={false}
       width={PLAYER_WIDTH}
       height={PLAYER_HEIGHT}
       rotation={0}
