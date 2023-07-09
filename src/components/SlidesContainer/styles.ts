@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { SHAKE_SPEED_MS, SIDEMENU_WIDTH } from '../../utils/constants'
+import { SHAKE_SPEED_MS, SIDEMENU_WIDTH, SLIDE_CONTAINER_SHAKE_CLASS } from '../../utils/constants'
 
 const shakeAnimation = css`
   @keyframes shake-animation {
@@ -37,7 +37,6 @@ const shakeAnimation = css`
 `
 interface SlideThumbnailContainerProps {
   menuOpened: boolean
-  shakePlayer: boolean
 }
 export const SlidesContainerElement = styled.div<SlideThumbnailContainerProps>`
   position: absolute;
@@ -58,15 +57,13 @@ export const SlidesContainerElement = styled.div<SlideThumbnailContainerProps>`
     }
   }
 
-  ${({ shakePlayer }) =>
-    shakePlayer &&
-    css`
-      animation-name: shake-animation;
-      animation-duration: ${SHAKE_SPEED_MS}ms;
-      animation-iteration-count: 1;
+  &.${SLIDE_CONTAINER_SHAKE_CLASS} {
+    animation-name: shake-animation;
+    animation-duration: ${SHAKE_SPEED_MS}ms;
+    animation-iteration-count: 1;
 
-      ${shakeAnimation}
-    `}
+    ${shakeAnimation}
+  }
 `
 
 export const AllSlidesContainer = styled.div`

@@ -9,7 +9,6 @@ interface PlayerState {
   gameStarted: boolean
   backgroundMusicPlaying: boolean
   backgroundMusicMuted: boolean
-  wrongAnswerEvent: boolean
   scale: number
   menuOpen: boolean
   setMenuOpenState: (openState: boolean) => void
@@ -19,7 +18,6 @@ interface PlayerState {
   setGameStarted: (gameStartState: boolean) => void
   setIsLoading: (loadingState: boolean) => void
   updatePlayerScale: () => void
-  setWrongAnswerEvent: (eventState: boolean) => void
 }
 const STORAGE_NAME = 'mainPlayerState'
 const devMiddlewares = (f: any) =>
@@ -37,7 +35,6 @@ export const usePlayerStore = create<PlayerState>()(
     gameStarted: false,
     backgroundMusicPlaying: false,
     backgroundMusicMuted: false,
-    wrongAnswerEvent: false,
     scale: calculatePlayerScale(),
     menuOpen: false,
 
@@ -98,10 +95,6 @@ export const usePlayerStore = create<PlayerState>()(
         }))
       }
     },
-    setWrongAnswerEvent: (eventState: boolean) =>
-      set(() => ({
-        wrongAnswerEvent: eventState,
-      })),
     setIsLoading: (loadingState: boolean) =>
       set(() => ({
         isLoading: loadingState,

@@ -21,6 +21,9 @@ export type PUZZLE_ENGINE = 'P' //puzzle
 export type QUESTIONS_ENGINE = 'Q' //puzzle
 export type TEXTINPUT_ENGINE = 'T' //text input
 
+export const SLIDE_CONTAINER_ID = 'SlidesContainerID'
+export const SLIDE_CONTAINER_SHAKE_CLASS = 'shake_container'
+
 export const engineTypes = {
   S: 'slide',
   R: 'reading',
@@ -46,3 +49,4 @@ export const SHOW_HINT_TIME_S = 2
 export const SHOW_HINTS_QUESTIONS_ACTIVITY = true
 export const PLAY_ACTIVITY_SOUND_AGAIN_TIME_S = 30
 export const PUZZLE_OFFSET_SHAPE_DETECT_PX = 40
+

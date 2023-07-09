@@ -3,7 +3,7 @@ import { Star } from 'react-konva'
 import { useSlideSound } from '../../hooks/useSlideSound'
 import { Activity, ActivityState } from '../../stores/activitiesStoreTypes'
 import { useGameStore } from '../../stores/gameStore'
-import { usePlayerStore } from '../../stores/playerStore'
+import { SHAKE_SPEED_MS, SLIDE_CONTAINER_ID, SLIDE_CONTAINER_SHAKE_CLASS } from '../../utils/constants'
 import { PuzzleActivity } from './PuzzleActivity'
 import { QuestionsActivity } from './QuestionsActivity'
 import { ReadingActivity } from './ReadingActivity'
@@ -39,7 +39,17 @@ export function ActivityLayer({
   const soundUrl = baseUrl + activity.filePathIntroRecording
   const selectNextSlide = useGameStore((state) => state.selectNextSlide)
   const selectSlideIndex = useGameStore((state) => state.selectSlideIndex)
-  const onWrongAnswerEvent = usePlayerStore((state) => () => state.setWrongAnswerEvent(true))
+  const onWrongAnswerEvent = () => {
+    const SlideContainer = document.getElementById(SLIDE_CONTAINER_ID)
+    if (!SlideContainer) {
+      return
+    }
+    SlideContainer.classList.add(SLIDE_CONTAINER_SHAKE_CLASS)
+
+    setTimeout(() => {
+      SlideContainer.classList.remove(SLIDE_CONTAINER_SHAKE_CLASS)
+    }, SHAKE_SPEED_MS)
+  }
 
   const isQuizMode = useGameStore((state) => {
     if (
