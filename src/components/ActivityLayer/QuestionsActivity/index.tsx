@@ -67,8 +67,8 @@ export function QuestionsActivity({
         key={`shape_${activity.shapes[0].pk}`}
         onRightSoundEnd={onFinishQuestion}
         showShapeForce={showHints}
-        stopIntroSound={stop}
         onRightClick={() => {
+          stop()
           setDidFinish(true)
         }}
         playShapeSound={playSlideSound}

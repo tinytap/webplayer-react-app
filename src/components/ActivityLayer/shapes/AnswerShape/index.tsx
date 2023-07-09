@@ -14,7 +14,6 @@ interface AnswerShapeProps {
   onRightClick?: () => void
   isFunMode?: boolean
   showShapeForce?: boolean
-  stopIntroSound: () => void
   playShapeSound: ({ onend, soundUrl }: SlideSoundObj) => void
 }
 
@@ -25,7 +24,6 @@ export const AnswerShape = ({
   onRightClick,
   isFunMode = true,
   showShapeForce = false,
-  stopIntroSound,
   playShapeSound,
 }: AnswerShapeProps) => {
   const shapeRef = useRef<KonvaGroupType>(null)
@@ -50,7 +48,6 @@ export const AnswerShape = ({
     }
     setShowShape(true)
     // TODO: add confetti
-    stopIntroSound()
 
     playShapeSound({
       soundUrl: soundUrl,

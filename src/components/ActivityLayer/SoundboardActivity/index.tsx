@@ -84,9 +84,11 @@ export function SoundboardActivity({
             onRightSoundEnd={onShapeRightSoundEnd}
             isFunMode={activity.settings.soundFunMode !== false}
             showShapeForce={showHints}
-            stopIntroSound={stop}
             playShapeSound={playSlideSound}
-            onRightClick={() => setStartIntoWithTimer(false)}
+            onRightClick={() => {
+              stop()
+              setStartIntoWithTimer(false)
+            }}
           />
         )
       })}
