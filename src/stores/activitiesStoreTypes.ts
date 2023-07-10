@@ -27,6 +27,7 @@ export interface Shape {
     originTransform: [number, number, number, number, number, number]
     linkToPage?: number
     textAnswerArray?: string[]
+    toolTipText?: string
   }
   filePathRecording2: string
   filePathRecording1: string
