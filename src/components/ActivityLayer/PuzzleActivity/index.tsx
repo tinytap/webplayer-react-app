@@ -8,8 +8,7 @@ import { PuzzleShape, PuzzleShapeHole } from '../shapes/PuzzleShape'
 interface PuzzleActivityProps {
   moveToNextSlide: (index?: number) => void
   soundUrl: string
-  isActivityActive: boolean
-  transitionLoading: boolean
+  isActive: boolean
   activity: Activity
   baseUrl: string
   onWrongAnswer: () => void
@@ -19,15 +18,14 @@ interface PuzzleActivityProps {
 export function PuzzleActivity({
   activity,
   slideThumbnailUrl,
-  isActivityActive,
-  transitionLoading,
+  isActive,
   soundUrl,
   baseUrl,
   onWrongAnswer,
   moveToNextSlide,
 }: PuzzleActivityProps) {
   const { playSound } = useSlideSounds({
-    isActive: isActivityActive && !transitionLoading,
+    isActive: isActive,
     introUrl: soundUrl,
   })
 
@@ -62,7 +60,7 @@ export function PuzzleActivity({
             key={`shape_${shape.pk}_${i}`}
             slideThumbnailUrl={slideThumbnailUrl}
             easyMode={!!activity.settings.showShapeV2}
-            slideIsActive={isActivityActive && !transitionLoading}
+            isActive={isActive}
             bounceBack={!!activity.settings.soundFunModeV2}
             baseUrl={baseUrl}
             onWrongAnswer={onWrongAnswer}

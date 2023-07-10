@@ -10,8 +10,7 @@ import { useSlideSounds } from '../../../hooks/useSlideSounds'
 interface QuestionsActivityProps {
   onFinishQuestion: () => void
   soundUrl: string
-  isActivityActive: boolean
-  transitionLoading: boolean
+  isActive: boolean
   activity: Activity
   baseUrl: string
   onWrongAnswer: () => void
@@ -20,8 +19,7 @@ interface QuestionsActivityProps {
 export function QuestionsActivity({
   onFinishQuestion,
   soundUrl,
-  isActivityActive,
-  transitionLoading,
+  isActive,
   activity,
   baseUrl,
   onWrongAnswer,
@@ -30,7 +28,7 @@ export function QuestionsActivity({
   const { showHints, setShowHints } = useShowHints()
 
   const { playSound, playIntroAgain, setStartIntoTimer } = useSlideSounds({
-    isActive: isActivityActive && !transitionLoading,
+    isActive: isActive,
     introUrl: soundUrl,
     introWithLoop: true,
   })

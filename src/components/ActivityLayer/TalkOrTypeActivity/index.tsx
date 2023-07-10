@@ -8,8 +8,7 @@ import { useSlideSounds } from '../../../hooks/useSlideSounds'
 interface TalkOrTypeActivityProps {
   moveToNextSlide: (index?: number) => void
   soundUrl: string
-  isActivityActive: boolean
-  transitionLoading: boolean
+  isActive: boolean
   activity: Activity
   baseUrl: string
   onWrongAnswer: () => void
@@ -18,14 +17,13 @@ interface TalkOrTypeActivityProps {
 export function TalkOrTypeActivity({
   moveToNextSlide,
   soundUrl,
-  isActivityActive,
-  transitionLoading,
+  isActive,
   activity,
   baseUrl,
   onWrongAnswer,
 }: TalkOrTypeActivityProps) {
   const { playSound } = useSlideSounds({
-    isActive: isActivityActive && !transitionLoading,
+    isActive: isActive,
     introUrl: soundUrl,
   })
 

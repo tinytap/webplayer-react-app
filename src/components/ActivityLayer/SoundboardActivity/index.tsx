@@ -11,8 +11,7 @@ import { useSlideSounds } from '../../../hooks/useSlideSounds'
 interface SoundboardActivityProps {
   moveToNextSlide: (index?: number) => void
   soundUrl: string
-  isActivityActive: boolean
-  transitionLoading: boolean
+  isActive: boolean
   activity: Activity
   baseUrl: string
   isQuizMode: boolean
@@ -22,8 +21,7 @@ interface SoundboardActivityProps {
 export function SoundboardActivity({
   moveToNextSlide,
   soundUrl,
-  isActivityActive,
-  transitionLoading,
+  isActive,
   activity,
   baseUrl,
   isQuizMode,
@@ -33,7 +31,7 @@ export function SoundboardActivity({
   const { setShapeStatus } = useShapesStatus({ shapes: activity.shapes, moveToNextSlide })
 
   const { setStartIntoTimer, playSound } = useSlideSounds({
-    isActive: isActivityActive && !transitionLoading,
+    isActive: isActive,
     introUrl: soundUrl,
     introWithLoop: !!activity.settings.soundFunModeV2,
     onIntroEnd: () => {

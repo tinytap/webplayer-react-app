@@ -14,7 +14,7 @@ interface PuzzleShapeProps {
   shape: Shape
   slideThumbnailUrl: string
   easyMode: boolean
-  slideIsActive: boolean
+  isActive: boolean
   bounceBack: boolean
   baseUrl: string
   onWrongAnswer: () => void
@@ -28,7 +28,7 @@ export const PuzzleShape = ({
   shape,
   slideThumbnailUrl,
   easyMode,
-  slideIsActive,
+  isActive,
   bounceBack,
   baseUrl,
   onWrongAnswer,
@@ -47,14 +47,14 @@ export const PuzzleShape = ({
   const [wrongAnswerObj, setWrongAnswerObj] = useState({ showHint: false, count: 0 })
 
   useEffect(() => {
-    if (slideIsActive && easyMode) {
+    if (isActive && easyMode) {
       moveShape({ shapeNode: shapeRef.current, location: 'to-origin-place', duration: 1, shape })
     } else if (easyMode) {
       moveShape({ shapeNode: shapeRef.current, location: 'to-right-place', duration: 0, shape })
     } else {
       moveShape({ shapeNode: shapeRef.current, location: 'to-origin-place', duration: 0, shape })
     }
-  }, [easyMode, slideIsActive, shape])
+  }, [easyMode, isActive, shape])
 
   useEffect(() => {
     if (!wrongAnswerObj.showHint) {

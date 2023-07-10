@@ -1,7 +1,7 @@
 import { Star } from 'react-konva'
 import { Activity, ActivityState } from '../../stores/activitiesStoreTypes'
 import { useGameStore } from '../../stores/gameStore'
-import { SHAKE_SPEED_MS, SLIDE_CONTAINER_ID, SLIDE_CONTAINER_SHAKE_CLASS } from '../../utils/constants'
+import { shakeContainer } from '../../utils'
 import { PuzzleActivity } from './PuzzleActivity'
 import { QuestionsActivity } from './QuestionsActivity'
 import { ReadingActivity } from './ReadingActivity'
@@ -37,18 +37,6 @@ export function ActivityLayer({
   const soundUrl = baseUrl + activity.filePathIntroRecording
   const selectNextSlide = useGameStore((state) => state.selectNextSlide)
   const selectSlideIndex = useGameStore((state) => state.selectSlideIndex)
-  const onWrongAnswerEvent = () => {
-    const SlideContainer = document.getElementById(SLIDE_CONTAINER_ID)
-    if (!SlideContainer) {
-      return
-    }
-    SlideContainer.classList.add(SLIDE_CONTAINER_SHAKE_CLASS)
-
-    setTimeout(() => {
-      SlideContainer.classList.remove(SLIDE_CONTAINER_SHAKE_CLASS)
-    }, SHAKE_SPEED_MS)
-  }
-
   const isQuizMode = useGameStore((state) => {
     if (
       state.settings.quizParameters &&
@@ -60,6 +48,10 @@ export function ActivityLayer({
     return false
   })
 
+  const onWrongAnswerEvent = () => {
+    shakeContainer()
+  }
+
   const moveToNextSlide = (index?: number) => {
     if (index !== undefined) {
       selectSlideIndex(index)
@@ -67,6 +59,8 @@ export function ActivityLayer({
       selectNextSlide()
     }
   }
+
+  const isActivityActive = !activityState.paused && !!activityState.started && !transitionLoading
 
   switch (engine) {
     case 'R':
@@ -86,8 +80,7 @@ export function ActivityLayer({
         <SoundboardActivity
           moveToNextSlide={moveToNextSlide}
           soundUrl={soundUrl}
-          isActivityActive={!activityState.paused && !!activityState.started}
-          transitionLoading={transitionLoading}
+          isActive={isActivityActive}
           activity={activity}
           baseUrl={baseUrl}
           isQuizMode={isQuizMode}
@@ -105,8 +98,7 @@ export function ActivityLayer({
             moveToNextSlide()
           }}
           soundUrl={soundUrl}
-          isActivityActive={!activityState.paused && !!activityState.started}
-          transitionLoading={transitionLoading}
+          isActive={isActivityActive}
           activity={activity}
           baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
@@ -117,8 +109,7 @@ export function ActivityLayer({
         <PuzzleActivity
           moveToNextSlide={moveToNextSlide}
           soundUrl={soundUrl}
-          isActivityActive={!activityState.paused && !!activityState.started}
-          transitionLoading={transitionLoading}
+          isActive={isActivityActive}
           activity={activity}
           baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
@@ -130,8 +121,7 @@ export function ActivityLayer({
         <TalkOrTypeActivity
           moveToNextSlide={moveToNextSlide}
           soundUrl={soundUrl}
-          isActivityActive={!activityState.paused && !!activityState.started}
-          transitionLoading={transitionLoading}
+          isActive={isActivityActive}
           activity={activity}
           baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
