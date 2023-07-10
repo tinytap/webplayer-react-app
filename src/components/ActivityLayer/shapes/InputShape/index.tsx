@@ -115,7 +115,7 @@ export const InputShape = ({
         onBlur={onBlur}
         className={answerStatus}
       />
-      {!showHint && (
+      {showHint && (
         <HintBubble
           text={hintStatus.text}
           rect={{ x: inputProps.x, y: inputProps.y, w: inputProps.w, h: inputProps.h }}
