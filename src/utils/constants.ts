@@ -7,6 +7,7 @@ export const playerColors = {
   rightAnswerGrean: '#79c843',
   rightAnswerGrey: '#33333388',
   inputColor: '#f2f2f2',
+  wrongAnswerRed: '#d74144',
 }
 
 export const textColors = {

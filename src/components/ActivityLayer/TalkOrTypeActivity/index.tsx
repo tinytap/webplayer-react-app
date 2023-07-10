@@ -50,6 +50,7 @@ export function TalkOrTypeActivity({
             showHints={activity.settings.soundShowToolTip !== false}
             onWrongAnswer={onWrongAnswer}
             playShapeSound={playSound}
+            showHint={!!activity.settings.soundShowToolTip}
           />
         )
       })}

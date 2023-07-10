@@ -26,6 +26,10 @@ export const FixedContainer = styled.div<{
   transition: all 400ms linear;
   opacity: ${({ visible }) => (visible ? 1 : 0)};
 
+  &.rtl {
+    direction: rtl;
+  }
+
   ${({ rect, color, bubbleSize }) => {
     if (!bubbleSize.h || !bubbleSize.w) {
       return ''

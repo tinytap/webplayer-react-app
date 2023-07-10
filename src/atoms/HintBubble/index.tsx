@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { isRTL } from '../../utils'
 import { FixedContainer } from './styles'
 
 export type AnswerStatus = 'empty' | 'right' | 'wrong'
@@ -35,7 +36,7 @@ export const HintBubble = ({ text, rect, color, showHintTrigger }: HintBubblePro
         return
       }
       setIsVisible(false)
-    }, 4000)
+    }, 3000)
 
     return () => {
       isMounted = true
@@ -52,6 +53,7 @@ export const HintBubble = ({ text, rect, color, showHintTrigger }: HintBubblePro
         h: ref.current?.clientHeight,
       }}
       visible={isVisible}
+      className={isRTL(text) ? 'rtl' : ''}
     >
       {text}
     </FixedContainer>

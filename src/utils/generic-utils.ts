@@ -37,3 +37,9 @@ export const hashCode = (str: string, seed = window.gameId || 0) => {
   return 4294967296 * (2097151 & h2) + (h1 >>> 0)
 }
 
+export const isRTL = (s: string) => {
+  var rtlChars = '\u0591-\u07FF\u200F\u202B\u202E\uFB1D-\uFDFD\uFE70-\uFEFC',
+    rtlDirCheck = new RegExp('^[^' + rtlChars + ']*?[' + rtlChars + ']')
+
+  return rtlDirCheck.test(s)
+}

@@ -6,6 +6,8 @@ import { Input } from './styles'
 import DefaultWrongAnswer from '../../../../assets/sounds/DefaultWrongAnswer.mp3'
 import defaultGoodAnswer from '../../../../assets/sounds/defaultGoodAnswer.mp3'
 import { PlaySound } from '../../../../hooks/useSlideSounds'
+import { playerColors } from '../../../../utils/constants'
+import { HintBubble } from '../../../../atoms/HintBubble'
 
 export type AnswerStatus = 'empty' | 'right' | 'wrong'
 
@@ -16,13 +18,24 @@ interface InputShapeProps {
   showHints: boolean
   onWrongAnswer: () => void
   playShapeSound: ({ onend, soundUrl }: PlaySound) => void
+  showHint: boolean
 }
 
-//TODO: create hints
-export const InputShape = ({ shape, baseUrl, onRightSoundEnd, onWrongAnswer, playShapeSound }: InputShapeProps) => {
+export const InputShape = ({
+  shape,
+  baseUrl,
+  onRightSoundEnd,
+  onWrongAnswer,
+  playShapeSound,
+  showHint,
+}: InputShapeProps) => {
   const soundUrl = shape.filePathRecording1 ? baseUrl + shape.filePathRecording1 : DefaultGoodAnswer
 
   const [answerStatus, setAnswerStatus] = useState<AnswerStatus>('empty')
+  const [hintStatus, setHintStatus] = useState({
+    showHintTrigger: 0,
+    text: '_',
+  })
 
   const inputProps = useMemo(() => {
     const shapeRect = getPathRect(shape.path)
@@ -68,6 +81,19 @@ export const InputShape = ({ shape, baseUrl, onRightSoundEnd, onWrongAnswer, pla
     if (status === 'wrong') {
       playShapeSound({ soundUrl: DefaultWrongAnswer })
 
+      setHintStatus((oldV) => {
+        let answer = shape.settings.textAnswerArray && shape.settings.textAnswerArray[0]
+        if (!answer) {
+          return oldV
+        }
+        let newText = answer.slice(0, oldV.text.length)
+        if (newText.length < answer.length) {
+          newText = `${newText}_`
+        }
+
+        return { text: newText, showHintTrigger: Math.random() }
+      })
+
       onWrongAnswer()
     } else {
       playShapeSound({
@@ -81,13 +107,23 @@ export const InputShape = ({ shape, baseUrl, onRightSoundEnd, onWrongAnswer, pla
   }
 
   return (
-    <Input
-      readOnly={answerStatus === 'right'}
-      {...inputProps}
-      onFocus={onFocus}
-      onBlur={onBlur}
-      className={answerStatus}
-    />
+    <>
+      <Input
+        readOnly={answerStatus === 'right'}
+        {...inputProps}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        className={answerStatus}
+      />
+      {!showHint && (
+        <HintBubble
+          text={hintStatus.text}
+          rect={{ x: inputProps.x, y: inputProps.y, w: inputProps.w, h: inputProps.h }}
+          color={playerColors.wrongAnswerRed}
+          showHintTrigger={hintStatus.showHintTrigger}
+        />
+      )}
+    </>
   )
 }
 
