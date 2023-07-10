@@ -22,7 +22,7 @@ interface ActivityLayerProps {
   activity: Activity
   activityState: ActivityState
   onMoveToNextActivity: () => boolean
-  slideThumbnailUrl: string
+  slidePathImage: string
 }
 
 export function ActivityLayer({
@@ -31,7 +31,7 @@ export function ActivityLayer({
   activityState,
   engine,
   onMoveToNextActivity,
-  slideThumbnailUrl,
+  slidePathImage,
 }: ActivityLayerProps) {
   const transitionLoading = useGameStore((state) => state.transitionLoading)
   const soundUrl = baseUrl + activity.filePathIntroRecording
@@ -113,7 +113,7 @@ export function ActivityLayer({
           activity={activity}
           baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
-          slideThumbnailUrl={slideThumbnailUrl}
+          slidePathImage={slidePathImage}
         />
       )
     case 'T':

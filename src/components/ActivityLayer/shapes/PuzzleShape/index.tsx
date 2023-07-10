@@ -12,7 +12,7 @@ import { PlaySound } from '../../../../hooks/useSlideSounds'
 
 interface PuzzleShapeProps {
   shape: Shape
-  slideThumbnailUrl: string
+  slidePathImage: string
   easyMode: boolean
   isActive: boolean
   bounceBack: boolean
@@ -26,7 +26,7 @@ interface PuzzleShapeProps {
 
 export const PuzzleShape = ({
   shape,
-  slideThumbnailUrl,
+  slidePathImage,
   easyMode,
   isActive,
   bounceBack,
@@ -39,7 +39,7 @@ export const PuzzleShape = ({
 }: PuzzleShapeProps) => {
   const [didFinish, setDidFinish] = useState(false)
   const shapeRef = useRef<KonvaGroupType>(null)
-  const [image] = useImage(slideThumbnailUrl)
+  const [image] = useImage(slidePathImage)
 
   const soundUrl = shape.filePathRecording1 ? baseUrl + shape.filePathRecording1 : undefined
 

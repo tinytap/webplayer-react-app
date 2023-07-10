@@ -12,12 +12,12 @@ interface PuzzleActivityProps {
   activity: Activity
   baseUrl: string
   onWrongAnswer: () => void
-  slideThumbnailUrl: string
+  slidePathImage: string
 }
 
 export function PuzzleActivity({
   activity,
-  slideThumbnailUrl,
+  slidePathImage,
   isActive,
   soundUrl,
   baseUrl,
@@ -58,7 +58,7 @@ export function PuzzleActivity({
           <PuzzleShape
             shape={shape}
             key={`shape_${shape.pk}_${i}`}
-            slideThumbnailUrl={slideThumbnailUrl}
+            slidePathImage={slidePathImage}
             easyMode={!!activity.settings.showShapeV2}
             isActive={isActive}
             bounceBack={!!activity.settings.soundFunModeV2}
