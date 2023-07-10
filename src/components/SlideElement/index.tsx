@@ -121,7 +121,7 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
           }
           return false
         }}
-        slideThumbnailUrl={base_url + slide.filePathImage}
+        slidePathImage={base_url + slide.filePathImage}
       />
     )
   }, [playable, selected, slideActivityState, base_url, currentActivityIndex, slide])
