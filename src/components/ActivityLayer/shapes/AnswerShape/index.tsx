@@ -5,7 +5,7 @@ import { Shape } from '../../../../stores/activitiesStoreTypes'
 import { drawShape, getPathFromOriginPosition, getPathRect, pulseShape } from '../../../../utils'
 import { playerColors } from '../../../../utils/constants'
 import DefaultGoodAnswer from '../../../../assets/sounds/defaultGoodAnswer.mp3'
-import { SlideSoundObj } from '../../../../hooks/useSlideSound'
+import { PlaySound } from '../../../../hooks/useSlideSounds'
 
 interface AnswerShapeProps {
   shape: Shape
@@ -14,7 +14,7 @@ interface AnswerShapeProps {
   onRightClick?: () => void
   isFunMode?: boolean
   showShapeForce?: boolean
-  playShapeSound: ({ onend, soundUrl }: SlideSoundObj) => void
+  playShapeSound: ({ onend, soundUrl }: PlaySound) => void
 }
 
 export const AnswerShape = ({

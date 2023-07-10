@@ -1,7 +1,6 @@
 import { Group } from 'react-konva'
-import { usePlayIntro } from '../../../hooks/usePlayIntro'
 import { useShapesStatus } from '../../../hooks/useShapesStatus'
-import { SlideSoundObj } from '../../../hooks/useSlideSound'
+import { useSlideSounds } from '../../../hooks/useSlideSounds'
 import { Activity } from '../../../stores/activitiesStoreTypes'
 import { updateShapesStatus } from '../../../utils'
 import { PuzzleShape, PuzzleShapeHole } from '../shapes/PuzzleShape'
@@ -15,7 +14,6 @@ interface PuzzleActivityProps {
   baseUrl: string
   onWrongAnswer: () => void
   slideThumbnailUrl: string
-  playSlideSound: (props: SlideSoundObj) => void
 }
 
 export function PuzzleActivity({
@@ -27,13 +25,10 @@ export function PuzzleActivity({
   baseUrl,
   onWrongAnswer,
   moveToNextSlide,
-  playSlideSound,
 }: PuzzleActivityProps) {
-  const { stop } = usePlayIntro({
-    soundUrl,
-    isActivityActive,
-    transitionLoading,
-    playIntroAgainWithTimer: false,
+  const { playSound } = useSlideSounds({
+    isActive: isActivityActive && !transitionLoading,
+    introUrl: soundUrl,
   })
 
   const { shapesStatus, setShapeStatus } = useShapesStatus({ shapes: activity.shapes, moveToNextSlide })
@@ -69,13 +64,12 @@ export function PuzzleActivity({
             easyMode={!!activity.settings.showShapeV2}
             slideIsActive={isActivityActive && !transitionLoading}
             bounceBack={!!activity.settings.soundFunModeV2}
-            stopIntroSound={stop}
             baseUrl={baseUrl}
             onWrongAnswer={onWrongAnswer}
             showHint={!activity.settings.DisableHints}
             onRightSoundEnd={onShapeRightSoundEnd}
             is3D={!!activity.settings.ShapePuzzleThemeV2}
-            playSlideSound={playSlideSound}
+            playSlideSound={playSound}
           />
         )
       })}

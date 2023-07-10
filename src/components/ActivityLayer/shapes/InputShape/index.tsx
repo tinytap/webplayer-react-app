@@ -5,7 +5,7 @@ import DefaultGoodAnswer from '../../../../assets/sounds/defaultGoodAnswer.mp3'
 import { Input } from './styles'
 import DefaultWrongAnswer from '../../../../assets/sounds/DefaultWrongAnswer.mp3'
 import defaultGoodAnswer from '../../../../assets/sounds/defaultGoodAnswer.mp3'
-import { SlideSoundObj } from '../../../../hooks/useSlideSound'
+import { PlaySound } from '../../../../hooks/useSlideSounds'
 
 export type AnswerStatus = 'empty' | 'right' | 'wrong'
 
@@ -14,20 +14,12 @@ interface InputShapeProps {
   baseUrl: string
   onRightSoundEnd: (pk: number, linkToPage?: number) => void
   showHints: boolean
-  stopIntroSound: () => void
   onWrongAnswer: () => void
-  playShapeSound: ({ onend, soundUrl }: SlideSoundObj) => void
+  playShapeSound: ({ onend, soundUrl }: PlaySound) => void
 }
 
 //TODO: create hints
-export const InputShape = ({
-  shape,
-  baseUrl,
-  onRightSoundEnd,
-  stopIntroSound,
-  onWrongAnswer,
-  playShapeSound,
-}: InputShapeProps) => {
+export const InputShape = ({ shape, baseUrl, onRightSoundEnd, onWrongAnswer, playShapeSound }: InputShapeProps) => {
   const soundUrl = shape.filePathRecording1 ? baseUrl + shape.filePathRecording1 : DefaultGoodAnswer
 
   const [answerStatus, setAnswerStatus] = useState<AnswerStatus>('empty')
@@ -56,7 +48,6 @@ export const InputShape = ({
   }
 
   const onFocus = () => {
-    stopIntroSound()
     playShapeSound({ soundUrl })
   }
 

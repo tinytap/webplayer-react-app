@@ -1,6 +1,4 @@
-import { useEffect } from 'react'
 import { Star } from 'react-konva'
-import { useSlideSound } from '../../hooks/useSlideSound'
 import { Activity, ActivityState } from '../../stores/activitiesStoreTypes'
 import { useGameStore } from '../../stores/gameStore'
 import { SHAKE_SPEED_MS, SLIDE_CONTAINER_ID, SLIDE_CONTAINER_SHAKE_CLASS } from '../../utils/constants'
@@ -70,15 +68,6 @@ export function ActivityLayer({
     }
   }
 
-  const { playSlideSound, stop } = useSlideSound()
-
-  useEffect(() => {
-    if (!activityState.paused && !!activityState.started && !transitionLoading) {
-      return
-    }
-    stop()
-  }, [stop, transitionLoading, activityState.started, activityState.paused])
-
   switch (engine) {
     case 'R':
       return (
@@ -103,7 +92,6 @@ export function ActivityLayer({
           baseUrl={baseUrl}
           isQuizMode={isQuizMode}
           onWrongAnswer={onWrongAnswerEvent}
-          playSlideSound={playSlideSound}
         />
       )
     case 'Q':
@@ -122,7 +110,6 @@ export function ActivityLayer({
           activity={activity}
           baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
-          playSlideSound={playSlideSound}
         />
       )
     case 'P':
@@ -136,7 +123,6 @@ export function ActivityLayer({
           baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
           slideThumbnailUrl={slideThumbnailUrl}
-          playSlideSound={playSlideSound}
         />
       )
     case 'T':
@@ -149,7 +135,6 @@ export function ActivityLayer({
           activity={activity}
           baseUrl={baseUrl}
           onWrongAnswer={onWrongAnswerEvent}
-          playSlideSound={playSlideSound}
         />
       )
     case 'V':

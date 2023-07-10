@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Group as KonvaGroupType } from 'konva/lib/Group'
 import DefaultWrongAnswer from '../../../../assets/sounds/DefaultWrongAnswer.mp3'
 import defaultGoodAnswer from '../../../../assets/sounds/defaultGoodAnswer.mp3'
-import { SlideSoundObj } from '../../../../hooks/useSlideSound'
+import { PlaySound } from '../../../../hooks/useSlideSounds'
 
 interface PuzzleShapeProps {
   shape: Shape
@@ -16,13 +16,12 @@ interface PuzzleShapeProps {
   easyMode: boolean
   slideIsActive: boolean
   bounceBack: boolean
-  stopIntroSound: () => void
   baseUrl: string
   onWrongAnswer: () => void
   showHint: boolean
   onRightSoundEnd: (pk: number) => void
   is3D: boolean
-  playSlideSound: (props: SlideSoundObj) => void
+  playSlideSound: (props: PlaySound) => void
 }
 
 export const PuzzleShape = ({
@@ -31,7 +30,6 @@ export const PuzzleShape = ({
   easyMode,
   slideIsActive,
   bounceBack,
-  stopIntroSound,
   baseUrl,
   onWrongAnswer,
   showHint,
@@ -83,15 +81,6 @@ export const PuzzleShape = ({
       Math.abs(e.target.attrs.x) < PUZZLE_OFFSET_SHAPE_DETECT_PX &&
       Math.abs(e.target.attrs.y) < PUZZLE_OFFSET_SHAPE_DETECT_PX
 
-    if (!soundUrl) {
-      stopIntroSound()
-    }
-
-    setWrongAnswerObj((oldV) => {
-      const newCount = oldV.count + 1
-      return { showHint: newCount % 3 === 0 && showHint, count: newCount }
-    })
-
     if (isRightLocaion) {
       // TODO: add confetti
       setDidFinish(true)
@@ -105,6 +94,11 @@ export const PuzzleShape = ({
       return
     }
 
+    setWrongAnswerObj((oldV) => {
+      const newCount = oldV.count + 1
+      return { showHint: newCount % 3 === 0 && showHint, count: newCount }
+    })
+
     playSlideSound({ soundUrl: DefaultWrongAnswer })
     onWrongAnswer()
 
@@ -115,7 +109,6 @@ export const PuzzleShape = ({
 
   const onDragStart = () => {
     if (soundUrl) {
-      stopIntroSound()
       playSlideSound({ soundUrl })
     }
   }
