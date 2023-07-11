@@ -47,12 +47,16 @@ export const PuzzleShape = ({
   const [wrongAnswerObj, setWrongAnswerObj] = useState({ showHint: false, count: 0 })
 
   useEffect(() => {
+    if (didFinish) {
+      return
+    }
+
     if (isActive && easyMode) {
       moveShape({ shapeNode: shapeRef.current, location: 'to-origin-place', duration: 1, shape })
     } else if (!easyMode) {
       moveShape({ shapeNode: shapeRef.current, location: 'to-origin-place', duration: 0, shape })
     }
-  }, [easyMode, isActive, shape])
+  }, [easyMode, isActive, shape, didFinish])
 
   useEffect(() => {
     if (!wrongAnswerObj.showHint) {
