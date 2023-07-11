@@ -49,9 +49,7 @@ export const PuzzleShape = ({
   useEffect(() => {
     if (isActive && easyMode) {
       moveShape({ shapeNode: shapeRef.current, location: 'to-origin-place', duration: 1, shape })
-    } else if (easyMode) {
-      moveShape({ shapeNode: shapeRef.current, location: 'to-right-place', duration: 0, shape })
-    } else {
+    } else if (!easyMode) {
       moveShape({ shapeNode: shapeRef.current, location: 'to-origin-place', duration: 0, shape })
     }
   }, [easyMode, isActive, shape])
