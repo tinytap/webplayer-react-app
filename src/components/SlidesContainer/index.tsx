@@ -37,6 +37,12 @@ export function SlidesContainerComponent() {
                 slide={slide}
                 top={false}
                 isPrevSlide={index === lastSelectedSlideIndex && index !== selectedSlideIndex}
+                animate={
+                  lastSelectedSlideIndex !== undefined &&
+                  slides?.[lastSelectedSlideIndex].settings.kTransitionNoneKey === 3
+                    ? 'fade'
+                    : 'slide'
+                }
               />
             ))
           : null}

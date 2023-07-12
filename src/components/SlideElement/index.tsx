@@ -29,6 +29,7 @@ interface SlideProps {
   shown: boolean
   playable: boolean
   isPrevSlide?: boolean
+  animate?: 'fade' | 'slide'
 }
 
 // Props type for the Layer component
@@ -77,7 +78,8 @@ export const SlideElementComponent = ({
   index: slideIndex,
   top,
   playable = true,
-  isPrevSlide,
+  isPrevSlide = false,
+  animate = 'slide',
 }: SlideProps) => {
   // Retrieve required states and actions from the game store and activities store
   const base_url = useGameStore((state) => state.base_url)
@@ -86,7 +88,6 @@ export const SlideElementComponent = ({
   const selectedSlideIndex = useGameStore((state) => state.selectedSlideIndex)
   const slide_base = `${base_url}${slide?.filePath.replace('/thumb.jpg/', '/')}`
   const nodeRef = useRef(null)
-  const animate = slide?.settings.kTransitionNoneKey === 3 ? 'fade' : 'slide'
   const selected = slideIndex === selectedSlideIndex
   const handleSlideEnter = useCallback(() => {
     setTransitionLoading(true)
