@@ -87,7 +87,6 @@ const StickerLayerComponent: React.FC<LayerProps> = ({ layer, slideBase, layerIn
   // Render a Konva Rect with image applied if imageSize is defined
   return imageSize?.w && imageSize?.h && imageSize?.position && imageSize?.scale ? (
     <Rect
-      draggable={true}
       width={imageSize.w}
       height={imageSize.h}
       scaleX={imageSize.scale.x}

@@ -54,6 +54,6 @@ export function useShapesStatus({ shapes, moveToNextSlide }: useShowHintsProps) 
     slideNavigate()
   }, [shapesStatus, moveToNextSlide])
 
-  return { setShapeStatus }
+  return { shapesStatus, setShapeStatus }
 }
 

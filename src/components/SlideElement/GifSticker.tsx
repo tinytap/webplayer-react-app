@@ -33,7 +33,6 @@ export const GIF = ({ src, imageSize, index }: { src: string; imageSize: any; in
     <Image
       image={canvas}
       ref={imageRef}
-      draggable={true}
       width={imageSize.w}
       height={imageSize.h}
       scaleX={imageSize.scale.x}

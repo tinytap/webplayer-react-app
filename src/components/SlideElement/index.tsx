@@ -9,7 +9,7 @@ import { PLAYER_HEIGHT, PLAYER_WIDTH } from '../../utils/constants'
 import { LoaderSpinner } from '../Loader/styles'
 import { BackgroundLayer } from './BackgroundLayer'
 import { StickerLayer } from './StickerLayer'
-import { AbsoluteContainer, DebugContainer, SlideContainer } from './styles'
+import { DebugContainer, SlideContainer } from './styles'
 import { TextLayer } from './TextLayer'
 import { AnimationStickerLayer } from './AnimationStickerLayer'
 import { useActivitiesStore } from '../../stores/activitiesStore'
@@ -58,7 +58,6 @@ const SlideLayer = ({ layer, layerIndex, slideBase, slideIndex }: LayerProps) =>
       outerRadius={40}
       fill="#89b717"
       opacity={0.8}
-      draggable
       rotation={1}
       shadowColor="black"
       shadowBlur={10}
@@ -122,7 +121,7 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
           }
           return false
         }}
-        slideThumbnailUrl={base_url + slide.filePathImage}
+        slidePathImage={base_url + slide.filePathImage}
       />
     )
   }, [playable, selected, slideActivityState, base_url, currentActivityIndex, slide])
@@ -184,12 +183,8 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
               )}
             </Layer>
             {/** Activities layered together */}
-            {slideActivityState?.engineType !== 'V' && slideActivityState?.engineType !== 'T' && (
-              <Layer>{ActivityElement}</Layer>
-            )}
+            {<Layer>{ActivityElement}</Layer>}
           </Stage>
-          {slideActivityState?.engineType === 'V' ||
-            (slideActivityState?.engineType === 'T' && <AbsoluteContainer>{ActivityElement}</AbsoluteContainer>)}
         </SlideContainer>
       )}
     </Transition>

@@ -1,7 +1,7 @@
 import { Group } from 'react-konva'
-import { ShapeSoundObj } from '..'
-import { usePlayIntro } from '../../../hooks/usePlayIntro'
+import useImage from 'use-image'
 import { useShapesStatus } from '../../../hooks/useShapesStatus'
+import { useSlideSounds } from '../../../hooks/useSlideSounds'
 import { Activity } from '../../../stores/activitiesStoreTypes'
 import { updateShapesStatus } from '../../../utils'
 import { PuzzleShape, PuzzleShapeHole } from '../shapes/PuzzleShape'
@@ -9,34 +9,30 @@ import { PuzzleShape, PuzzleShapeHole } from '../shapes/PuzzleShape'
 interface PuzzleActivityProps {
   moveToNextSlide: (index?: number) => void
   soundUrl: string
-  isActivityActive: boolean
-  transitionLoading: boolean
+  isActive: boolean
   activity: Activity
   baseUrl: string
   onWrongAnswer: () => void
-  slideThumbnailUrl: string
-  playShapeSound: ({ onend, soundUrl }: ShapeSoundObj) => void
+  slidePathImage: string
 }
 
 export function PuzzleActivity({
   activity,
-  slideThumbnailUrl,
-  isActivityActive,
-  transitionLoading,
+  slidePathImage,
+  isActive,
   soundUrl,
   baseUrl,
   onWrongAnswer,
   moveToNextSlide,
-  playShapeSound,
 }: PuzzleActivityProps) {
-  const { stop } = usePlayIntro({
-    soundUrl,
-    isActivityActive,
-    transitionLoading,
-    playIntroAgainWithTimer: false,
+  const { playSound } = useSlideSounds({
+    isActive: isActive,
+    introUrl: soundUrl,
   })
 
-  const { setShapeStatus } = useShapesStatus({ shapes: activity.shapes, moveToNextSlide })
+  const { shapesStatus, setShapeStatus } = useShapesStatus({ shapes: activity.shapes, moveToNextSlide })
+
+  const [image] = useImage(slidePathImage)
 
   const onShapeRightSoundEnd = (shapePk: number) => {
     updateShapesStatus({ setClickedShapes: setShapeStatus, shapePk, linkToPage: activity.settings.linkToPage })
@@ -50,23 +46,31 @@ export function PuzzleActivity({
   return (
     <Group>
       {activity.shapes.map((shape, i) => {
+        if (shapesStatus && shapesStatus[shape.pk]?.didClickShape) {
+          return null
+        }
+
         return <PuzzleShapeHole shape={shape} key={`shape_hole_${shape.pk}_${i}`} />
       })}
       {activity.shapes.map((shape, i) => {
+        if (shapesStatus && shapesStatus[shape.pk]?.didClickShape) {
+          return null
+        }
+
         return (
           <PuzzleShape
             shape={shape}
             key={`shape_${shape.pk}_${i}`}
-            slideThumbnailUrl={slideThumbnailUrl}
+            image={image}
             easyMode={!!activity.settings.showShapeV2}
-            slideIsActive={isActivityActive && !transitionLoading}
+            isActive={isActive}
             bounceBack={!!activity.settings.soundFunModeV2}
-            stopIntroSound={stop}
             baseUrl={baseUrl}
             onWrongAnswer={onWrongAnswer}
             showHint={!activity.settings.DisableHints}
             onRightSoundEnd={onShapeRightSoundEnd}
-            playShapeSound={playShapeSound}
+            is3D={!!activity.settings.ShapePuzzleThemeV2}
+            playSlideSound={playSound}
           />
         )
       })}

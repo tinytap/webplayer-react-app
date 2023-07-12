@@ -3,36 +3,35 @@ import { Activity } from '../../../stores/activitiesStoreTypes'
 import { PLAYER_HEIGHT, PLAYER_WIDTH, SHOW_HINTS_QUESTIONS_ACTIVITY } from '../../../utils/constants'
 import DefaultWrongAnswer from '../../../assets/sounds/defaultWrongAnswer.mp3'
 import { AnswerShape } from '../shapes/AnswerShape'
-import { usePlayIntro } from '../../../hooks/usePlayIntro'
 import { useShowHints } from '../../../hooks/useShowHints'
 import { useState } from 'react'
-import { ShapeSoundObj } from '..'
+import { useSlideSounds } from '../../../hooks/useSlideSounds'
 
 interface QuestionsActivityProps {
   onFinishQuestion: () => void
   soundUrl: string
-  isActivityActive: boolean
-  transitionLoading: boolean
+  isActive: boolean
   activity: Activity
   baseUrl: string
   onWrongAnswer: () => void
-  playShapeSound: ({ onend, soundUrl }: ShapeSoundObj) => void
 }
 
 export function QuestionsActivity({
   onFinishQuestion,
   soundUrl,
-  isActivityActive,
-  transitionLoading,
+  isActive,
   activity,
   baseUrl,
   onWrongAnswer,
-  playShapeSound,
 }: QuestionsActivityProps) {
   const [didFinish, setDidFinish] = useState(false)
   const { showHints, setShowHints } = useShowHints()
 
-  const { playAgain, stop } = usePlayIntro({ soundUrl, isActivityActive, transitionLoading })
+  const { playSound, playIntroAgain, setStartIntoTimer } = useSlideSounds({
+    isActive: isActive,
+    introUrl: soundUrl,
+    introWithLoop: true,
+  })
 
   const wrongAnswerSoundUrl = activity.shapes[0]?.filePathRecording2
     ? baseUrl + activity.shapes[0].filePathRecording2
@@ -45,11 +44,11 @@ export function QuestionsActivity({
     if (SHOW_HINTS_QUESTIONS_ACTIVITY) {
       setShowHints(true)
     }
-    stop()
+    setStartIntoTimer(false)
 
-    playShapeSound({
+    playSound({
       soundUrl: wrongAnswerSoundUrl,
-      onend: () => playAgain(),
+      onend: () => playIntroAgain(),
     })
     onWrongAnswer()
   }
@@ -67,11 +66,8 @@ export function QuestionsActivity({
         key={`shape_${activity.shapes[0].pk}`}
         onRightSoundEnd={onFinishQuestion}
         showShapeForce={showHints}
-        stopIntroSound={stop}
-        onRightClick={() => {
-          setDidFinish(true)
-        }}
-        playShapeSound={playShapeSound}
+        onRightClick={() => setDidFinish(true)}
+        playShapeSound={playSound}
       />
     </Group>
   )

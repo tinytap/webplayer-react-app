@@ -218,6 +218,7 @@ export const useGameStore = create<GameStore>()(
           selectedSlide: state.slides ? state.slides[slideIndex] : undefined,
           isLastSlide,
           isFirstSlide,
+          transitionLoading: true,
         }
       }),
     selectSlide: (slide: Slide, paused: boolean = false) =>
@@ -239,6 +240,7 @@ export const useGameStore = create<GameStore>()(
           selectedSlide: slide,
           isLastSlide,
           isFirstSlide,
+          transitionLoading: true,
         }
       }),
     selectNextSlide: () => {
@@ -267,6 +269,7 @@ export const useGameStore = create<GameStore>()(
           selectedSlide: state.slides ? state.slides[nextSlide] : undefined,
           isLastSlide,
           isFirstSlide,
+          transitionLoading: true,
         }
       })
     },
@@ -289,6 +292,7 @@ export const useGameStore = create<GameStore>()(
           selectedSlideIndex: prevSlide,
           isLastSlide,
           isFirstSlide,
+          transitionLoading: true,
         }
       }),
   })),

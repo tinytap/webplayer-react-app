@@ -1,46 +1,43 @@
-import { Group, Shape as KonvaShape, Image } from 'react-konva'
+import { Group, Shape as KonvaShape, Image, Rect } from 'react-konva'
 import { Shape } from '../../../../stores/activitiesStoreTypes'
 import { drawShape, moveShape } from '../../../../utils'
 import { PLAYER_HEIGHT, PLAYER_WIDTH, PUZZLE_OFFSET_SHAPE_DETECT_PX } from '../../../../utils/constants'
-import { useImage } from '../../../../hooks/useImage'
 import { KonvaEventObject } from 'konva/lib/Node'
 import { useEffect, useRef, useState } from 'react'
 import { Group as KonvaGroupType } from 'konva/lib/Group'
 import DefaultWrongAnswer from '../../../../assets/sounds/DefaultWrongAnswer.mp3'
 import defaultGoodAnswer from '../../../../assets/sounds/defaultGoodAnswer.mp3'
-import { ShapeSoundObj } from '../..'
+import { PlaySound } from '../../../../hooks/useSlideSounds'
 
 interface PuzzleShapeProps {
   shape: Shape
-  slideThumbnailUrl: string
   easyMode: boolean
-  slideIsActive: boolean
+  isActive: boolean
   bounceBack: boolean
-  stopIntroSound: () => void
   baseUrl: string
   onWrongAnswer: () => void
   showHint: boolean
   onRightSoundEnd: (pk: number) => void
-  playShapeSound: ({ onend, soundUrl }: ShapeSoundObj) => void
+  is3D: boolean
+  playSlideSound: (props: PlaySound) => void
+  image: any
 }
 
-// TODO: 3d shapes
 export const PuzzleShape = ({
   shape,
-  slideThumbnailUrl,
   easyMode,
-  slideIsActive,
+  isActive,
   bounceBack,
-  stopIntroSound,
   baseUrl,
   onWrongAnswer,
   showHint,
   onRightSoundEnd,
-  playShapeSound,
+  is3D,
+  playSlideSound,
+  image
 }: PuzzleShapeProps) => {
   const [didFinish, setDidFinish] = useState(false)
   const shapeRef = useRef<KonvaGroupType>(null)
-  const [image] = useImage(slideThumbnailUrl)
 
   const soundUrl = shape.filePathRecording1 ? baseUrl + shape.filePathRecording1 : undefined
 
@@ -48,14 +45,16 @@ export const PuzzleShape = ({
   const [wrongAnswerObj, setWrongAnswerObj] = useState({ showHint: false, count: 0 })
 
   useEffect(() => {
-    if (slideIsActive && easyMode) {
+    if (didFinish) {
+      return
+    }
+
+    if (isActive && easyMode) {
       moveShape({ shapeNode: shapeRef.current, location: 'to-origin-place', duration: 1, shape })
-    } else if (easyMode) {
-      moveShape({ shapeNode: shapeRef.current, location: 'to-right-place', duration: 0, shape })
-    } else {
+    } else if (!easyMode) {
       moveShape({ shapeNode: shapeRef.current, location: 'to-origin-place', duration: 0, shape })
     }
-  }, [easyMode, slideIsActive, shape])
+  }, [easyMode, isActive, shape, didFinish])
 
   useEffect(() => {
     if (!wrongAnswerObj.showHint) {
@@ -82,19 +81,10 @@ export const PuzzleShape = ({
       Math.abs(e.target.attrs.x) < PUZZLE_OFFSET_SHAPE_DETECT_PX &&
       Math.abs(e.target.attrs.y) < PUZZLE_OFFSET_SHAPE_DETECT_PX
 
-    if (!soundUrl) {
-      stopIntroSound()
-    }
-
-    setWrongAnswerObj((oldV) => {
-      const newCount = oldV.count + 1
-      return { showHint: newCount % 3 === 0 && showHint, count: newCount }
-    })
-
     if (isRightLocaion) {
       // TODO: add confetti
       setDidFinish(true)
-      playShapeSound({
+      playSlideSound({
         soundUrl: defaultGoodAnswer,
         onend: () => onRightSoundEnd(shape.pk),
         fireOnendOnSoundStop: true,
@@ -104,7 +94,12 @@ export const PuzzleShape = ({
       return
     }
 
-    playShapeSound({ soundUrl: DefaultWrongAnswer })
+    setWrongAnswerObj((oldV) => {
+      const newCount = oldV.count + 1
+      return { showHint: newCount % 3 === 0 && showHint, count: newCount }
+    })
+
+    playSlideSound({ soundUrl: DefaultWrongAnswer })
     onWrongAnswer()
 
     if (bounceBack) {
@@ -114,16 +109,15 @@ export const PuzzleShape = ({
 
   const onDragStart = () => {
     if (soundUrl) {
-      stopIntroSound()
-      playShapeSound({ soundUrl })
+      playSlideSound({ soundUrl })
     }
   }
 
   return (
     <Group>
       {wrongAnswerObj.showHint && shapeRef.current && (
-        // the shape hint
         <Group
+          id={`puzzle_shape_hint_${shape.pk}`}
           ref={shapeHintRef}
           clipFunc={function (ctx) {
             drawShape(ctx, shape.path)
@@ -135,16 +129,29 @@ export const PuzzleShape = ({
           <Image width={PLAYER_WIDTH} height={PLAYER_HEIGHT} image={image} />
         </Group>
       )}
-      <Group
-        ref={shapeRef}
-        clipFunc={function (ctx) {
-          drawShape(ctx, shape.path)
-        }}
-        draggable={!didFinish}
-        onDragEnd={onDragEnd}
-        onDragStart={onDragStart}
-      >
-        <Image width={PLAYER_WIDTH} height={PLAYER_HEIGHT} image={image} />
+
+      <Group draggable={!didFinish} onDragEnd={onDragEnd} onDragStart={onDragStart} ref={shapeRef}>
+        {is3D && !didFinish && !!image && (
+          <Group
+            id={`puzzle_shape_shadow_${shape.pk}`}
+            clipFunc={function (ctx) {
+              drawShape(ctx, shape.path)
+            }}
+            offset={{ x: -5, y: -5 }}
+          >
+            <Image width={PLAYER_WIDTH} height={PLAYER_HEIGHT} image={image} />
+            <Rect width={PLAYER_WIDTH} height={PLAYER_HEIGHT} fill={'black'} opacity={0.5} />
+          </Group>
+        )}
+
+        <Group
+          id={`puzzle_shape_${shape.pk}`}
+          clipFunc={function (ctx) {
+            drawShape(ctx, shape.path)
+          }}
+        >
+          <Image width={PLAYER_WIDTH} height={PLAYER_HEIGHT} image={image} />
+        </Group>
       </Group>
     </Group>
   )

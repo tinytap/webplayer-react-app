@@ -27,6 +27,7 @@ export interface Shape {
     originTransform: [number, number, number, number, number, number]
     linkToPage?: number
     textAnswerArray?: string[]
+    toolTipText?: string
   }
   filePathRecording2: string
   filePathRecording1: string
@@ -55,7 +56,7 @@ export interface Activity {
 
 export interface ActivitySettings {
   soundFlatMode?: boolean
-  ShapePuzzleThemeV2?: number
+  ShapePuzzleThemeV2?: number | boolean
   showShapeV2?: boolean
   soundFunModeV2?: boolean
   advance?: boolean

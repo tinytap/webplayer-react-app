@@ -2,6 +2,7 @@ import { Context as KonvaContext } from 'konva/lib/Context'
 import { Group } from 'konva/lib/Group'
 import { ShapesStatus } from '../hooks/useShapesStatus'
 import { PathItem, Shape } from '../stores/activitiesStoreTypes'
+import { SHAKE_SPEED_MS, SLIDE_CONTAINER_ID, SLIDE_CONTAINER_SHAKE_CLASS } from './constants'
 
 export const getYoutubeVideoId = (url: string) => {
   const regExp =
@@ -213,5 +214,17 @@ export const getFontSize = ({ text, containerSize, fontFamily = 'ariel', minSize
   const size = Math.min(width, height) - 5
 
   return Math.max(size, minSize)
+}
+
+export const shakeContainer = () => {
+  const SlideContainer = document.getElementById(SLIDE_CONTAINER_ID)
+  if (!SlideContainer) {
+    return
+  }
+  SlideContainer.classList.add(SLIDE_CONTAINER_SHAKE_CLASS)
+
+  setTimeout(() => {
+    SlideContainer.classList.remove(SLIDE_CONTAINER_SHAKE_CLASS)
+  }, SHAKE_SPEED_MS)
 }
 

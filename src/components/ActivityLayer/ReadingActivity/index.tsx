@@ -1,5 +1,5 @@
 import { Rect } from 'react-konva'
-import { usePlayIntro } from '../../../hooks/usePlayIntro'
+import { useSlideSounds } from '../../../hooks/useSlideSounds'
 import { ActivitySettings, ActivityState } from '../../../stores/activitiesStoreTypes'
 import { PLAYER_HEIGHT, PLAYER_WIDTH } from '../../../utils/constants'
 
@@ -18,12 +18,10 @@ export function ReadingActivity({
   transitionLoading,
   activitySettings,
 }: ReadingActivityProps) {
-  const { stop } = usePlayIntro({
-    soundUrl,
-    isActivityActive: activityState.started || !activityState.paused,
-    transitionLoading,
-    playIntroAgainWithTimer: false,
-    onSoundEnd: () => {
+  useSlideSounds({
+    isActive: activityState.started && !activityState.paused && !transitionLoading,
+    introUrl: soundUrl,
+    onIntroEnd: () => {
       if (!activitySettings.advance || activityState.doesSlideHaveClickableLayer) {
         return
       }
@@ -35,7 +33,6 @@ export function ReadingActivity({
     if (activitySettings.advance || activityState.doesSlideHaveClickableLayer) {
       return
     }
-    stop()
     moveToNextSlide(activitySettings.linkToPage)
   }
 
