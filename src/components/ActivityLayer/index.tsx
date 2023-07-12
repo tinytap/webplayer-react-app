@@ -3,7 +3,6 @@ import { Star } from 'react-konva'
 import { useActivitiesStore } from '../../stores/activitiesStore'
 import { Activity, ActivityState } from '../../stores/activitiesStoreTypes'
 import { useGameStore } from '../../stores/gameStore'
-import { Slide } from '../../stores/gameStoreTypes'
 import { shakeContainer } from '../../utils'
 import { PuzzleActivity } from './PuzzleActivity'
 import { QuestionsActivity } from './QuestionsActivity'
@@ -18,7 +17,8 @@ interface ActivitiesLayerProps {
   isPrevSlide: boolean
   transitionLoading: boolean
   base_url: string
-  slide: Slide
+  slidePathImage: string
+  interactiveLayers: any[]
 }
 
 export const ActivitiesLayer = ({
@@ -27,7 +27,8 @@ export const ActivitiesLayer = ({
   isPrevSlide,
   transitionLoading,
   base_url,
-  slide,
+  slidePathImage,
+  interactiveLayers,
 }: ActivitiesLayerProps) => {
   // Retrieve slide activity for the current slide
   const slideActivityState = useActivitiesStore((state) => state.getSlideActivityState(slideIndex))
@@ -45,7 +46,7 @@ export const ActivitiesLayer = ({
     }
     const activity = slideActivityState.activities[currentActivityIndex]
 
-    if (!activity || !slide) {
+    if (!activity) {
       setCurrentActivityIndex(0)
       return <></>
     }
@@ -66,11 +67,21 @@ export const ActivitiesLayer = ({
           }
           return false
         }}
-        slidePathImage={base_url + slide.filePathImage}
+        slidePathImage={base_url + slidePathImage}
         transitionLoading={transitionLoading}
+        interactiveLayers={interactiveLayers}
       />
     )
-  }, [selected, slideActivityState, base_url, currentActivityIndex, slide, isPrevSlide, transitionLoading])
+  }, [
+    selected,
+    slideActivityState,
+    base_url,
+    currentActivityIndex,
+    slidePathImage,
+    isPrevSlide,
+    transitionLoading,
+    interactiveLayers,
+  ])
 
   return ActivityElement
 }
@@ -90,6 +101,7 @@ interface ActivityLayerProps {
   onMoveToNextActivity: () => boolean
   slidePathImage: string
   transitionLoading: boolean
+  interactiveLayers: any[]
 }
 
 function ActivityLayer({
@@ -100,6 +112,7 @@ function ActivityLayer({
   onMoveToNextActivity,
   slidePathImage,
   transitionLoading,
+  interactiveLayers,
 }: ActivityLayerProps) {
   const soundUrl = baseUrl + activity.filePathIntroRecording
   const selectNextSlide = useGameStore((state) => state.selectNextSlide)
@@ -137,7 +150,7 @@ function ActivityLayer({
           isActive={isActivityActive}
           activitySettings={activity.settings}
           moveToNextSlide={moveToNextSlide}
-          doesSlideHaveClickableLayer={activityState.doesSlideHaveClickableLayer}
+          interactiveLayers={interactiveLayers}
         />
       )
     case 'S':

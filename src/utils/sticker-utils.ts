@@ -60,7 +60,7 @@ export const slideHaveInteractiveLayer = (layers: any[], ignoreInteractiveLoopTy
   return (layers || []).some((l) => isLayerInteractive(l, ignoreInteractiveLoopTypeIndex))
 }
 
-const isLayerInteractive = (layer: any, ignoreInteractiveLoopTypeIndex: number | undefined) => {
+export const isLayerInteractive = (layer: any, ignoreInteractiveLoopTypeIndex: number | undefined) => {
   return [
     layer.InteractiveLoopType,
     layer.InteractiveShowType,

@@ -1,10 +1,10 @@
 // Required libraries and components
-import React, { useCallback, useRef } from 'react'
+import React, { useCallback, useMemo, useRef } from 'react'
 import { Stage, Layer, Star } from 'react-konva'
 import { Transition } from 'react-transition-group'
 import { useGameStore } from '../../stores/gameStore'
 import { Slide } from '../../stores/gameStoreTypes'
-import { propsAreEqual } from '../../utils'
+import { isLayerInteractive, propsAreEqual } from '../../utils'
 import { PLAYER_HEIGHT, PLAYER_WIDTH } from '../../utils/constants'
 import { LoaderSpinner } from '../Loader/styles'
 import { BackgroundLayer } from './BackgroundLayer'
@@ -102,8 +102,38 @@ export const SlideElementComponent = ({
   // Retrieve slide activity for the current slide
   const slideActivityState = useActivitiesStore((state) => state.getSlideActivityState(slideIndex))
 
+  const slideLayers = useMemo(() => {
+    if (!slide) {
+      return
+    }
+
+    const bgLayers: any[] = []
+    const stickersLayes: any[] = []
+    const interactiveLayers: any[] = []
+
+    slide.layers.forEach((layer: any) => {
+      if (layer.type === 'bg') {
+        bgLayers.push(layer)
+        return
+      }
+
+      const isInteractive = isLayerInteractive(layer, 3)
+      if (isInteractive) {
+        interactiveLayers.push(layer)
+      } else {
+        stickersLayes.push(layer)
+      }
+    })
+
+    return {
+      bgLayers,
+      stickersLayes,
+      interactiveLayers,
+    }
+  }, [slide])
+
   // Show loading spinner if slide is not available
-  if (!slide) return <LoaderSpinner />
+  if (!slide || !slideLayers) return <LoaderSpinner />
 
   // Transition wrapper to manage animations when switching between slides
   return (
@@ -131,32 +161,27 @@ export const SlideElementComponent = ({
           <Stage width={PLAYER_WIDTH} height={PLAYER_HEIGHT}>
             {/** Background / Foreground layered together */}
             <Layer>
-              {slide.layers?.map((layer: LayerInterface, index: number) =>
-                layer.type === 'bg' ? (
-                  <SlideLayer
-                    key={layer.pk + '_' + index}
-                    slideBase={slide_base}
-                    layer={layer}
-                    layerIndex={index}
-                    slideIndex={slideIndex}
-                  />
-                ) : null,
-              )}
+              {slideLayers.bgLayers.map((layer: LayerInterface, index: number) => (
+                <SlideLayer
+                  key={layer.pk + '_' + index}
+                  slideBase={slide_base}
+                  layer={layer}
+                  layerIndex={index}
+                  slideIndex={slideIndex}
+                />
+              ))}
             </Layer>
             {/** Stickers layered together */}
-
             <Layer>
-              {slide.layers?.map((layer: LayerInterface, index: number) =>
-                layer.type === 'bg' ? null : (
-                  <SlideLayer
-                    key={layer.pk + '_' + index}
-                    slideBase={slide_base}
-                    layer={layer}
-                    layerIndex={index}
-                    slideIndex={slideIndex}
-                  />
-                ),
-              )}
+              {slideLayers.stickersLayes.map((layer: LayerInterface, index: number) => (
+                <SlideLayer
+                  key={layer.pk + '_' + index}
+                  slideBase={slide_base}
+                  layer={layer}
+                  layerIndex={index}
+                  slideIndex={slideIndex}
+                />
+              ))}
             </Layer>
             {/** Activities layered together */}
             {playable && (
@@ -167,7 +192,8 @@ export const SlideElementComponent = ({
                   isPrevSlide={isPrevSlide}
                   transitionLoading={transitionLoading}
                   base_url={base_url}
-                  slide={slide}
+                  slidePathImage={slide.filePathImage}
+                  interactiveLayers={slideLayers.interactiveLayers}
                 />
               </Layer>
             )}

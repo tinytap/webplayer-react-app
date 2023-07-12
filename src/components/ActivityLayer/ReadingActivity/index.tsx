@@ -8,7 +8,7 @@ interface ReadingActivityProps {
   soundUrl: string
   isActive: boolean
   activitySettings: ActivitySettings
-  doesSlideHaveClickableLayer?: boolean
+  interactiveLayers: any[]
 }
 
 export function ReadingActivity({
@@ -16,13 +16,13 @@ export function ReadingActivity({
   soundUrl,
   isActive,
   activitySettings,
-  doesSlideHaveClickableLayer = false,
+  interactiveLayers
 }: ReadingActivityProps) {
   useSlideSounds({
     isActive: isActive,
     introUrl: soundUrl,
     onIntroEnd: () => {
-      if (!activitySettings.advance || doesSlideHaveClickableLayer) {
+      if (!activitySettings.advance || interactiveLayers.length > 0) {
         return
       }
       moveToNextSlide(activitySettings.linkToPage)
@@ -30,7 +30,7 @@ export function ReadingActivity({
   })
 
   const onClick = () => {
-    if (activitySettings.advance || doesSlideHaveClickableLayer) {
+    if (activitySettings.advance || interactiveLayers.length > 0) {
       return
     }
     moveToNextSlide(activitySettings.linkToPage)

@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { getGameId, getStructureFilePath, slideHaveInteractiveLayer } from '../utils'
+import { getGameId, getStructureFilePath } from '../utils'
 import { GameStore, Slide } from './gameStoreTypes'
 import { useActivitiesStore } from './activitiesStore'
 import { ActivityState } from './activitiesStoreTypes'
@@ -35,7 +35,6 @@ const defaultActivityState: ActivityState = {
   userMaxScore: 100,
   userScorePercentage: 0,
   engineType: 'S',
-  doesSlideHaveClickableLayer: false,
 }
 
 export const useGameStore = create<GameStore>()(
@@ -72,12 +71,10 @@ export const useGameStore = create<GameStore>()(
       if (currentSlides && currentSlides.length) {
         const useActivitiesStoreState = useActivitiesStore.getState()
         const gameActivities = currentSlides.map((slide: any) => {
-          const doesSlideHaveClickableLayer = slideHaveInteractiveLayer(slide.layers, 3)
           return {
             ...defaultActivityState,
             activities: slide.activities,
             engineType: slide.engineType,
-            doesSlideHaveClickableLayer: doesSlideHaveClickableLayer,
           }
         })
         useActivitiesStoreState.setActivities(gameActivities)
@@ -147,12 +144,10 @@ export const useGameStore = create<GameStore>()(
 
         const useActivitiesStoreState = useActivitiesStore.getState()
         const gameActivities = currentSlides.map((slide: any) => {
-          const doesSlideHaveClickableLayer = slideHaveInteractiveLayer(slide.layers, 3)
           return {
             ...defaultActivityState,
             activities: slide.activities,
             engineType: slide.engineType,
-            doesSlideHaveClickableLayer: doesSlideHaveClickableLayer,
           }
         })
 

@@ -9,7 +9,6 @@ export interface ActivityState {
   userScorePercentage: number
   engineType: 'S' | 'R' | 'A' | 'V' | 'P' | 'Q' | 'T'
   activities?: Activity[]
-  doesSlideHaveClickableLayer: boolean
 }
 export interface ActivitiesState {
   activities: ActivityState[] | []
