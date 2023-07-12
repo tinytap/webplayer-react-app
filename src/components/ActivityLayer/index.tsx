@@ -1,6 +1,9 @@
+import { useMemo, useState } from 'react'
 import { Star } from 'react-konva'
+import { useActivitiesStore } from '../../stores/activitiesStore'
 import { Activity, ActivityState } from '../../stores/activitiesStoreTypes'
 import { useGameStore } from '../../stores/gameStore'
+import { Slide } from '../../stores/gameStoreTypes'
 import { shakeContainer } from '../../utils'
 import { PuzzleActivity } from './PuzzleActivity'
 import { QuestionsActivity } from './QuestionsActivity'
@@ -8,6 +11,69 @@ import { ReadingActivity } from './ReadingActivity'
 import { SoundboardActivity } from './SoundboardActivity'
 import { TalkOrTypeActivity } from './TalkOrTypeActivity'
 import { VideoActivity } from './VideoActivity'
+
+interface ActivitiesLayerProps {
+  selected: boolean
+  slideIndex: number
+  isPrevSlide: boolean
+  transitionLoading: boolean
+  base_url: string
+  slide: Slide
+}
+
+export const ActivitiesLayer = ({
+  selected,
+  slideIndex,
+  isPrevSlide,
+  transitionLoading,
+  base_url,
+  slide,
+}: ActivitiesLayerProps) => {
+  // Retrieve slide activity for the current slide
+  const slideActivityState = useActivitiesStore((state) => state.getSlideActivityState(slideIndex))
+  const [currentActivityIndex, setCurrentActivityIndex] = useState(0)
+
+  const ActivityElement = useMemo(() => {
+    if (
+      !slideActivityState?.activities ||
+      !slideActivityState.activities.length ||
+      (!selected && !isPrevSlide) ||
+      (isPrevSlide && !transitionLoading)
+    ) {
+      setCurrentActivityIndex(0)
+      return <></>
+    }
+    const activity = slideActivityState.activities[currentActivityIndex]
+
+    if (!activity || !slide) {
+      setCurrentActivityIndex(0)
+      return <></>
+    }
+
+    return (
+      <ActivityLayer
+        engine={slideActivityState.engineType}
+        key={activity.pk + '_activity'}
+        baseUrl={base_url}
+        activity={activity}
+        activityState={{ ...slideActivityState, activities: undefined }}
+        onMoveToNextActivity={() => {
+          const newActivityIndex = currentActivityIndex + 1
+
+          if (newActivityIndex < slideActivityState.activities!.length) {
+            setCurrentActivityIndex(newActivityIndex)
+            return true
+          }
+          return false
+        }}
+        slidePathImage={base_url + slide.filePathImage}
+        transitionLoading={transitionLoading}
+      />
+    )
+  }, [selected, slideActivityState, base_url, currentActivityIndex, slide, isPrevSlide, transitionLoading])
+
+  return ActivityElement
+}
 
 interface ActivityLayerProps {
   baseUrl: string
@@ -23,17 +89,18 @@ interface ActivityLayerProps {
   activityState: ActivityState
   onMoveToNextActivity: () => boolean
   slidePathImage: string
+  transitionLoading: boolean
 }
 
-export function ActivityLayer({
+function ActivityLayer({
   baseUrl,
   activity,
   activityState,
   engine,
   onMoveToNextActivity,
   slidePathImage,
+  transitionLoading,
 }: ActivityLayerProps) {
-  const transitionLoading = useGameStore((state) => state.transitionLoading)
   const soundUrl = baseUrl + activity.filePathIntroRecording
   const selectNextSlide = useGameStore((state) => state.selectNextSlide)
   const selectSlideIndex = useGameStore((state) => state.selectSlideIndex)
