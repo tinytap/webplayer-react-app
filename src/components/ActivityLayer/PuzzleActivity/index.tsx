@@ -1,4 +1,5 @@
 import { Group } from 'react-konva'
+import useImage from 'use-image'
 import { useShapesStatus } from '../../../hooks/useShapesStatus'
 import { useSlideSounds } from '../../../hooks/useSlideSounds'
 import { Activity } from '../../../stores/activitiesStoreTypes'
@@ -31,6 +32,8 @@ export function PuzzleActivity({
 
   const { shapesStatus, setShapeStatus } = useShapesStatus({ shapes: activity.shapes, moveToNextSlide })
 
+  const [image] = useImage(slidePathImage)
+
   const onShapeRightSoundEnd = (shapePk: number) => {
     updateShapesStatus({ setClickedShapes: setShapeStatus, shapePk, linkToPage: activity.settings.linkToPage })
     // TODO: add fireworks when all pieces are in the right place
@@ -58,7 +61,7 @@ export function PuzzleActivity({
           <PuzzleShape
             shape={shape}
             key={`shape_${shape.pk}_${i}`}
-            slidePathImage={slidePathImage}
+            image={image}
             easyMode={!!activity.settings.showShapeV2}
             isActive={isActive}
             bounceBack={!!activity.settings.soundFunModeV2}

@@ -2,7 +2,6 @@ import { Group, Shape as KonvaShape, Image, Rect } from 'react-konva'
 import { Shape } from '../../../../stores/activitiesStoreTypes'
 import { drawShape, moveShape } from '../../../../utils'
 import { PLAYER_HEIGHT, PLAYER_WIDTH, PUZZLE_OFFSET_SHAPE_DETECT_PX } from '../../../../utils/constants'
-import { useImage } from '../../../../hooks/useImage'
 import { KonvaEventObject } from 'konva/lib/Node'
 import { useEffect, useRef, useState } from 'react'
 import { Group as KonvaGroupType } from 'konva/lib/Group'
@@ -12,7 +11,6 @@ import { PlaySound } from '../../../../hooks/useSlideSounds'
 
 interface PuzzleShapeProps {
   shape: Shape
-  slidePathImage: string
   easyMode: boolean
   isActive: boolean
   bounceBack: boolean
@@ -22,11 +20,11 @@ interface PuzzleShapeProps {
   onRightSoundEnd: (pk: number) => void
   is3D: boolean
   playSlideSound: (props: PlaySound) => void
+  image: any
 }
 
 export const PuzzleShape = ({
   shape,
-  slidePathImage,
   easyMode,
   isActive,
   bounceBack,
@@ -36,10 +34,10 @@ export const PuzzleShape = ({
   onRightSoundEnd,
   is3D,
   playSlideSound,
+  image
 }: PuzzleShapeProps) => {
   const [didFinish, setDidFinish] = useState(false)
   const shapeRef = useRef<KonvaGroupType>(null)
-  const [image] = useImage(slidePathImage)
 
   const soundUrl = shape.filePathRecording1 ? baseUrl + shape.filePathRecording1 : undefined
 
