@@ -28,7 +28,7 @@ export function SoundboardActivity({
   onWrongAnswer,
 }: SoundboardActivityProps) {
   const { showHints, setShowHints } = useShowHints()
-  const { setShapeStatus } = useShapesStatus({ shapes: activity.shapes, moveToNextSlide })
+  const { setShapeStatus } = useShapesStatus({ shapes: activity.shapes, moveToNextSlide, isActive: isActive })
 
   const { setStartIntoTimer, playSound } = useSlideSounds({
     isActive: isActive,

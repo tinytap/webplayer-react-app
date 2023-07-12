@@ -23,13 +23,9 @@ export function SlidesContainerComponent() {
   return (
     <SlidesContainerElement id={SLIDE_CONTAINER_ID} menuOpened={menuOpen}>
       <AllSlidesContainer>
-        <SlideElement
-          playable={false}
-          shown={true}
-          slide={staticSlides.current?.[lastSelectedSlideIndex || 0]}
-          top={false}
-          index={lastSelectedSlideIndex || 0}
-        />
+        {lastSelectedSlideIndex === undefined && (
+          <SlideElement playable={false} shown={true} slide={staticSlides.current?.[0]} top={false} index={0} />
+        )}
 
         {slides
           ? slides.map((slide, index) => (
@@ -40,6 +36,7 @@ export function SlidesContainerComponent() {
                 key={slide.pk}
                 slide={slide}
                 top={false}
+                isPrevSlide={index === lastSelectedSlideIndex && index !== selectedSlideIndex}
               />
             ))
           : null}

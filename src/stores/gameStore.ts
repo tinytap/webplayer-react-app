@@ -203,6 +203,9 @@ export const useGameStore = create<GameStore>()(
     setSlides: (slides: Slide[]) => set((/*state*/) => ({ slides: slides })),
     selectSlideIndex: (slideIndex: number, paused: boolean = false) =>
       set((state: GameStore) => {
+        if (state.transitionLoading) {
+          return { ...state }
+        }
         const isLastSlide = state.slides && slideIndex === state.slides.length - 1
         const isFirstSlide = slideIndex === 0
         useActivitiesStore.getState().pauseActivity(state?.selectedSlideIndex ? state.selectedSlideIndex : 0)
@@ -223,6 +226,9 @@ export const useGameStore = create<GameStore>()(
       }),
     selectSlide: (slide: Slide, paused: boolean = false) =>
       set((state: GameStore) => {
+        if (state.transitionLoading) {
+          return { ...state }
+        }
         const slideIndex = state.slides ? state.slides.findIndex((x: any) => x.pk === slide.pk) : 0
         const isLastSlide = state.slides && slideIndex === state.slides.length - 1
         const isFirstSlide = slideIndex === 0
@@ -275,6 +281,9 @@ export const useGameStore = create<GameStore>()(
     },
     selectPrevSlide: () =>
       set((state: GameStore) => {
+        if (state.transitionLoading) {
+          return { ...state }
+        }
         const currentSlideIndex = state.selectedSlideIndex
         const slides = state.slides || []
         let prevSlide = 0

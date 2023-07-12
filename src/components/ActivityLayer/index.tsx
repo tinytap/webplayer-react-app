@@ -67,10 +67,10 @@ export function ActivityLayer({
       return (
         <ReadingActivity
           soundUrl={soundUrl}
-          activityState={activityState}
-          transitionLoading={transitionLoading}
+          isActive={isActivityActive}
           activitySettings={activity.settings}
           moveToNextSlide={moveToNextSlide}
+          doesSlideHaveClickableLayer={activityState.doesSlideHaveClickableLayer}
         />
       )
     case 'S':

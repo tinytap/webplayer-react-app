@@ -8,9 +8,10 @@ export interface ShapesStatus {
 interface useShowHintsProps {
   shapes: Shape[]
   moveToNextSlide: (index?: number) => void
+  isActive: boolean
 }
 
-export function useShapesStatus({ shapes, moveToNextSlide }: useShowHintsProps) {
+export function useShapesStatus({ shapes, moveToNextSlide, isActive }: useShowHintsProps) {
   const [shapesStatus, setShapeStatus] = useState<ShapesStatus>()
 
   useEffect(() => {
@@ -25,7 +26,7 @@ export function useShapesStatus({ shapes, moveToNextSlide }: useShowHintsProps) 
   }, [shapes])
 
   useEffect(() => {
-    if (!shapesStatus) {
+    if (!shapesStatus || !isActive) {
       return
     }
 
@@ -52,7 +53,7 @@ export function useShapesStatus({ shapes, moveToNextSlide }: useShowHintsProps) 
       }
     }
     slideNavigate()
-  }, [shapesStatus, moveToNextSlide])
+  }, [shapesStatus, moveToNextSlide, isActive])
 
   return { shapesStatus, setShapeStatus }
 }

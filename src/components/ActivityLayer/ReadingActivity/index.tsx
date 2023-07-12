@@ -1,28 +1,28 @@
 import { Rect } from 'react-konva'
 import { useSlideSounds } from '../../../hooks/useSlideSounds'
-import { ActivitySettings, ActivityState } from '../../../stores/activitiesStoreTypes'
+import { ActivitySettings } from '../../../stores/activitiesStoreTypes'
 import { PLAYER_HEIGHT, PLAYER_WIDTH } from '../../../utils/constants'
 
 interface ReadingActivityProps {
   moveToNextSlide: (index: number | undefined) => void
   soundUrl: string
-  activityState: ActivityState
-  transitionLoading: boolean
+  isActive: boolean
   activitySettings: ActivitySettings
+  doesSlideHaveClickableLayer?: boolean
 }
 
 export function ReadingActivity({
   moveToNextSlide,
   soundUrl,
-  activityState,
-  transitionLoading,
+  isActive,
   activitySettings,
+  doesSlideHaveClickableLayer = false,
 }: ReadingActivityProps) {
   useSlideSounds({
-    isActive: activityState.started && !activityState.paused && !transitionLoading,
+    isActive: isActive,
     introUrl: soundUrl,
     onIntroEnd: () => {
-      if (!activitySettings.advance || activityState.doesSlideHaveClickableLayer) {
+      if (!activitySettings.advance || doesSlideHaveClickableLayer) {
         return
       }
       moveToNextSlide(activitySettings.linkToPage)
@@ -30,7 +30,7 @@ export function ReadingActivity({
   })
 
   const onClick = () => {
-    if (activitySettings.advance || activityState.doesSlideHaveClickableLayer) {
+    if (activitySettings.advance || doesSlideHaveClickableLayer) {
       return
     }
     moveToNextSlide(activitySettings.linkToPage)

@@ -29,7 +29,11 @@ export function PuzzleActivity({
     introUrl: soundUrl,
   })
 
-  const { shapesStatus, setShapeStatus } = useShapesStatus({ shapes: activity.shapes, moveToNextSlide })
+  const { shapesStatus, setShapeStatus } = useShapesStatus({
+    shapes: activity.shapes,
+    moveToNextSlide,
+    isActive: isActive,
+  })
 
   const onShapeRightSoundEnd = (shapePk: number) => {
     updateShapesStatus({ setClickedShapes: setShapeStatus, shapePk, linkToPage: activity.settings.linkToPage })

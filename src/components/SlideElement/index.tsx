@@ -28,6 +28,7 @@ interface SlideProps {
   top: boolean
   shown: boolean
   playable: boolean
+  isPrevSlide?: boolean
 }
 
 // Props type for the Layer component
@@ -70,10 +71,18 @@ const SlideLayer = ({ layer, layerIndex, slideBase, slideIndex }: LayerProps) =>
 }
 
 // The SlideElementComponent represents a single slide and manages rendering of its layers and transitions
-export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, playable = true }: SlideProps) => {
+export const SlideElementComponent = ({
+  slide,
+  shown,
+  index: slideIndex,
+  top,
+  playable = true,
+  isPrevSlide,
+}: SlideProps) => {
   // Retrieve required states and actions from the game store and activities store
   const base_url = useGameStore((state) => state.base_url)
   const setTransitionLoading = useGameStore((state) => state.setTransitionLoading)
+  const transitionLoading = useGameStore((state) => state.transitionLoading)
   const selectedSlideIndex = useGameStore((state) => state.selectedSlideIndex)
   const slide_base = `${base_url}${slide?.filePath.replace('/thumb.jpg/', '/')}`
   const nodeRef = useRef(null)
@@ -94,7 +103,13 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
   const [currentActivityIndex, setCurrentActivityIndex] = useState(0)
 
   const ActivityElement = useMemo(() => {
-    if (!playable || !selected || !slideActivityState?.activities || !slideActivityState.activities.length) {
+    if (
+      !playable ||
+      !slideActivityState?.activities ||
+      !slideActivityState.activities.length ||
+      (!selected && !isPrevSlide) ||
+      (isPrevSlide && !transitionLoading)
+    ) {
       setCurrentActivityIndex(0)
       return <></>
     }
@@ -124,7 +139,7 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
         slidePathImage={base_url + slide.filePathImage}
       />
     )
-  }, [playable, selected, slideActivityState, base_url, currentActivityIndex, slide])
+  }, [playable, selected, slideActivityState, base_url, currentActivityIndex, slide, isPrevSlide, transitionLoading])
 
   // Show loading spinner if slide is not available
   if (!slide) return <LoaderSpinner />
@@ -132,7 +147,7 @@ export const SlideElementComponent = ({ slide, shown, index: slideIndex, top, pl
   // Transition wrapper to manage animations when switching between slides
   return (
     <Transition
-      in={shown || selected}
+      in={shown || selected || (isPrevSlide && transitionLoading)}
       timeout={0}
       nodeRef={nodeRef}
       unmountOnExit={false}
